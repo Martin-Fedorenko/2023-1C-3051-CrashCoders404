@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using BepuPhysics.CollisionDetection.CollisionTasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -35,123 +37,211 @@ namespace TGC.MonoGame.TP
 
         private GraphicsDeviceManager Graphics { get; }
         private SpriteBatch SpriteBatch { get; set; }
-        private Model Model { get; set; }
         private Effect Effect { get; set; }
-        private float Rotation { get; set; }
-        private Matrix World { get; set; }
+
+        private Model Piso { get; set; }
+        private Model Paredes { get; set; }
+        private Model AutoDeportivo { get; set; }
+        private Model AutoDeCombate { get; set; }
+        private Model Arbol { get; set; }
+        private Model Rock9 { get; set; }
+        private Model Rock2 { get; set; }
+        private Model Grass { get; set; }
+
+
         private Matrix View { get; set; }
         private Matrix Projection { get; set; }
+        private Matrix AutoWorld { get; set; }
+        private Matrix Auto2World { get; set; }
+        private Matrix Auto3World { get; set; }
+        private Matrix Auto4World { get; set; }
+        private Matrix Auto5World { get; set; }
+        private Matrix Auto6World { get; set; }
+        private Matrix Auto7World { get; set; }
 
-        /// <summary>
-        ///     Se llama una sola vez, al principio cuando se ejecuta el ejemplo.
-        ///     Escribir aqui el codigo de inicializacion: el procesamiento que podemos pre calcular para nuestro juego.
-        /// </summary>
+        private Matrix PisoWorld { get; set; }
+        private Matrix ParedWorld { get; set; }
+        private Matrix ArbolWorld { get; set; }
+        private Matrix Arbol2World { get; set; }
+        private Matrix Arbol3World { get; set; }
+        private Matrix Arbol4World { get; set; }
+        private Matrix Arbol5World { get; set; }
+        private Matrix Rock1World { get; set; }
+        private Matrix Rock2World { get; set; }
+        private Matrix Rock3World { get; set; }
+        private Matrix Rock4World { get; set; }
+        private Matrix Rock5World { get; set; }
+        private Matrix Rock6World { get; set; }
+
+        private Matrix Grass1World { get; set; }
+        private Matrix Grass2World { get; set; }
+        private Matrix Grass3World { get; set; }
+        private Matrix Grass4World { get; set; }
+        private Matrix Grass5World { get; set; }
+        private Matrix Grass6World { get; set; }
+
+
+
+
+        //radio de la arena= = 500 unidades aprox.
+
         protected override void Initialize()
         {
-            // La logica de inicializacion que no depende del contenido se recomienda poner en este metodo.
 
-            // Apago el backface culling.
-            // Esto se hace por un problema en el diseno del modelo del logo de la materia.
-            // Una vez que empiecen su juego, esto no es mas necesario y lo pueden sacar.
             var rasterizerState = new RasterizerState();
             rasterizerState.CullMode = CullMode.None;
             GraphicsDevice.RasterizerState = rasterizerState;
-            // Seria hasta aca.
 
-            // Configuramos nuestras matrices de la escena.
-            World = Matrix.Identity;
-            View = Matrix.CreateLookAt(Vector3.UnitZ * 150, Vector3.Zero, Vector3.Up);
+
+            Rock1World = Matrix.CreateScale(0.025f) * Matrix.CreateTranslation(-50, 0, 30);
+            Rock2World = Matrix.CreateScale(0.035f) * Matrix.CreateTranslation(40, 0, 50);
+            Rock3World = Matrix.CreateScale(0.035f) * Matrix.CreateTranslation(15, 0, 90);
+            Rock4World = Matrix.CreateScale(0.035f) * Matrix.CreateTranslation(100, 0, -30);
+
+            ArbolWorld = Matrix.CreateScale(0.25f) * Matrix.CreateTranslation(50, 0, -50);
+            Arbol2World = Matrix.CreateScale(0.35f) * Matrix.CreateTranslation(20, 0, 10);
+            Arbol3World = Matrix.CreateScale(0.20f) * Matrix.CreateTranslation(-40, 0, 50);
+            Arbol4World = Matrix.CreateScale(0.27f) * Matrix.CreateTranslation(-40, 0, 320);
+            Arbol5World = Matrix.CreateScale(0.32f) * Matrix.CreateTranslation(130, 0, -280);
+
+            AutoWorld = Matrix.CreateScale(5);
+            Auto2World = Matrix.CreateScale(5) * Matrix.CreateRotationY(MathF.PI / 2) * Matrix.CreateTranslation(-80, 0, 70);
+            Auto3World = Matrix.CreateScale(5) * Matrix.CreateRotationY(MathF.PI * 3 / 2) * Matrix.CreateTranslation(0, 0, 250);
+            Auto4World = Matrix.CreateScale(5) * Matrix.CreateRotationY(MathF.PI) * Matrix.CreateTranslation(-240, 0, 70);
+            Auto5World = Matrix.CreateScale(0.35F) * Matrix.CreateTranslation(220, 0, 140);
+            Auto6World = Matrix.CreateScale(0.35F) * Matrix.CreateTranslation(110, 0, -170);
+            Auto7World = Matrix.CreateScale(0.35F) * Matrix.CreateTranslation(0, 0, -115);
+
+            Grass1World = Matrix.CreateTranslation(-330, 0, -40);
+            Grass2World = Matrix.CreateTranslation(-320, 0, -40);
+            Grass3World = Matrix.CreateTranslation(-310, 0, -40);
+            Grass4World = Matrix.CreateTranslation(-330, 0, -30);
+            Grass5World = Matrix.CreateTranslation(-320, 0, -30);
+            Grass6World = Matrix.CreateTranslation(-310, 0, -30);
+
+
+
+
+
+
+            PisoWorld = Matrix.CreateScale(10);
+            ParedWorld = Matrix.CreateScale(25);
+
+            View = Matrix.CreateLookAt(new Vector3(0, 600, 450), Vector3.Zero, Vector3.Up);
             Projection =
-                Matrix.CreatePerspectiveFieldOfView(MathHelper.PiOver4, GraphicsDevice.Viewport.AspectRatio, 1, 250);
+                Matrix.CreatePerspectiveFieldOfView(MathHelper.PiOver4, GraphicsDevice.Viewport.AspectRatio, 1, 1500);
 
             base.Initialize();
         }
 
-        /// <summary>
-        ///     Se llama una sola vez, al principio cuando se ejecuta el ejemplo, despues de Initialize.
-        ///     Escribir aqui el codigo de inicializacion: cargar modelos, texturas, estructuras de optimizacion, el procesamiento
-        ///     que podemos pre calcular para nuestro juego.
-        /// </summary>
         protected override void LoadContent()
         {
-            // Aca es donde deberiamos cargar todos los contenido necesarios antes de iniciar el juego.
             SpriteBatch = new SpriteBatch(GraphicsDevice);
+            Piso = Content.Load<Model>(ContentFolder3D + "arena/plano");
+            Paredes = Content.Load<Model>(ContentFolder3D + "arena/arena");
+            AutoDeportivo = Content.Load<Model>(ContentFolder3D + "Derby/RacingCarA/RacingCar");
+            AutoDeCombate = Content.Load<Model>(ContentFolder3D + "Derby/CombatVehicle/Vehicle");
+            Arbol = Content.Load<Model>(ContentFolder3D + "arboles/arbolSinHojas/tree_winter");
+            Rock9 = Content.Load<Model>(ContentFolder3D + "Rocks/Rock9");
+            Rock2 = Content.Load<Model>(ContentFolder3D + "Rocks/Rock2");
+            Grass = Content.Load<Model>(ContentFolder3D + "grass/Low Grass");
 
-            // Cargo el modelo del logo.
-            Model = Content.Load<Model>(ContentFolder3D + "tgc-logo/tgc-logo");
 
-            // Cargo un efecto basico propio declarado en el Content pipeline.
-            // En el juego no pueden usar BasicEffect de MG, deben usar siempre efectos propios.
+
             Effect = Content.Load<Effect>(ContentFolderEffects + "BasicShader");
 
-            // Asigno el efecto que cargue a cada parte del mesh.
-            // Un modelo puede tener mas de 1 mesh internamente.
-            foreach (var mesh in Model.Meshes)
+            base.LoadContent();
+        }
+
+        protected override void Update(GameTime gameTime)
+        {
+            if (Keyboard.GetState().IsKeyDown(Keys.Escape))
             {
-                // Un mesh puede tener mas de 1 mesh part (cada 1 puede tener su propio efecto).
+                Exit();
+            }
+            base.Update(gameTime);
+        }
+
+
+        protected override void Draw(GameTime gameTime)
+        {
+            GraphicsDevice.Clear(Color.Black);
+
+            this.dibujarEscenario();
+            this.dibujarDetalles();
+            this.dibujarAutos();
+        }
+
+
+        protected override void UnloadContent()
+        {
+            Content.Unload();
+            base.UnloadContent();
+        }
+
+        public void dibujarEscenario()
+        {
+            this.dibujar(PisoWorld, Piso, Color.IndianRed);
+            this.dibujar(ParedWorld, Paredes, Color.White);
+        }
+
+        public void dibujarDetalles()
+        {
+            this.dibujar(Grass1World, Grass, Color.ForestGreen);
+            this.dibujar(Grass2World, Grass, Color.ForestGreen);
+            this.dibujar(Grass3World, Grass, Color.ForestGreen);
+            this.dibujar(Grass4World, Grass, Color.ForestGreen);
+            this.dibujar(Grass5World, Grass, Color.ForestGreen);
+            this.dibujar(Grass6World, Grass, Color.ForestGreen);
+
+            this.dibujar(Rock1World, Rock9, Color.Gray);
+            this.dibujar(Rock2World, Rock2, Color.Gray);
+            this.dibujar(Rock3World, Rock9, Color.Gray);
+            this.dibujar(Rock4World, Rock2, Color.Gray);
+
+
+            this.dibujar(ArbolWorld, Arbol, Color.SandyBrown);
+            this.dibujar(Arbol2World, Arbol, Color.SandyBrown);
+            this.dibujar(Arbol3World, Arbol, Color.SandyBrown);
+            this.dibujar(Arbol4World, Arbol, Color.SandyBrown);
+            this.dibujar(Arbol5World, Arbol, Color.SandyBrown);
+
+        }
+
+        public void dibujarAutos()
+        {
+            this.dibujar(AutoWorld, AutoDeportivo, Color.Black);
+            this.dibujar(Auto2World, AutoDeportivo, Color.Black);
+            this.dibujar(Auto3World, AutoDeportivo, Color.Black);
+            this.dibujar(Auto4World, AutoDeportivo, Color.Black);
+            this.dibujar(Auto5World, AutoDeCombate, Color.DarkSlateGray);
+            this.dibujar(Auto6World, AutoDeCombate, Color.DarkSlateGray);
+            this.dibujar(Auto7World, AutoDeCombate, Color.DarkSlateGray);
+        }
+
+
+        public void dibujar(Matrix matrizMundo, Model modelo, Color color)
+        {
+            foreach (var mesh in modelo.Meshes)
+            {
                 foreach (var meshPart in mesh.MeshParts)
                 {
                     meshPart.Effect = Effect;
                 }
             }
 
-            base.LoadContent();
-        }
-
-        /// <summary>
-        ///     Se llama en cada frame.
-        ///     Se debe escribir toda la logica de computo del modelo, asi como tambien verificar entradas del usuario y reacciones
-        ///     ante ellas.
-        /// </summary>
-        protected override void Update(GameTime gameTime)
-        {
-            // Aca deberiamos poner toda la logica de actualizacion del juego.
-
-            // Capturar Input teclado
-            if (Keyboard.GetState().IsKeyDown(Keys.Escape))
-            {
-                //Salgo del juego.
-                Exit();
-            }
-
-            // Basado en el tiempo que paso se va generando una rotacion.
-            Rotation += Convert.ToSingle(gameTime.ElapsedGameTime.TotalSeconds);
-
-            base.Update(gameTime);
-        }
-
-        /// <summary>
-        ///     Se llama cada vez que hay que refrescar la pantalla.
-        ///     Escribir aqui el codigo referido al renderizado.
-        /// </summary>
-        protected override void Draw(GameTime gameTime)
-        {
-            // Aca deberiamos poner toda la logia de renderizado del juego.
-            GraphicsDevice.Clear(Color.Black);
-
-            // Para dibujar le modelo necesitamos pasarle informacion que el efecto esta esperando.
             Effect.Parameters["View"].SetValue(View);
             Effect.Parameters["Projection"].SetValue(Projection);
-            Effect.Parameters["DiffuseColor"].SetValue(Color.DarkBlue.ToVector3());
-            var rotationMatrix = Matrix.CreateRotationY(Rotation);
+            Effect.Parameters["DiffuseColor"].SetValue(color.ToVector3());
 
-            foreach (var mesh in Model.Meshes)
+            foreach (var mesh in modelo.Meshes)
             {
-                World = mesh.ParentBone.Transform * rotationMatrix;
-                Effect.Parameters["World"].SetValue(World);
+
+                Effect.Parameters["World"].SetValue(matrizMundo);
                 mesh.Draw();
             }
+
         }
 
-        /// <summary>
-        ///     Libero los recursos que se cargaron en el juego.
-        /// </summary>
-        protected override void UnloadContent()
-        {
-            // Libero los recursos.
-            Content.Unload();
-
-            base.UnloadContent();
-        }
     }
 }
