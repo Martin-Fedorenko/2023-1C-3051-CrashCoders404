@@ -47,7 +47,8 @@ namespace TGC.MonoGame.TP
         private Model Rock9 { get; set; }
         private Model Rock2 { get; set; }
         private Model Grass { get; set; }
-
+        private Model Column { get; set; }
+        private Model Ramp { get; set; }
 
         private Matrix View { get; set; }
         private Matrix Projection { get; set; }
@@ -79,6 +80,11 @@ namespace TGC.MonoGame.TP
         private Matrix Grass4World { get; set; }
         private Matrix Grass5World { get; set; }
         private Matrix Grass6World { get; set; }
+
+        private Matrix Column1World { get; set; }
+        private Matrix Column2World { get; set; }
+        
+        private Matrix Ramp1World { get; set; }
 
 
 
@@ -119,9 +125,10 @@ namespace TGC.MonoGame.TP
             Grass5World = Matrix.CreateTranslation(-320, 0, -30);
             Grass6World = Matrix.CreateTranslation(-310, 0, -30);
 
+            Column1World = Matrix.CreateScale(0.5f) * Matrix.CreateRotationX(-MathF.PI/2) * Matrix.CreateTranslation(350,0,120);
+            Column2World = Matrix.CreateScale(0.5f) * Matrix.CreateTranslation(-350, 0, 120);
 
-
-
+            Ramp1World = Matrix.CreateScale(0.25f) * Matrix.CreateRotationX(-MathF.PI/2) * Matrix.CreateTranslation(-150, 0, 180);
 
 
             PisoWorld = Matrix.CreateScale(10);
@@ -144,7 +151,9 @@ namespace TGC.MonoGame.TP
             Arbol = Content.Load<Model>(ContentFolder3D + "arboles/arbolSinHojas/tree_winter");
             Rock9 = Content.Load<Model>(ContentFolder3D + "Rocks/Rock9");
             Rock2 = Content.Load<Model>(ContentFolder3D + "Rocks/Rock2");
+            Column = Content.Load<Model>(ContentFolder3D + "column/column");
             Grass = Content.Load<Model>(ContentFolder3D + "grass/Low Grass");
+            Ramp = Content.Load<Model>(ContentFolder3D + "ramps/ramp");
 
 
 
@@ -206,6 +215,10 @@ namespace TGC.MonoGame.TP
             this.dibujar(Arbol4World, Arbol, Color.SandyBrown);
             this.dibujar(Arbol5World, Arbol, Color.SandyBrown);
 
+            this.dibujar(Column1World, Column, Color.White);
+            this.dibujar(Column2World, Column, Color.White);
+
+            this.dibujar(Ramp1World, Ramp, Color.Black);
         }
 
         public void dibujarAutos()
