@@ -7,11 +7,6 @@ using Microsoft.Xna.Framework.Input;
 
 namespace TGC.MonoGame.TP
 {
-    /// <summary>
-    ///     Esta es la clase principal del juego.
-    ///     Inicialmente puede ser renombrado o copiado para hacer mas ejemplos chicos, en el caso de copiar para que se
-    ///     ejecute el nuevo ejemplo deben cambiar la clase que ejecuta Program <see cref="Program.Main()" /> linea 10.
-    /// </summary>
     public class TGCGame : Game
     {
         public const string ContentFolder3D = "Models/";
@@ -21,17 +16,10 @@ namespace TGC.MonoGame.TP
         public const string ContentFolderSpriteFonts = "SpriteFonts/";
         public const string ContentFolderTextures = "Textures/";
 
-        /// <summary>
-        ///     Constructor del juego.
-        /// </summary>
         public TGCGame()
         {
-            // Maneja la configuracion y la administracion del dispositivo grafico.
             Graphics = new GraphicsDeviceManager(this);
-            // Para que el juego sea pantalla completa se puede usar Graphics IsFullScreen.
-            // Carpeta raiz donde va a estar toda la Media.
             Content.RootDirectory = "Content";
-            // Hace que el mouse sea visible.
             IsMouseVisible = true;
         }
 
@@ -39,19 +27,19 @@ namespace TGC.MonoGame.TP
         private SpriteBatch SpriteBatch { get; set; }
         private Effect Effect { get; set; }
 
+        // Modelos
         private Model Piso { get; set; }
-        private Model Paredes { get; set; }
-        private Model AutoDeportivo { get; set; }
-        private Model AutoDeCombate { get; set; }
-        private Model ArbolSinHojas { get; set; }
-        private Model Rock9 { get; set; }
-        private Model Rock2 { get; set; }
-        private Model Grass { get; set; }
+        private Model Pared { get; set; }
         private Model Column { get; set; }
         private Model Ramp { get; set; }
         private Model Platform { get; set; }
         private Model Cube { get; set; }
+        private Model AutoDeportivo { get; set; }
+        private Model AutoDeCombate { get; set; }
+        private Model Tree { get; set; }
+        private Model Rock1 { get; set; }
 
+        // Matrices de Mundo
         private Matrix View { get; set; }
         private Matrix Projection { get; set; }
 
@@ -67,7 +55,6 @@ namespace TGC.MonoGame.TP
         private Matrix AutoCombate1World { get; set; }
         private Matrix AutoCombate2World { get; set; }
         private Matrix AutoCombate3World { get; set; }
-        private Matrix AutoComun1 { get; set; }
 
         private Matrix Platform1World { get; set; }
         private Matrix Platform2World { get; set; }
@@ -89,20 +76,34 @@ namespace TGC.MonoGame.TP
         private Matrix Ramp3World { get; set; }
         private Matrix Ramp4World { get; set; }
 
-        private Matrix Tree1 { get; set; }
+        private Matrix Tree1World { get; set; }
+        private Matrix Tree2World { get; set; }
+        private Matrix Tree3World { get; set; }
+        private Matrix Tree4World { get; set; }
+        private Matrix Tree5World { get; set; }
+        private Matrix Tree6World { get; set; }
+        private Matrix Tree7World { get; set; }
+        private Matrix Tree8World { get; set; }
+        private Matrix Tree9World { get; set; }
+        private Matrix Tree10World { get; set; }
+        private Matrix Tree11World { get; set; }
+        private Matrix Tree12World { get; set; }
 
-        private Matrix Cube1 { get; set; }
-
+        private Matrix Rock1World { get; set; }
+        private Matrix Rock2World { get; set; }
+        private Matrix Rock3World { get; set; }
+        private Matrix Rock4World { get; set; }
+        private Matrix Rock5World { get; set; }
+        private Matrix Rock6World { get; set; }
+        private Matrix Rock7World { get; set; }
+        private Matrix Rock8World { get; set; }
 
         private float mediaVuelta = MathF.PI;
-        private float cuartoDeVuelta = MathF.PI/2;
-
-
-        //radio de la arena= = 500 unidades aprox.
+        private float cuartoDeVuelta = MathF.PI / 2;
 
         protected override void Initialize()
         {
-           //Dimensiones de la pantalla
+            // Dimensiones de la pantalla
             Graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width - 100;
             Graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height - 100;
             Graphics.ApplyChanges();
@@ -111,14 +112,13 @@ namespace TGC.MonoGame.TP
             rasterizerState.CullMode = CullMode.None;
             GraphicsDevice.RasterizerState = rasterizerState;
 
-            inicializarArena();
-            inicializarAutos();
+            inicializarEscenario();
             inicializarPlataformas();
-            
+            inicializarAutos();
+            inicializarDetalles();
 
-            View = Matrix.CreateLookAt(new Vector3(400, 400, 200), Vector3.Zero, Vector3.Up);
-            Projection =
-                Matrix.CreatePerspectiveFieldOfView(MathHelper.PiOver4, GraphicsDevice.Viewport.AspectRatio, 1, 1500);
+            View = Matrix.CreateLookAt(new Vector3(400, 1000, 200), Vector3.Zero, Vector3.Up);
+            Projection = Matrix.CreatePerspectiveFieldOfView(MathHelper.PiOver4, GraphicsDevice.Viewport.AspectRatio, 1, 1500);
 
             base.Initialize();
         }
@@ -126,19 +126,19 @@ namespace TGC.MonoGame.TP
         protected override void LoadContent()
         {
             SpriteBatch = new SpriteBatch(GraphicsDevice);
-            Piso = Content.Load<Model>(ContentFolder3D + "arena/plano");
-            Paredes = Content.Load<Model>(ContentFolder3D + "arena/arena");
-            AutoDeportivo = Content.Load<Model>(ContentFolder3D + "Derby/RacingCarA/RacingCar");
+
+            Piso = Content.Load<Model>(ContentFolder3D + "Arena/Plano");
+            Pared = Content.Load<Model>(ContentFolder3D + "Arena/Arena");
+
+            Column = Content.Load<Model>(ContentFolder3D + "Platforms/Column/Column");
+            Ramp = Content.Load<Model>(ContentFolder3D + "Platforms/Ramps/Ramp");
+            Platform = Content.Load<Model>(ContentFolder3D + "Platforms/Cubo/Cube");
+
+            AutoDeportivo = Content.Load<Model>(ContentFolder3D + "Derby/RacingCar/RacingCar");
             AutoDeCombate = Content.Load<Model>(ContentFolder3D + "Derby/CombatVehicle/Vehicle");
-            ArbolSinHojas = Content.Load<Model>(ContentFolder3D + "arboles/arbolSinHojas/tree_winter");
-            Rock9 = Content.Load<Model>(ContentFolder3D + "Rocks/Rock9");
-            Rock2 = Content.Load<Model>(ContentFolder3D + "Rocks/Rock2");
-            Column = Content.Load<Model>(ContentFolder3D + "column/column");
-            Grass = Content.Load<Model>(ContentFolder3D + "grass/Low Grass");
-            Ramp = Content.Load<Model>(ContentFolder3D + "ramps/ramp");
-            Platform = Content.Load<Model>(ContentFolder3D + "cubo/cube");
 
-
+            Tree = Content.Load<Model>(ContentFolder3D + "Decoration/ArbolSinHojas/TreeWinter");
+            Rock1 = Content.Load<Model>(ContentFolder3D + "Decoration/Rocks/Rock1");
 
             Effect = Content.Load<Effect>(ContentFolderEffects + "BasicShader");
 
@@ -157,13 +157,11 @@ namespace TGC.MonoGame.TP
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.Black);
-
             dibujarEscenario();
-            dibujarAutos();
             dibujarPlataformas();
+            dibujarAutos();
             dibujarDetalles();
         }
-
 
         protected override void UnloadContent()
         {
@@ -171,6 +169,7 @@ namespace TGC.MonoGame.TP
             base.UnloadContent();
         }
 
+        // Funciones Auxiliares
         public void dibujar(Matrix matrizMundo, Model modelo, Color color)
         {
             foreach (var mesh in modelo.Meshes)
@@ -187,53 +186,49 @@ namespace TGC.MonoGame.TP
 
             foreach (var mesh in modelo.Meshes)
             {
-
                 Effect.Parameters["World"].SetValue(matrizMundo);
                 mesh.Draw();
             }
-
         }
 
-        public void inicializarArena()
+        public void inicializarEscenario()
         {
-            PisoWorld = Matrix.CreateScale(10);
-            ParedWorld = Matrix.CreateScale(25,50,25);
+            PisoWorld = Matrix.CreateScale(30, 0, 30);
+            ParedWorld = Matrix.CreateScale(30, 50, 30);
         }
         public void dibujarEscenario()
         {
             dibujar(PisoWorld, Piso, Color.LightGoldenrodYellow);
-            dibujar(ParedWorld, Paredes, Color.Wheat);
+            dibujar(ParedWorld, Pared, Color.Wheat);
         }
 
         public void inicializarPlataformas()
         {
             Column1World = Matrix.CreateScale(0.35f) * Matrix.CreateRotationX(-cuartoDeVuelta) * Matrix.CreateTranslation(0, 0, -450);
             Column2World = Matrix.CreateScale(0.35f) * Matrix.CreateRotationX(-cuartoDeVuelta) * Matrix.CreateTranslation(0, 0, -350);
-            Column3World = Matrix.CreateScale(0.35f) * Matrix.CreateRotationX(-cuartoDeVuelta) * Matrix.CreateTranslation(140 , 0, -450);
+            Column3World = Matrix.CreateScale(0.35f) * Matrix.CreateRotationX(-cuartoDeVuelta) * Matrix.CreateTranslation(140, 0, -450);
             Column4World = Matrix.CreateScale(0.35f) * Matrix.CreateRotationX(-cuartoDeVuelta) * Matrix.CreateTranslation(140, 0, -350);
 
-            Ramp1World = Matrix.CreateScale(0.45f,0.35f,0.65f) * Matrix.CreateRotationX(-cuartoDeVuelta) * Matrix.CreateTranslation(-80,0,-390);
+            Ramp1World = Matrix.CreateScale(0.45f, 0.35f, 0.65f) * Matrix.CreateRotationX(-cuartoDeVuelta) * Matrix.CreateTranslation(-80, 0, -390);
             Ramp2World = Matrix.CreateScale(0.45f, 0.35f, 0.65f) * Matrix.CreateRotationX(-cuartoDeVuelta) * Matrix.CreateRotationY(mediaVuelta) * Matrix.CreateTranslation(230, 0, -400);
 
-            Platform1World = Matrix.CreateScale(100,5,80) * Matrix.CreateTranslation(70,64,-390);
+            Platform1World = Matrix.CreateScale(100, 5, 80) * Matrix.CreateTranslation(70, 64, -390);
 
             Column5World = Matrix.CreateScale(0.35f, 0.35f, 0.15f) * Matrix.CreateRotationX(-cuartoDeVuelta) * Matrix.CreateTranslation(-170, 0, 50);
             Column6World = Matrix.CreateScale(0.35f, 0.35f, 0.15f) * Matrix.CreateRotationX(-cuartoDeVuelta) * Matrix.CreateTranslation(-330, 0, 50);
             Column7World = Matrix.CreateScale(0.35f, 0.35f, 0.5f) * Matrix.CreateRotationX(-cuartoDeVuelta) * Matrix.CreateTranslation(-170, 0, 175);
             Column8World = Matrix.CreateScale(0.35f, 0.35f, 0.5f) * Matrix.CreateRotationX(-cuartoDeVuelta) * Matrix.CreateTranslation(-330, 0, 175);
 
-            Platform2World = Matrix.CreateScale(100,5, 80) * Matrix.CreateTranslation(-250, 30, 100);
+            Platform2World = Matrix.CreateScale(100, 5, 80) * Matrix.CreateTranslation(-250, 30, 100);
 
             Column9World = Matrix.CreateScale(0.35f, 0.35f, 0.5f) * Matrix.CreateRotationX(-cuartoDeVuelta) * Matrix.CreateTranslation(-170, 0, 290);
             Column10World = Matrix.CreateScale(0.35f, 0.35f, 0.5f) * Matrix.CreateRotationX(-cuartoDeVuelta) * Matrix.CreateTranslation(-330, 0, 290);
 
-            Ramp3World = Matrix.CreateScale(0.25f, 0.35f, 0.3f) * Matrix.CreateRotationX(-cuartoDeVuelta) * Matrix.CreateRotationY(-cuartoDeVuelta) * Matrix.CreateTranslation(-250,0,-10);
+            Ramp3World = Matrix.CreateScale(0.25f, 0.35f, 0.3f) * Matrix.CreateRotationX(-cuartoDeVuelta) * Matrix.CreateRotationY(-cuartoDeVuelta) * Matrix.CreateTranslation(-250, 0, -10);
             Ramp4World = Matrix.CreateScale(0.4f, 0.15f, 0.6f) * Matrix.CreateRotationX(-cuartoDeVuelta) * Matrix.CreateRotationY(-cuartoDeVuelta) * Matrix.CreateTranslation(-300, 35, 130);
 
             Platform3World = Matrix.CreateScale(100, 5, 70) * Matrix.CreateTranslation(-250, 93, 235);
-
-
-        }       
+        }
         public void dibujarPlataformas()
         {
             dibujar(Column1World, Column, Color.SandyBrown);
@@ -241,7 +236,7 @@ namespace TGC.MonoGame.TP
             dibujar(Column3World, Column, Color.SandyBrown);
             dibujar(Column4World, Column, Color.SandyBrown);
 
-            dibujar(Ramp1World,Ramp,Color.Gray);
+            dibujar(Ramp1World, Ramp, Color.Gray);
             dibujar(Ramp2World, Ramp, Color.Gray);
 
             dibujar(Platform1World, Platform, Color.DarkSalmon);
@@ -262,25 +257,9 @@ namespace TGC.MonoGame.TP
             dibujar(Platform3World, Platform, Color.DarkSalmon);
         }
 
-        //revisar por qué no se visaulizan
-        public void inicializarDetalles()
-        {
-            Tree1 = Matrix.CreateScale(5) * Matrix.CreateRotationY(mediaVuelta) * Matrix.CreateTranslation(-40, 0, 50);
-
-            Cube1 = Matrix.CreateScale(100) * Matrix.CreateRotationX(mediaVuelta) * Matrix.CreateTranslation(0, 0, 0);
-
-        }
-        public void dibujarDetalles()
-        {
-            dibujar(Tree1, ArbolSinHojas, Color.Black);
-
-
-            dibujar(Cube1, Platform, Color.SandyBrown);
-        }
-
         public void inicializarAutos()
         {
-            AutoPrincipalWorld = Matrix.CreateScale(5);
+            AutoPrincipalWorld = Matrix.CreateScale(5) * Matrix.CreateTranslation(0, 0, 0);
 
             Auto1World = Matrix.CreateScale(5) * Matrix.CreateRotationY(mediaVuelta) * Matrix.CreateTranslation(0, 0, 50);
             Auto2World = Matrix.CreateScale(5) * Matrix.CreateRotationY(mediaVuelta) * Matrix.CreateTranslation(20, 0, 50);
@@ -291,12 +270,11 @@ namespace TGC.MonoGame.TP
             AutoCombate1World = Matrix.CreateScale(0.35f) * Matrix.CreateRotationY(cuartoDeVuelta) * Matrix.CreateTranslation(0, 0, 100);
             AutoCombate2World = Matrix.CreateScale(0.35f) * Matrix.CreateRotationY(cuartoDeVuelta) * Matrix.CreateTranslation(35, 0, 100);
             AutoCombate3World = Matrix.CreateScale(0.35f) * Matrix.CreateRotationY(cuartoDeVuelta) * Matrix.CreateTranslation(-35, 0, 100);
-
-            AutoComun1 = Matrix.CreateScale(0.35f) * Matrix.CreateRotationY(cuartoDeVuelta) * Matrix.CreateTranslation(-40, 0, 100);
         }
         public void dibujarAutos()
         {
             dibujar(AutoPrincipalWorld, AutoDeportivo, Color.DarkRed);
+
             dibujar(Auto1World, AutoDeportivo, Color.Black);
             dibujar(Auto2World, AutoDeportivo, Color.Black);
             dibujar(Auto3World, AutoDeportivo, Color.Black);
@@ -308,5 +286,59 @@ namespace TGC.MonoGame.TP
             dibujar(AutoCombate3World, AutoDeCombate, Color.DarkGray);
         }
 
+        public void inicializarDetalles()
+        {
+            Tree1World = Matrix.CreateScale(0.5f) * Matrix.CreateTranslation(25, 0, 350);
+            Tree2World = Matrix.CreateScale(0.5f) * Matrix.CreateTranslation(-25, 0, 350);
+            Tree3World = Matrix.CreateScale(0.5f) * Matrix.CreateTranslation(0, 0, 300);
+            Tree4World = Matrix.CreateScale(0.5f) * Matrix.CreateTranslation(0, 0, 375);
+
+            Tree5World = Matrix.CreateScale(0.5f) * Matrix.CreateTranslation(325, 0, -250);
+            Tree6World = Matrix.CreateScale(0.5f) * Matrix.CreateTranslation(275, 0, -250);
+            Tree7World = Matrix.CreateScale(0.5f) * Matrix.CreateTranslation(300, 0, -200);
+            Tree8World = Matrix.CreateScale(0.5f) * Matrix.CreateTranslation(300, 0, -275);
+
+            Tree9World = Matrix.CreateScale(0.5f) * Matrix.CreateTranslation(-325, 0, -250);
+            Tree10World = Matrix.CreateScale(0.5f) * Matrix.CreateTranslation(-275, 0, -250);
+            Tree11World = Matrix.CreateScale(0.5f) * Matrix.CreateTranslation(-300, 0, -200);
+            Tree12World = Matrix.CreateScale(0.5f) * Matrix.CreateTranslation(-300, 0, -275);
+
+            Rock1World = Matrix.CreateScale(0.05f) * Matrix.CreateRotationY(cuartoDeVuelta) * Matrix.CreateTranslation(0, 0, -250);
+            Rock2World = Matrix.CreateScale(0.05f) * Matrix.CreateRotationY(cuartoDeVuelta) * Matrix.CreateTranslation(25, 0, -250);
+            Rock3World = Matrix.CreateScale(0.05f) * Matrix.CreateRotationY(cuartoDeVuelta) * Matrix.CreateTranslation(50, 0, -250);
+            Rock4World = Matrix.CreateScale(0.05f) * Matrix.CreateRotationY(cuartoDeVuelta) * Matrix.CreateTranslation(75, 0, -250);
+
+            Rock5World = Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(350, 0, 100);
+            Rock6World = Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(350, 0, 125);
+            Rock7World = Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(350, 0, 150);
+            Rock8World = Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(350, 0, 175);
+        }
+        public void dibujarDetalles()
+        {
+            dibujar(Tree1World, Tree, Color.Black);
+            dibujar(Tree2World, Tree, Color.Black);
+            dibujar(Tree3World, Tree, Color.Black);
+            dibujar(Tree4World, Tree, Color.Black);
+
+            dibujar(Tree5World, Tree, Color.Black);
+            dibujar(Tree6World, Tree, Color.Black);
+            dibujar(Tree7World, Tree, Color.Black);
+            dibujar(Tree8World, Tree, Color.Black);
+
+            dibujar(Tree9World, Tree, Color.Black);
+            dibujar(Tree10World, Tree, Color.Black);
+            dibujar(Tree11World, Tree, Color.Black);
+            dibujar(Tree12World, Tree, Color.Black);
+
+            dibujar(Rock1World, Rock1, Color.Gray);
+            dibujar(Rock2World, Rock1, Color.Gray);
+            dibujar(Rock3World, Rock1, Color.Gray);
+            dibujar(Rock4World, Rock1, Color.Gray);
+
+            dibujar(Rock5World, Rock1, Color.Gray);
+            dibujar(Rock6World, Rock1, Color.Gray);
+            dibujar(Rock7World, Rock1, Color.Gray);
+            dibujar(Rock8World, Rock1, Color.Gray);
+        }
     }
 }
