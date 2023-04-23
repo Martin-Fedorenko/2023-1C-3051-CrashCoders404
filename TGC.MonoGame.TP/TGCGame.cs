@@ -59,6 +59,8 @@ namespace TGC.MonoGame.TP
         private Matrix Platform1World { get; set; }
         private Matrix Platform2World { get; set; }
         private Matrix Platform3World { get; set; }
+        private Matrix Platform4World { get; set; }
+        private Matrix Platform5World { get; set; }
 
         private Matrix Column1World { get; set; }
         private Matrix Column2World { get; set; }
@@ -70,11 +72,23 @@ namespace TGC.MonoGame.TP
         private Matrix Column8World { get; set; }
         private Matrix Column9World { get; set; }
         private Matrix Column10World { get; set; }
+        private Matrix Column11World { get; set; }
+        private Matrix Column12World { get; set; }
+        private Matrix BrokenColumn1World { get; set; }
+        private Matrix BrokenColumn2World { get; set; }
 
         private Matrix Ramp1World { get; set; }
         private Matrix Ramp2World { get; set; }
         private Matrix Ramp3World { get; set; }
         private Matrix Ramp4World { get; set; }
+        private Matrix Ramp5World { get; set; }
+        private Matrix Ramp6World { get; set; }
+        private Matrix Ramp7World { get; set; }
+        private Matrix Ramp8World { get; set; }
+        private Matrix Ramp9World { get; set; }
+        private Matrix Ramp10World { get; set; }
+        private Matrix Ramp11World { get; set; }
+        private Matrix Ramp12World { get; set; }
 
         private Matrix Tree1World { get; set; }
         private Matrix Tree2World { get; set; }
@@ -117,7 +131,7 @@ namespace TGC.MonoGame.TP
             inicializarAutos();
             inicializarDetalles();
 
-            View = Matrix.CreateLookAt(new Vector3(400, 1000, 200), Vector3.Zero, Vector3.Up);
+            View = Matrix.CreateLookAt(new Vector3(-550, 1000, -200), Vector3.Zero, Vector3.Up);
             Projection = Matrix.CreatePerspectiveFieldOfView(MathHelper.PiOver4, GraphicsDevice.Viewport.AspectRatio, 1, 1500);
 
             base.Initialize();
@@ -228,6 +242,20 @@ namespace TGC.MonoGame.TP
             Ramp4World = Matrix.CreateScale(0.4f, 0.15f, 0.6f) * Matrix.CreateRotationX(-cuartoDeVuelta) * Matrix.CreateRotationY(-cuartoDeVuelta) * Matrix.CreateTranslation(-300, 35, 130);
 
             Platform3World = Matrix.CreateScale(100, 5, 70) * Matrix.CreateTranslation(-250, 93, 235);
+
+            Ramp5World = Matrix.CreateScale(0.1f, 0.52f, 0.1f) * Matrix.CreateRotationX(-cuartoDeVuelta) * Matrix.CreateRotationY(-cuartoDeVuelta) * Matrix.CreateTranslation(185, 0, 243);
+            Ramp6World = Matrix.CreateScale(0.1f, 0.52f, 0.1f) * Matrix.CreateRotationX(-cuartoDeVuelta) * Matrix.CreateRotationY(cuartoDeVuelta) * Matrix.CreateTranslation(235, 0, 359);
+            Ramp7World = Matrix.CreateScale(0.1f, 0.52f, 0.1f) * Matrix.CreateRotationX(-cuartoDeVuelta) * Matrix.CreateTranslation(155, 0, 325);
+            Ramp8World = Matrix.CreateScale(0.1f, 0.52f, 0.1f) * Matrix.CreateRotationX(-cuartoDeVuelta) * Matrix.CreateRotationY(mediaVuelta) * Matrix.CreateTranslation(265, 0, 274);
+
+            Platform4World = Matrix.CreateScale(50, 10, 50) * Matrix.CreateTranslation(210, 0, 300);
+
+            Ramp9World = Matrix.CreateScale(0.1f, 0.52f, 0.1f) * Matrix.CreateRotationX(-cuartoDeVuelta) * Matrix.CreateRotationY(-cuartoDeVuelta) * Matrix.CreateTranslation(-461, 0, -254);
+            Ramp10World = Matrix.CreateScale(0.1f, 0.52f, 0.1f) * Matrix.CreateRotationX(-cuartoDeVuelta) * Matrix.CreateRotationY(cuartoDeVuelta) * Matrix.CreateTranslation(-410, 0, -136);
+            Ramp11World = Matrix.CreateScale(0.1f, 0.52f, 0.1f) * Matrix.CreateRotationX(-cuartoDeVuelta) * Matrix.CreateTranslation(-495, 0, -169);
+            Ramp12World = Matrix.CreateScale(0.1f, 0.52f, 0.1f) * Matrix.CreateRotationX(-cuartoDeVuelta) * Matrix.CreateRotationY(mediaVuelta) * Matrix.CreateTranslation(-376, 0, -221);
+
+            Platform5World = Matrix.CreateScale(50, 10, 50) * Matrix.CreateTranslation(-435, 0, -195);
         }
         public void dibujarPlataformas()
         {
@@ -255,6 +283,20 @@ namespace TGC.MonoGame.TP
             dibujar(Ramp4World, Ramp, Color.Gray);
 
             dibujar(Platform3World, Platform, Color.DarkSalmon);
+
+            dibujar(Ramp5World, Ramp, Color.DarkGray);
+            dibujar(Ramp6World, Ramp, Color.DarkGray);
+            dibujar(Ramp7World, Ramp, Color.DarkGray);
+            dibujar(Ramp8World, Ramp, Color.DarkGray);
+
+            dibujar(Platform4World, Platform, Color.DarkGray);
+
+            dibujar(Ramp9World, Ramp, Color.DarkGray);
+            dibujar(Ramp10World, Ramp, Color.DarkGray);
+            dibujar(Ramp11World, Ramp, Color.DarkGray);
+            dibujar(Ramp12World, Ramp, Color.DarkGray);
+
+            dibujar(Platform5World, Platform, Color.DarkGray);
         }
 
         public void inicializarAutos()
@@ -312,6 +354,12 @@ namespace TGC.MonoGame.TP
             Rock6World = Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(350, 0, 125);
             Rock7World = Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(350, 0, 150);
             Rock8World = Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(350, 0, 175);
+
+            BrokenColumn1World = Matrix.CreateScale(0.6f) * Matrix.CreateRotationY(-MathF.PI/6) * Matrix.CreateTranslation(450,0,250);
+            BrokenColumn2World = Matrix.CreateScale(0.7f) * Matrix.CreateRotationY(MathF.PI/6) * Matrix.CreateTranslation(-230, 0, -290);
+
+            Column11World = Matrix.CreateScale(0.6f) * Matrix.CreateRotationX(-cuartoDeVuelta) * Matrix.CreateTranslation(-500,0,0);
+            Column12World = Matrix.CreateScale(0.6f) * Matrix.CreateRotationX(-cuartoDeVuelta) * Matrix.CreateTranslation(436, 0, -80);
         }
         public void dibujarDetalles()
         {
@@ -339,6 +387,12 @@ namespace TGC.MonoGame.TP
             dibujar(Rock6World, Rock1, Color.Gray);
             dibujar(Rock7World, Rock1, Color.Gray);
             dibujar(Rock8World, Rock1, Color.Gray);
+
+            dibujar(BrokenColumn1World, Column, Color.SandyBrown);
+            dibujar(BrokenColumn2World, Column, Color.SandyBrown);
+
+            dibujar(Column11World, Column, Color.SandyBrown);
+            dibujar(Column12World, Column, Color.SandyBrown);
         }
     }
 }
