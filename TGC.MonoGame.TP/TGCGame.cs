@@ -38,6 +38,9 @@ namespace TGC.MonoGame.TP
         private Model AutoDeCombate { get; set; }
         private Model Tree { get; set; }
         private Model Rock1 { get; set; }
+        private Model Rock5 { get; set; }
+        private Model Rock10 { get; set; }
+
 
         // Matrices de Mundo
         private Matrix View { get; set; }
@@ -111,6 +114,30 @@ namespace TGC.MonoGame.TP
         private Matrix Rock6World { get; set; }
         private Matrix Rock7World { get; set; }
         private Matrix Rock8World { get; set; }
+        private Matrix Rock9World { get; set; }
+        private Matrix Rock10World { get; set; }
+        private Matrix Rock11World { get; set; }
+        private Matrix Rock12World { get; set; }
+        private Matrix Rock13World { get; set; }
+        private Matrix Rock14World { get; set; }
+        private Matrix Rock15World { get; set; }
+        private Matrix Rock16World { get; set; }
+        private Matrix Rock17World { get; set; }
+        private Matrix Rock18World { get; set; }
+        private Matrix Rock19World { get; set; }
+        private Matrix Rock20World { get; set; }
+        private Matrix Rock21World { get; set; }
+        private Matrix Rock22World { get; set; }
+        private Matrix Rock23World { get; set; }
+        private Matrix Rock24World { get; set; }
+        private Matrix Rock25World { get; set; }
+        private Matrix Rock26World { get; set; }
+        private Matrix Rock27World { get; set; }
+        private Matrix Rock28World { get; set; }
+        private Matrix Rock29World { get; set; }
+        private Matrix Rock30World { get; set; }
+        private Matrix Rock31World { get; set; }
+        private Matrix Rock32World { get; set; }
 
         private float mediaVuelta = MathF.PI;
         private float cuartoDeVuelta = MathF.PI / 2;
@@ -153,6 +180,8 @@ namespace TGC.MonoGame.TP
 
             Tree = Content.Load<Model>(ContentFolder3D + "Decoration/ArbolSinHojas/TreeWinter");
             Rock1 = Content.Load<Model>(ContentFolder3D + "Decoration/Rocks/Rock1");
+            Rock5 = Content.Load<Model>(ContentFolder3D + "Decoration/Rocks/Rock5");
+            Rock10 = Content.Load<Model>(ContentFolder3D + "Decoration/Rocks/Rock10");
 
             Effect = Content.Load<Effect>(ContentFolderEffects + "BasicShader");
 
@@ -355,6 +384,33 @@ namespace TGC.MonoGame.TP
             Rock7World = Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(350, 0, 150);
             Rock8World = Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(350, 0, 175);
 
+            Rock9World = Matrix.CreateScale(0.1f) * Matrix.CreateRotationY(MathF.PI/8) * Matrix.CreateTranslation(15, 0, 350);
+            Rock10World = Matrix.CreateScale(0.1f) * Matrix.CreateRotationY(MathF.PI/8) * Matrix.CreateTranslation(-15, 0, 375);
+            Rock11World = Matrix.CreateScale(0.1f) * Matrix.CreateRotationY(MathF.PI/8) * Matrix.CreateTranslation(15, 0, 400);
+            Rock12World = Matrix.CreateScale(0.1f) * Matrix.CreateRotationY(MathF.PI/8) * Matrix.CreateTranslation(-15, 0, 425);
+
+            Rock13World = Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(-450, 0, 350);
+            Rock14World = Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(-460, 0, 375);
+            Rock15World = Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(-450, 0, 400);
+            Rock16World = Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(-460, 0, 425);
+            Rock17World = Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(-480, 0, 350);
+            Rock18World = Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(-490, 0, 375);
+            Rock19World = Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(-480, 0, 400);
+            Rock20World = Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(-490, 0, 425);
+            Rock21World = Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(-510, 0, 350);
+            Rock22World = Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(-520, 0, 375);
+            Rock23World = Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(-510, 0, 400);
+            Rock24World = Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(-520, 0, 425);
+
+            Rock25World = Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(-225, 0, 625);
+            Rock26World = Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(-255, 0, 650);
+            Rock27World = Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(-225, 0, 675);
+            Rock28World = Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(-255, 0, 700);
+            Rock29World = Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(-285, 0, 625);
+            Rock30World = Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(-315, 0, 650);
+            Rock31World = Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(-285, 0, 675);
+            Rock32World = Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(-315, 0, 700);
+
             BrokenColumn1World = Matrix.CreateScale(0.6f) * Matrix.CreateRotationY(-MathF.PI/6) * Matrix.CreateTranslation(450,0,250);
             BrokenColumn2World = Matrix.CreateScale(0.7f) * Matrix.CreateRotationY(MathF.PI/6) * Matrix.CreateTranslation(-230, 0, -290);
 
@@ -387,6 +443,33 @@ namespace TGC.MonoGame.TP
             dibujar(Rock6World, Rock1, Color.Gray);
             dibujar(Rock7World, Rock1, Color.Gray);
             dibujar(Rock8World, Rock1, Color.Gray);
+
+            dibujar(Rock9World, Rock5, Color.Gray);
+            dibujar(Rock10World, Rock5, Color.Gray);
+            dibujar(Rock11World, Rock5, Color.Gray);
+            dibujar(Rock12World, Rock5, Color.Gray);
+
+            dibujar(Rock13World, Rock5, Color.Gray);
+            dibujar(Rock14World, Rock10, Color.Gray);
+            dibujar(Rock15World, Rock10, Color.Gray);
+            dibujar(Rock16World, Rock5, Color.Gray);
+            dibujar(Rock17World, Rock5, Color.Gray);
+            dibujar(Rock18World, Rock10, Color.Gray);
+            dibujar(Rock19World, Rock10, Color.Gray);
+            dibujar(Rock20World, Rock5, Color.Gray);
+            dibujar(Rock21World, Rock5, Color.Gray);
+            dibujar(Rock22World, Rock10, Color.Gray);
+            dibujar(Rock23World, Rock10, Color.Gray);
+            dibujar(Rock24World, Rock5, Color.Gray);
+
+            dibujar(Rock25World, Rock5, Color.Gray);
+            dibujar(Rock26World, Rock5, Color.Gray);
+            dibujar(Rock27World, Rock5, Color.Gray);
+            dibujar(Rock28World, Rock5, Color.Gray);
+            dibujar(Rock29World, Rock5, Color.Gray);
+            dibujar(Rock30World, Rock5, Color.Gray);
+            dibujar(Rock31World, Rock5, Color.Gray);
+            dibujar(Rock32World, Rock5, Color.Gray);
 
             dibujar(BrokenColumn1World, Column, Color.SandyBrown);
             dibujar(BrokenColumn2World, Column, Color.SandyBrown);
