@@ -194,6 +194,12 @@ namespace TGC.MonoGame.TP
         private float mediaVuelta = MathF.PI;
         private float cuartoDeVuelta = MathF.PI / 2;
 
+        private Vector3 posicionCamara = new Vector3(400, 300, 200);
+
+        private Vector3 posicionTarget = new Vector3(0,0,0);
+
+        private bool changed;
+
         protected override void Initialize()
         {
             // Dimensiones de la pantalla
@@ -210,10 +216,13 @@ namespace TGC.MonoGame.TP
             inicializarAutos();
             inicializarDetalles();
 
-            //Vector3(400, 1000, 200)
-            View = Matrix.CreateLookAt(new Vector3(400, 1000, 200), Vector3.Zero, Vector3.Up);
 
-            Projection = Matrix.CreatePerspectiveFieldOfView(MathHelper.PiOver4, GraphicsDevice.Viewport.AspectRatio, 1, 1500);
+            
+            //Projection = Matrix.CreatePerspectiveFieldOfView(MathHelper.PiOver4, GraphicsDevice.Viewport.AspectRatio, 1, 1500);
+
+            //camara con vista isometrica
+            View = Matrix.CreateLookAt(posicionCamara, posicionTarget, Vector3.Up);
+            Projection = Matrix.CreateOrthographic(250, 190, -100, 700);
 
             base.Initialize();
         }
@@ -243,10 +252,53 @@ namespace TGC.MonoGame.TP
 
         protected override void Update(GameTime gameTime)
         {
+            var elapsedTime = (float) gameTime.ElapsedGameTime.TotalSeconds;
+
             if (Keyboard.GetState().IsKeyDown(Keys.Escape))
             {
                 Exit();
             }
+
+            var keyboardState = Keyboard.GetState();
+            
+            var currentMovementSpeed = 100f;
+            
+
+            if (keyboardState.IsKeyDown(Keys.W) || keyboardState.IsKeyDown(Keys.Up))
+            {
+                posicionCamara += -Vector3.Right * currentMovementSpeed * elapsedTime;
+                posicionTarget += -Vector3.Right * currentMovementSpeed * elapsedTime;
+                changed = true;
+            }
+
+            if (keyboardState.IsKeyDown(Keys.S) || keyboardState.IsKeyDown(Keys.Down))
+            {
+                posicionCamara += Vector3.Right * currentMovementSpeed * elapsedTime;
+                posicionTarget += Vector3.Right * currentMovementSpeed * elapsedTime;
+                changed = true;
+            }
+
+            if (keyboardState.IsKeyDown(Keys.D) || keyboardState.IsKeyDown(Keys.Right))
+            {
+                posicionCamara += Vector3.Forward * currentMovementSpeed * elapsedTime;
+                posicionTarget += Vector3.Forward * currentMovementSpeed * elapsedTime;
+                changed = true;
+            }
+
+            if (keyboardState.IsKeyDown(Keys.A) || keyboardState.IsKeyDown(Keys.Left))
+            {
+                posicionCamara += -Vector3.Forward * currentMovementSpeed * elapsedTime;
+                posicionTarget += -Vector3.Forward * currentMovementSpeed * elapsedTime;
+                changed = true;
+            }
+
+            if (changed){
+                View = Matrix.CreateLookAt(posicionCamara, posicionTarget, Vector3.Up);
+            }
+
+
+
+
             base.Update(gameTime);
         }
 
