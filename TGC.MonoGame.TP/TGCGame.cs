@@ -40,6 +40,7 @@ namespace TGC.MonoGame.TP
         private Model Rock1 { get; set; }
         private Model Rock5 { get; set; }
         private Model Rock10 { get; set; }
+        private Model Tire { get; set; }
 
 
         // Matrices de Mundo
@@ -139,8 +140,93 @@ namespace TGC.MonoGame.TP
         private Matrix Rock31World { get; set; }
         private Matrix Rock32World { get; set; }
 
+        
+        //Tire del lado mas cerca del origen de la rampa rampa1World
+        private Matrix Tire1world { get; set; }
+
+        private Matrix Tire2world { get; set; }
+        private Matrix Tire2world1 { get; set; }
+
+        private Matrix Tire3world { get; set; }
+        private Matrix Tire3world1 { get; set; }
+        private Matrix Tire3world2 { get; set; }
+
+        private Matrix Tire4world { get; set; }
+        private Matrix Tire4world1 { get; set; }
+        private Matrix Tire4world2 { get; set; }
+        private Matrix Tire4world3 { get; set; }
+
+        //Tire del lado mas lejos del origen de la rampa rampa1World
+        private Matrix Tire5world { get; set; }
+
+        private Matrix Tire6world { get; set; }
+        private Matrix Tire6world1 { get; set; }
+
+        private Matrix Tire7world { get; set; }
+        private Matrix Tire7world1 { get; set; }
+        private Matrix Tire7world2 { get; set; }
+        private Matrix Tire8world { get; set; }
+        private Matrix Tire8world1 { get; set; }
+        private Matrix Tire8world2 { get; set; }
+        private Matrix Tire8world3 { get; set; }        
+        //Tire del lado mas lejos del origen de la rampa rampa2World
+        private Matrix Tire9world { get; set; }
+
+        private Matrix Tire10world { get; set; }
+        private Matrix Tire10world1 { get; set; }
+
+        private Matrix Tire11world { get; set; }
+        private Matrix Tire11world1 { get; set; }
+        private Matrix Tire11world2 { get; set; }
+
+        private Matrix Tire12world { get; set; }
+        private Matrix Tire12world1 { get; set; }
+        private Matrix Tire12world2 { get; set; }
+        private Matrix Tire12world3 { get; set; }       
+
+        //Tire del lado mas cerca del origen de la rampa rampa2World
+        private Matrix Tire13world { get; set; }
+
+        private Matrix Tire14world { get; set; }
+        private Matrix Tire14world1 { get; set; }
+
+        private Matrix Tire15world { get; set; }
+        private Matrix Tire15world1 { get; set; }
+        private Matrix Tire15world2 { get; set; }
+
+        private Matrix Tire16world { get; set; }
+        private Matrix Tire16world1 { get; set; }
+        private Matrix Tire16world2 { get; set; }
+        private Matrix Tire16world3 { get; set; }
+
+        //Tire del lado mas cerca del lejos de la rampa rampa3World
+        private Matrix Tire17world { get; set; }
+
+        private Matrix Tire18world { get; set; }
+        private Matrix Tire18world1 { get; set; }
+
+        private Matrix Tire19world { get; set; }
+        private Matrix Tire19world1 { get; set; }
+        private Matrix Tire19world2 { get; set; }
+
+        //Tire del lado mas cerca del lejos de la rampa rampa3World
+        private Matrix Tire20world { get; set; }
+
+        private Matrix Tire21world { get; set; }
+        private Matrix Tire21world1 { get; set; }
+
+        private Matrix Tire22world { get; set; }
+        private Matrix Tire22world1 { get; set; }
+        private Matrix Tire22world2 { get; set; }
+
         private float mediaVuelta = MathF.PI;
         private float cuartoDeVuelta = MathF.PI / 2;
+
+        private Vector3 posicionCamara = new Vector3(400, 300, 200);
+
+        private Vector3 posicionTarget = new Vector3(0,0,0);
+
+        private bool changed;
 
         protected override void Initialize()
         {
@@ -158,8 +244,13 @@ namespace TGC.MonoGame.TP
             inicializarAutos();
             inicializarDetalles();
 
-            View = Matrix.CreateLookAt(new Vector3(-550, 1000, -200), Vector3.Zero, Vector3.Up);
-            Projection = Matrix.CreatePerspectiveFieldOfView(MathHelper.PiOver4, GraphicsDevice.Viewport.AspectRatio, 1, 1500);
+
+            
+            //Projection = Matrix.CreatePerspectiveFieldOfView(MathHelper.PiOver4, GraphicsDevice.Viewport.AspectRatio, 1, 1500);
+
+            //camara con vista isometrica
+            View = Matrix.CreateLookAt(posicionCamara, posicionTarget, Vector3.Up);
+            Projection = Matrix.CreateOrthographic(250, 190, -100, 700);
 
             base.Initialize();
         }
@@ -182,6 +273,7 @@ namespace TGC.MonoGame.TP
             Rock1 = Content.Load<Model>(ContentFolder3D + "Decoration/Rocks/Rock1");
             Rock5 = Content.Load<Model>(ContentFolder3D + "Decoration/Rocks/Rock5");
             Rock10 = Content.Load<Model>(ContentFolder3D + "Decoration/Rocks/Rock10");
+            Tire = Content.Load<Model>(ContentFolder3D + "Decoration/Tire/Tire");
 
             Effect = Content.Load<Effect>(ContentFolderEffects + "BasicShader");
 
@@ -190,10 +282,53 @@ namespace TGC.MonoGame.TP
 
         protected override void Update(GameTime gameTime)
         {
+            var elapsedTime = (float) gameTime.ElapsedGameTime.TotalSeconds;
+
             if (Keyboard.GetState().IsKeyDown(Keys.Escape))
             {
                 Exit();
             }
+
+            var keyboardState = Keyboard.GetState();
+            
+            var currentMovementSpeed = 100f;
+            
+
+            if (keyboardState.IsKeyDown(Keys.W) || keyboardState.IsKeyDown(Keys.Up))
+            {
+                posicionCamara += -Vector3.Right * currentMovementSpeed * elapsedTime;
+                posicionTarget += -Vector3.Right * currentMovementSpeed * elapsedTime;
+                changed = true;
+            }
+
+            if (keyboardState.IsKeyDown(Keys.S) || keyboardState.IsKeyDown(Keys.Down))
+            {
+                posicionCamara += Vector3.Right * currentMovementSpeed * elapsedTime;
+                posicionTarget += Vector3.Right * currentMovementSpeed * elapsedTime;
+                changed = true;
+            }
+
+            if (keyboardState.IsKeyDown(Keys.D) || keyboardState.IsKeyDown(Keys.Right))
+            {
+                posicionCamara += Vector3.Forward * currentMovementSpeed * elapsedTime;
+                posicionTarget += Vector3.Forward * currentMovementSpeed * elapsedTime;
+                changed = true;
+            }
+
+            if (keyboardState.IsKeyDown(Keys.A) || keyboardState.IsKeyDown(Keys.Left))
+            {
+                posicionCamara += -Vector3.Forward * currentMovementSpeed * elapsedTime;
+                posicionTarget += -Vector3.Forward * currentMovementSpeed * elapsedTime;
+                changed = true;
+            }
+
+            if (changed){
+                View = Matrix.CreateLookAt(posicionCamara, posicionTarget, Vector3.Up);
+            }
+
+
+
+
             base.Update(gameTime);
         }
 
@@ -331,7 +466,7 @@ namespace TGC.MonoGame.TP
         public void inicializarAutos()
         {
             AutoPrincipalWorld = Matrix.CreateScale(5) * Matrix.CreateTranslation(0, 0, 0);
-
+            
             Auto1World = Matrix.CreateScale(5) * Matrix.CreateRotationY(mediaVuelta) * Matrix.CreateTranslation(0, 0, 50);
             Auto2World = Matrix.CreateScale(5) * Matrix.CreateRotationY(mediaVuelta) * Matrix.CreateTranslation(20, 0, 50);
             Auto3World = Matrix.CreateScale(5) * Matrix.CreateRotationY(mediaVuelta) * Matrix.CreateTranslation(40, 0, 50);
@@ -411,11 +546,93 @@ namespace TGC.MonoGame.TP
             Rock31World = Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(-285, 0, 675);
             Rock32World = Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(-315, 0, 700);
 
+
+            //Tire del lado mas cerca del origen de la rampa rampa1World
+            Tire1world = Matrix.CreateScale(0.02f) * Matrix.CreateTranslation(-130, 0, -360);
+
+            Tire2world = Matrix.CreateScale(0.02f) * Matrix.CreateTranslation(-110, 0, -360);
+            Tire2world1 = Matrix.CreateScale(0.02f) * Matrix.CreateTranslation(-110, 5, -360);
+
+            Tire3world = Matrix.CreateScale(0.02f) * Matrix.CreateTranslation(-90, 0, -360);
+            Tire3world1 = Matrix.CreateScale(0.02f) * Matrix.CreateTranslation(-90, 5, -360);
+            Tire3world2 = Matrix.CreateScale(0.02f) * Matrix.CreateTranslation(-90, 10, -360);
+
+            Tire4world = Matrix.CreateScale(0.02f) * Matrix.CreateTranslation(-70, 0, -360);
+            Tire4world1 = Matrix.CreateScale(0.02f) * Matrix.CreateTranslation(-70, 5, -360);
+            Tire4world2 = Matrix.CreateScale(0.02f) * Matrix.CreateTranslation(-70, 10, -360);
+            Tire4world3 = Matrix.CreateScale(0.02f) * Matrix.CreateTranslation(-70, 15, -360);
+
+            //Tire del lado mas lejos del origen de la rampa rampa1World
+            Tire5world = Matrix.CreateScale(0.02f) * Matrix.CreateTranslation(-130, 0, -450);
+
+            Tire6world = Matrix.CreateScale(0.02f) * Matrix.CreateTranslation(-110, 0, -450);
+            Tire6world1 = Matrix.CreateScale(0.02f) * Matrix.CreateTranslation(-110, 5, -450);
+
+            Tire7world = Matrix.CreateScale(0.02f) * Matrix.CreateTranslation(-90, 0, -450);
+            Tire7world1 = Matrix.CreateScale(0.02f) * Matrix.CreateTranslation(-90, 5, -450);
+            Tire7world2 = Matrix.CreateScale(0.02f) * Matrix.CreateTranslation(-90, 10, -450);
+
+            Tire8world = Matrix.CreateScale(0.02f) * Matrix.CreateTranslation(-70, 0, -450);
+            Tire8world1 = Matrix.CreateScale(0.02f) * Matrix.CreateTranslation(-70, 5, -450);
+            Tire8world2 = Matrix.CreateScale(0.02f) * Matrix.CreateTranslation(-70, 10, -450);
+            Tire8world3 = Matrix.CreateScale(0.02f) * Matrix.CreateTranslation(-70, 15, -450);
+
+            //Tire del lado mas lejos del origen de la rampa rampa2World
+            Tire9world = Matrix.CreateScale(0.02f) * Matrix.CreateTranslation(270, 0, -430);
+
+            Tire10world = Matrix.CreateScale(0.02f) * Matrix.CreateTranslation(250, 0, -430);
+            Tire10world1 = Matrix.CreateScale(0.02f) * Matrix.CreateTranslation(250, 5, -430);
+            
+            Tire11world = Matrix.CreateScale(0.02f) * Matrix.CreateTranslation(230, 0, -430);
+            Tire11world1 = Matrix.CreateScale(0.02f) * Matrix.CreateTranslation(230, 5, -430);
+            Tire11world2 = Matrix.CreateScale(0.02f) * Matrix.CreateTranslation(230, 10, -430);
+
+            Tire12world = Matrix.CreateScale(0.02f) * Matrix.CreateTranslation(210, 0, -430);
+            Tire12world1 = Matrix.CreateScale(0.02f) * Matrix.CreateTranslation(210, 5, -430);
+            Tire12world2 = Matrix.CreateScale(0.02f) * Matrix.CreateTranslation(210, 10, -430);
+            Tire12world3 = Matrix.CreateScale(0.02f) * Matrix.CreateTranslation(210, 15, -430);
+
+            //Tire del lado mas cerca del origen de la rampa rampa2World
+            Tire13world = Matrix.CreateScale(0.02f) * Matrix.CreateTranslation(270, 0, -340);
+
+            Tire14world = Matrix.CreateScale(0.02f) * Matrix.CreateTranslation(250, 0, -340);
+            Tire14world1 = Matrix.CreateScale(0.02f) * Matrix.CreateTranslation(250, 5, -340);
+            
+            Tire15world = Matrix.CreateScale(0.02f) * Matrix.CreateTranslation(230, 0, -340);
+            Tire15world1 = Matrix.CreateScale(0.02f) * Matrix.CreateTranslation(230, 5, -340);
+            Tire15world2 = Matrix.CreateScale(0.02f) * Matrix.CreateTranslation(230, 10, -340);
+
+            Tire16world = Matrix.CreateScale(0.02f) * Matrix.CreateTranslation(210, 0, -340);
+            Tire16world1 = Matrix.CreateScale(0.02f) * Matrix.CreateTranslation(210, 5, -340);
+            Tire16world2 = Matrix.CreateScale(0.02f) * Matrix.CreateTranslation(210, 10, -340);
+            Tire16world3 = Matrix.CreateScale(0.02f) * Matrix.CreateTranslation(210, 15, -340);
+
+            //Tire del lado mas lejos del origen de la rampa rampa3World
+            Tire17world = Matrix.CreateScale(0.02f) * Matrix.CreateTranslation(-280, 0, -35);
+
+            Tire18world = Matrix.CreateScale(0.02f) * Matrix.CreateTranslation(-280, 0, -15);
+            Tire18world1 = Matrix.CreateScale(0.02f) * Matrix.CreateTranslation(-280, 5, -15);
+
+            Tire19world = Matrix.CreateScale(0.02f) * Matrix.CreateTranslation(-280, 0, 5);
+            Tire19world1 = Matrix.CreateScale(0.02f) * Matrix.CreateTranslation(-280, 5, 5);
+            Tire19world2 = Matrix.CreateScale(0.02f) * Matrix.CreateTranslation(-280, 10, 5);
+
+            //Tire del lado mas cerca del origen de la rampa rampa3World
+            Tire20world = Matrix.CreateScale(0.02f) * Matrix.CreateTranslation(-190, 0, -35);
+
+            Tire21world = Matrix.CreateScale(0.02f) * Matrix.CreateTranslation(-190, 0, -15);
+            Tire21world1 = Matrix.CreateScale(0.02f) * Matrix.CreateTranslation(-190, 5, -15);
+
+            Tire22world = Matrix.CreateScale(0.02f) * Matrix.CreateTranslation(-190, 0, 5);
+            Tire22world1 = Matrix.CreateScale(0.02f) * Matrix.CreateTranslation(-190, 5, 5);
+            Tire22world2 = Matrix.CreateScale(0.02f) * Matrix.CreateTranslation(-190, 10, 5);
+
             BrokenColumn1World = Matrix.CreateScale(0.6f) * Matrix.CreateRotationY(-MathF.PI/6) * Matrix.CreateTranslation(450,0,250);
             BrokenColumn2World = Matrix.CreateScale(0.7f) * Matrix.CreateRotationY(MathF.PI/6) * Matrix.CreateTranslation(-230, 0, -290);
 
             Column11World = Matrix.CreateScale(0.6f) * Matrix.CreateRotationX(-cuartoDeVuelta) * Matrix.CreateTranslation(-500,0,0);
             Column12World = Matrix.CreateScale(0.6f) * Matrix.CreateRotationX(-cuartoDeVuelta) * Matrix.CreateTranslation(436, 0, -80);
+
         }
         public void dibujarDetalles()
         {
@@ -471,11 +688,92 @@ namespace TGC.MonoGame.TP
             dibujar(Rock31World, Rock5, Color.Gray);
             dibujar(Rock32World, Rock5, Color.Gray);
 
+            //Tire del lado mas cerca del origen de la rampa rampa1World
+            dibujar(Tire1world, Tire, Color.Black);
+
+            dibujar(Tire2world, Tire, Color.Black);
+            dibujar(Tire2world1, Tire, Color.Gray);
+            
+            dibujar(Tire3world, Tire, Color.Black);
+            dibujar(Tire3world1, Tire, Color.Gray);
+            dibujar(Tire3world2, Tire, Color.Black);
+
+            dibujar(Tire4world, Tire, Color.Black);
+            dibujar(Tire4world1, Tire, Color.Gray);
+            dibujar(Tire4world2, Tire, Color.Black);
+            dibujar(Tire4world3, Tire, Color.Gray);
+
+            //Tire del lado mas lejos del origen de la rampa rampa1World
+            dibujar(Tire5world, Tire, Color.Black);
+
+            dibujar(Tire6world, Tire, Color.Black);
+            dibujar(Tire6world1, Tire, Color.Gray);
+            
+            dibujar(Tire7world, Tire, Color.Black);
+            dibujar(Tire7world1, Tire, Color.Gray);
+            dibujar(Tire7world2, Tire, Color.Black);
+
+            dibujar(Tire8world, Tire, Color.Black);
+            dibujar(Tire8world1, Tire, Color.Gray);
+            dibujar(Tire8world2, Tire, Color.Black);
+            dibujar(Tire8world3, Tire, Color.Gray);
+
+            //Tire del lado mas lejos del origen de la rampa rampa2World
+            dibujar(Tire9world, Tire, Color.Black);
+
+            dibujar(Tire10world, Tire, Color.Black);
+            dibujar(Tire10world1, Tire, Color.Gray);
+            
+            dibujar(Tire11world, Tire, Color.Black);
+            dibujar(Tire11world1, Tire, Color.Gray);
+            dibujar(Tire11world2, Tire, Color.Black);
+
+            dibujar(Tire12world, Tire, Color.Black);
+            dibujar(Tire12world1, Tire, Color.Gray);
+            dibujar(Tire12world2, Tire, Color.Black);
+            dibujar(Tire12world3, Tire, Color.Gray);
+
+            //Tire del lado mas cerca del origen de la rampa rampa2World
+            dibujar(Tire13world, Tire, Color.Black);
+
+            dibujar(Tire14world, Tire, Color.Black);
+            dibujar(Tire14world1, Tire, Color.Gray);
+            
+            dibujar(Tire15world, Tire, Color.Black);
+            dibujar(Tire15world1, Tire, Color.Gray);
+            dibujar(Tire15world2, Tire, Color.Black);
+
+            dibujar(Tire16world, Tire, Color.Black);
+            dibujar(Tire16world1, Tire, Color.Gray);
+            dibujar(Tire16world2, Tire, Color.Black);
+            dibujar(Tire16world3, Tire, Color.Gray);
+
+            //Tire del lado mas lejos del origen de la rampa rampa3World
+            dibujar(Tire17world, Tire, Color.Black);
+
+            dibujar(Tire18world, Tire, Color.Black);
+            dibujar(Tire18world1, Tire, Color.Gray);
+            
+            dibujar(Tire19world, Tire, Color.Black);
+            dibujar(Tire19world1, Tire, Color.Gray);
+            dibujar(Tire19world2, Tire, Color.Black);
+
+            //Tire del lado mas cerca del origen de la rampa rampa3World
+            dibujar(Tire20world, Tire, Color.Black);
+
+            dibujar(Tire21world, Tire, Color.Black);
+            dibujar(Tire21world1, Tire, Color.Gray);
+            
+            dibujar(Tire22world, Tire, Color.Black);
+            dibujar(Tire22world1, Tire, Color.Gray);
+            dibujar(Tire22world2, Tire, Color.Black);
+
             dibujar(BrokenColumn1World, Column, Color.SandyBrown);
             dibujar(BrokenColumn2World, Column, Color.SandyBrown);
 
             dibujar(Column11World, Column, Color.SandyBrown);
             dibujar(Column12World, Column, Color.SandyBrown);
+
         }
     }
 }
