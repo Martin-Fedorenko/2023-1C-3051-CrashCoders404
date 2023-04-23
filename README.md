@@ -12,7 +12,7 @@ Proyecto "Derby" para la asignatura electiva [Técnicas de Gráficos por Computa
 
 ## Integrantes
 
-Fedorenko, Martin Fernando  |  Dellafiore, Matias |  Garais, Tomás |  Modesto, Franco |  Navarro, Ramiro |  Orosco, Hermes Elbio
+Fedorenko, Martín Fernando  |  Dellafiore, Matías |  Garais, Tomás |  Modesto, Franco |  Navarro, Ramiro |  Orosco, Hermes Elbio
 --------------------------- | ------------------- | -------------- | ---------------- | ---------------- | ---------------------
 
 ## Capturas
