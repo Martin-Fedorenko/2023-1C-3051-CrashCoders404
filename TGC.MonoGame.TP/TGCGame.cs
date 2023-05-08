@@ -5,7 +5,8 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
-namespace TGC.MonoGame.TP
+
+namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
 {
     public class TGCGame : Game
     {
@@ -28,6 +29,7 @@ namespace TGC.MonoGame.TP
         private Effect Effect { get; set; }
 
         // Modelos
+      
         private Model Piso { get; set; }
         private Model Pared { get; set; }
         private Model Column { get; set; }
@@ -41,6 +43,24 @@ namespace TGC.MonoGame.TP
         private Model Rock5 { get; set; }
         private Model Rock10 { get; set; }
         private Model Tire { get; set; }
+
+        //MovimientoAuto
+        private Vector3 CarPosition;
+        private Vector3 CarDirection;
+        private float CarSpeed;
+        private float CarAcceleration;
+        private float Rozamiento;
+        private float Rotation;
+        private bool ActiveMovement;
+        private bool AllowRotationY;
+        private Boolean onJump;
+        private Boolean onDescend;
+        private Boolean accelerating;
+        private float jumpRotation;
+        private float jumpAcceleration;
+        private float jumpAngle;
+        private float jumpHeight;
+        private float maxSpeed;
 
         // Matrices de Mundo
         private Matrix View { get; set; }
@@ -221,13 +241,13 @@ namespace TGC.MonoGame.TP
         // Variables
         private float mediaVuelta = MathF.PI;
         private float cuartoDeVuelta = MathF.PI / 2;
-        private Vector3 posicionCamara = new Vector3(400, 300, 200);
-        private Vector3 posicionTarget = new Vector3(0, 0, 0);
+        private Vector3 posicionCamara = new Vector3(-250, 250, -100);
         private float movementSpeed = 100f;
         private bool changedCamPos;
 
         protected override void Initialize()
         {
+
             // Dimensiones de la pantalla
             Graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width - 100;
             Graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height - 100;
@@ -245,8 +265,22 @@ namespace TGC.MonoGame.TP
             //Projection = Matrix.CreatePerspectiveFieldOfView(MathHelper.PiOver4, GraphicsDevice.Viewport.AspectRatio, 1, 1500);
 
             // Cámara con vista isométrica
-            View = Matrix.CreateLookAt(posicionCamara, posicionTarget, Vector3.Up);
-            Projection = Matrix.CreateOrthographic(250, 190, -100, 700);
+            View = Matrix.CreateLookAt(posicionCamara, CarPosition, Vector3.Up);
+            Projection = Matrix.CreateOrthographic(400, 300, -80, 1000);
+
+            //MovimientoAuto
+            CarSpeed = 0f;
+            CarAcceleration = 200f;
+            Rozamiento = -50f;
+            ActiveMovement = false;
+            AllowRotationY = false;
+            jumpAngle = MathF.PI / 9;
+            jumpAcceleration = 5f;
+            onJump = false;
+            onDescend = false;
+            accelerating = false;
+            jumpHeight = 150f;
+            maxSpeed = 2500f;
 
             base.Initialize();
         }
@@ -272,7 +306,6 @@ namespace TGC.MonoGame.TP
             Tire = Content.Load<Model>(ContentFolder3D + "Decoration/Tire/Tire");
 
             Effect = Content.Load<Effect>(ContentFolderEffects + "BasicShader");
-
             base.LoadContent();
         }
 
@@ -280,41 +313,97 @@ namespace TGC.MonoGame.TP
         {
             var keyboardState = Keyboard.GetState();
             var elapsedTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
+            CarDirection = AutoPrincipalWorld.Backward;
 
             if (Keyboard.GetState().IsKeyDown(Keys.Escape))
             {
                 Exit();
             }
+            //Movimiento Auto Principal y Camara
+            if (Keyboard.GetState().IsKeyDown(Keys.W) && !onJump)
+            {
+               if(CarSpeed < maxSpeed) CarSpeed += CarAcceleration * elapsedTime;
+               CarPosition += CarDirection * CarSpeed * elapsedTime + CarAcceleration * elapsedTime * elapsedTime * CarDirection / 2f;
+               ActiveMovement = true;
+               accelerating = true;
 
-            if (keyboardState.IsKeyDown(Keys.W) || keyboardState.IsKeyDown(Keys.Up))
-            {
-                posicionCamara += -Vector3.Right * movementSpeed * elapsedTime;
-                posicionTarget += -Vector3.Right * movementSpeed * elapsedTime;
-                changedCamPos = true;
+               posicionCamara += CarDirection * CarSpeed * elapsedTime + CarAcceleration * elapsedTime * elapsedTime * CarDirection / 2f;
             }
-            if (keyboardState.IsKeyDown(Keys.S) || keyboardState.IsKeyDown(Keys.Down))
+            else if (Keyboard.GetState().IsKeyDown(Keys.S) && !onJump)
             {
-                posicionCamara += Vector3.Right * movementSpeed * elapsedTime;
-                posicionTarget += Vector3.Right * movementSpeed * elapsedTime;
-                changedCamPos = true;
+                if (CarSpeed > -maxSpeed) CarSpeed -= CarAcceleration * elapsedTime;
+                CarSpeed -= CarAcceleration * elapsedTime;
+                CarPosition += CarDirection * CarSpeed * elapsedTime + CarAcceleration * elapsedTime * elapsedTime * CarDirection / 2f;
+                ActiveMovement = true;
+                accelerating = true;
+
+                posicionCamara += CarDirection * CarSpeed * elapsedTime + CarAcceleration * elapsedTime * elapsedTime * CarDirection / 2f;
             }
-            if (keyboardState.IsKeyDown(Keys.D) || keyboardState.IsKeyDown(Keys.Right))
+            else if (Keyboard.GetState().IsKeyUp(Keys.W) && Keyboard.GetState().IsKeyUp(Keys.S) || onJump)
             {
-                posicionCamara += Vector3.Forward * movementSpeed * elapsedTime;
-                posicionTarget += Vector3.Forward * movementSpeed * elapsedTime;
-                changedCamPos = true;
+                accelerating = false;
+                if (CarSpeed > 0) CarSpeed += Rozamiento * elapsedTime;
+
+                else if (CarSpeed < 0) CarSpeed -= Rozamiento * elapsedTime;
+                CarPosition += CarDirection * CarSpeed * elapsedTime;
+                posicionCamara += CarDirection * CarSpeed * elapsedTime;
             }
-            if (keyboardState.IsKeyDown(Keys.A) || keyboardState.IsKeyDown(Keys.Left))
+
+            if (CarSpeed == 0)
             {
-                posicionCamara += -Vector3.Forward * movementSpeed * elapsedTime;
-                posicionTarget += -Vector3.Forward * movementSpeed * elapsedTime;
-                changedCamPos = true;
+                ActiveMovement = false;
+                AllowRotationY = false; //De esta forma si el auto esta quieto no puede girar
             }
-            if (changedCamPos)
+            else
             {
-                View = Matrix.CreateLookAt(posicionCamara, posicionTarget, Vector3.Up);
-                changedCamPos = false;
+                ActiveMovement = true;
+                AllowRotationY = true;
             }
+
+            //rotar
+            if (AllowRotationY && Keyboard.GetState().IsKeyDown(Keys.D)) Rotation -= elapsedTime;
+            else if (AllowRotationY && Keyboard.GetState().IsKeyDown(Keys.A)) Rotation += elapsedTime;
+
+            //saltar
+            if ((Keyboard.GetState().IsKeyDown(Keys.Space) || onJump) && !accelerating)
+            {
+                onJump = true;
+                if (CarSpeed >= 0)
+                {
+                    if (!onDescend && jumpRotation < jumpAngle) jumpRotation += 0.05f;
+                    if (onDescend && jumpRotation > -jumpAngle) jumpRotation -= 0.05f;
+                }
+                else if (CarSpeed < 0)
+                {
+                    if (!onDescend && jumpRotation > -jumpAngle) jumpRotation -= 0.05f;
+                    if (onDescend && jumpRotation < jumpAngle) jumpRotation += 0.05f;
+                }
+                if (CarPosition.Y <= jumpHeight && !onDescend)
+                {
+                    CarPosition += Vector3.UnitY * jumpAcceleration;
+                    posicionCamara += Vector3.UnitY * jumpAcceleration;
+                }
+                else if (CarPosition.Y >= jumpHeight && !onDescend) onDescend = true;
+                else if (CarPosition.Y >= 5 && onDescend)
+                {
+                    CarPosition -= Vector3.UnitY * jumpAcceleration;
+                    posicionCamara -= Vector3.UnitY * jumpAcceleration;
+                }
+                else if (CarPosition.Y <= jumpHeight && onDescend) //debi usar <= en lugar de ==, ya que hay veces que el auto termina parte bajo el suelo, y no permitia otros movimientos del auto
+                {
+                    jumpRotation = 0f;
+                    onDescend = false;
+                    onJump = false;
+                }
+            }
+
+            View = Matrix.CreateLookAt(posicionCamara, CarPosition, Vector3.Up);
+            changedCamPos = false;
+
+            AutoPrincipalWorld =  Matrix.CreateScale(0.1f) *
+                                  Matrix.CreateRotationX(-jumpRotation) *
+                                  Matrix.CreateRotationY(Rotation * 2) * 
+                                  Matrix.CreateTranslation(CarPosition);
 
             base.Update(gameTime);
         }
@@ -349,6 +438,32 @@ namespace TGC.MonoGame.TP
             Effect.Parameters["Projection"].SetValue(Projection);
             Effect.Parameters["DiffuseColor"].SetValue(color.ToVector3());
 
+            var relativeMatrices = new Matrix[modelo.Bones.Count];
+            modelo.CopyAbsoluteBoneTransformsTo(relativeMatrices);
+
+            foreach (var mesh in modelo.Meshes)
+            {
+                Effect.Parameters["World"].SetValue(relativeMatrices[mesh.ParentBone.Index]*matrizMundo);
+                mesh.Draw();
+            }
+        }
+        public void dibujarArboles(Matrix matrizMundo, Model modelo, Color color)//con el otro metodo por alguna razon el modelo del arbol no se dibuja
+        {
+            foreach (var mesh in modelo.Meshes)
+            {
+                foreach (var meshPart in mesh.MeshParts)
+                {
+                    meshPart.Effect = Effect;
+                }
+            }
+
+            Effect.Parameters["View"].SetValue(View);
+            Effect.Parameters["Projection"].SetValue(Projection);
+            Effect.Parameters["DiffuseColor"].SetValue(color.ToVector3());
+
+            var relativeMatrices = new Matrix[modelo.Bones.Count];
+            modelo.CopyAbsoluteBoneTransformsTo(relativeMatrices);
+
             foreach (var mesh in modelo.Meshes)
             {
                 Effect.Parameters["World"].SetValue(matrizMundo);
@@ -374,8 +489,8 @@ namespace TGC.MonoGame.TP
             Column3World = Matrix.CreateScale(0.35f) * Matrix.CreateRotationX(-cuartoDeVuelta) * Matrix.CreateTranslation(140, 0, -450);
             Column4World = Matrix.CreateScale(0.35f) * Matrix.CreateRotationX(-cuartoDeVuelta) * Matrix.CreateTranslation(140, 0, -350);
 
-            Ramp1World = Matrix.CreateScale(0.45f, 0.35f, 0.65f) * Matrix.CreateRotationX(-cuartoDeVuelta) * Matrix.CreateTranslation(-80, 0, -390);
-            Ramp2World = Matrix.CreateScale(0.45f, 0.35f, 0.65f) * Matrix.CreateRotationX(-cuartoDeVuelta) * Matrix.CreateRotationY(mediaVuelta) * Matrix.CreateTranslation(230, 0, -400);
+            Ramp1World = Matrix.CreateScale(0.45f, 0.35f, 0.65f) * Matrix.CreateRotationX(-cuartoDeVuelta) * Matrix.CreateTranslation(-80, 0, -380);
+            Ramp2World = Matrix.CreateScale(0.45f, 0.35f, 0.65f) * Matrix.CreateRotationX(-cuartoDeVuelta) * Matrix.CreateRotationY(mediaVuelta) * Matrix.CreateTranslation(230, 0, -395);
 
             Platform1World = Matrix.CreateScale(100, 5, 80) * Matrix.CreateTranslation(70, 64, -390);
 
@@ -452,17 +567,17 @@ namespace TGC.MonoGame.TP
 
         public void inicializarAutos()
         {
-            AutoPrincipalWorld = Matrix.CreateScale(5) * Matrix.CreateTranslation(0, 0, 0);
+            AutoPrincipalWorld = Matrix.CreateScale(0.1f) * Matrix.CreateTranslation(0, 0, 0);
 
-            Auto1World = Matrix.CreateScale(5) * Matrix.CreateRotationY(mediaVuelta) * Matrix.CreateTranslation(0, 0, 50);
-            Auto2World = Matrix.CreateScale(5) * Matrix.CreateRotationY(mediaVuelta) * Matrix.CreateTranslation(20, 0, 50);
-            Auto3World = Matrix.CreateScale(5) * Matrix.CreateRotationY(mediaVuelta) * Matrix.CreateTranslation(40, 0, 50);
-            Auto4World = Matrix.CreateScale(5) * Matrix.CreateRotationY(mediaVuelta) * Matrix.CreateTranslation(-20, 0, 50);
-            Auto5World = Matrix.CreateScale(5) * Matrix.CreateRotationY(mediaVuelta) * Matrix.CreateTranslation(-40, 0, 50);
+            Auto1World = Matrix.CreateScale(0.1f) * Matrix.CreateRotationY(mediaVuelta) * Matrix.CreateTranslation(0, 0, 70);
+            Auto2World = Matrix.CreateScale(0.1f) * Matrix.CreateRotationY(mediaVuelta) * Matrix.CreateTranslation(30, 0, 70);
+            Auto3World = Matrix.CreateScale(0.1f) * Matrix.CreateRotationY(mediaVuelta) * Matrix.CreateTranslation(60, 0, 70);
+            Auto4World = Matrix.CreateScale(0.1f) * Matrix.CreateRotationY(mediaVuelta) * Matrix.CreateTranslation(-30, 0, 70);
+            Auto5World = Matrix.CreateScale(0.1f) * Matrix.CreateRotationY(mediaVuelta) * Matrix.CreateTranslation(-60, 0, 70);
 
-            AutoCombate1World = Matrix.CreateScale(0.35f) * Matrix.CreateRotationY(cuartoDeVuelta) * Matrix.CreateTranslation(0, 0, 100);
-            AutoCombate2World = Matrix.CreateScale(0.35f) * Matrix.CreateRotationY(cuartoDeVuelta) * Matrix.CreateTranslation(35, 0, 100);
-            AutoCombate3World = Matrix.CreateScale(0.35f) * Matrix.CreateRotationY(cuartoDeVuelta) * Matrix.CreateTranslation(-35, 0, 100);
+            AutoCombate1World = Matrix.CreateScale(0.007f) * Matrix.CreateRotationY(cuartoDeVuelta) * Matrix.CreateTranslation(0, 0, 180);
+            AutoCombate2World = Matrix.CreateScale(0.007f) * Matrix.CreateRotationY(cuartoDeVuelta) * Matrix.CreateTranslation(50, 0, 180);
+            AutoCombate3World = Matrix.CreateScale(0.007f) * Matrix.CreateRotationY(cuartoDeVuelta) * Matrix.CreateTranslation(-50, 0, 180);
         }
         public void dibujarAutos()
         {
@@ -477,23 +592,25 @@ namespace TGC.MonoGame.TP
             dibujar(AutoCombate1World, AutoDeCombate, Color.DarkGray);
             dibujar(AutoCombate2World, AutoDeCombate, Color.DarkGray);
             dibujar(AutoCombate3World, AutoDeCombate, Color.DarkGray);
+  
         }
 
         public void inicializarDetalles()
         {
-            Tree1World = Matrix.CreateScale(0.5f) * Matrix.CreateTranslation(25, 0, 350);
-            Tree2World = Matrix.CreateScale(0.5f) * Matrix.CreateTranslation(-25, 0, 350);
-            Tree3World = Matrix.CreateScale(0.5f) * Matrix.CreateTranslation(0, 0, 300);
-            Tree4World = Matrix.CreateScale(0.5f) * Matrix.CreateTranslation(0, 0, 375);
+            //Arboles piedras
+            Tree1World = Matrix.CreateScale(0.5f) * Matrix.CreateTranslation(30, 0, 350);
+            Tree2World = Matrix.CreateScale(0.6f) * Matrix.CreateTranslation(-25, 0, 350);
+            Tree3World = Matrix.CreateScale(0.4f) * Matrix.CreateTranslation(55, 0, 405);
+            Tree4World = Matrix.CreateScale(0.7f) * Matrix.CreateTranslation(-60, 0, 430);
 
             Tree5World = Matrix.CreateScale(0.5f) * Matrix.CreateTranslation(325, 0, -250);
             Tree6World = Matrix.CreateScale(0.5f) * Matrix.CreateTranslation(275, 0, -250);
-            Tree7World = Matrix.CreateScale(0.5f) * Matrix.CreateTranslation(300, 0, -200);
-            Tree8World = Matrix.CreateScale(0.5f) * Matrix.CreateTranslation(300, 0, -275);
+            Tree7World = Matrix.CreateScale(0.6f) * Matrix.CreateTranslation(300, 0, -200);
+            Tree8World = Matrix.CreateScale(0.4f) * Matrix.CreateTranslation(300, 0, -275);
 
-            Tree9World = Matrix.CreateScale(0.5f) * Matrix.CreateTranslation(-325, 0, -250);
-            Tree10World = Matrix.CreateScale(0.5f) * Matrix.CreateTranslation(-275, 0, -250);
-            Tree11World = Matrix.CreateScale(0.5f) * Matrix.CreateTranslation(-300, 0, -200);
+            Tree9World = Matrix.CreateScale(0.6f) * Matrix.CreateTranslation(-325, 0, -250);
+            Tree10World = Matrix.CreateScale(0.6f) * Matrix.CreateTranslation(-275, 0, -250);
+            Tree11World = Matrix.CreateScale(0.7f) * Matrix.CreateTranslation(-300, 0, -200);
             Tree12World = Matrix.CreateScale(0.5f) * Matrix.CreateTranslation(-300, 0, -275);
 
             Rock1World = Matrix.CreateScale(0.05f) * Matrix.CreateRotationY(cuartoDeVuelta) * Matrix.CreateTranslation(0, 0, -250);
@@ -534,84 +651,84 @@ namespace TGC.MonoGame.TP
             Rock32World = Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(-315, 0, 700);
 
             // "Tire" del lado más cerca del origen de la rampa Rampa1World
-            Tire1world = Matrix.CreateScale(0.02f) * Matrix.CreateTranslation(-130, 0, -360);
+            Tire1world = Matrix.CreateScale(0.02f) * Matrix.CreateRotationX(cuartoDeVuelta) * Matrix.CreateTranslation(-130, 5, -360);
 
-            Tire2world = Matrix.CreateScale(0.02f) * Matrix.CreateTranslation(-110, 0, -360);
-            Tire2world1 = Matrix.CreateScale(0.02f) * Matrix.CreateTranslation(-110, 5, -360);
+            Tire2world = Matrix.CreateScale(0.02f) * Matrix.CreateRotationX(cuartoDeVuelta) * Matrix.CreateTranslation(-110, 5, -360);
+            Tire2world1 = Matrix.CreateScale(0.02f) * Matrix.CreateRotationX(cuartoDeVuelta) * Matrix.CreateTranslation(-110, 10, -360);
 
-            Tire3world = Matrix.CreateScale(0.02f) * Matrix.CreateTranslation(-90, 0, -360);
-            Tire3world1 = Matrix.CreateScale(0.02f) * Matrix.CreateTranslation(-90, 5, -360);
-            Tire3world2 = Matrix.CreateScale(0.02f) * Matrix.CreateTranslation(-90, 10, -360);
+            Tire3world = Matrix.CreateScale(0.02f) * Matrix.CreateRotationX(cuartoDeVuelta) * Matrix.CreateTranslation(-90, 5, -360);
+            Tire3world1 = Matrix.CreateScale(0.02f) * Matrix.CreateRotationX(cuartoDeVuelta) * Matrix.CreateTranslation(-90, 10, -360);
+            Tire3world2 = Matrix.CreateScale(0.02f) * Matrix.CreateRotationX(cuartoDeVuelta) * Matrix.CreateTranslation(-90, 15, -360);
 
-            Tire4world = Matrix.CreateScale(0.02f) * Matrix.CreateTranslation(-70, 0, -360);
-            Tire4world1 = Matrix.CreateScale(0.02f) * Matrix.CreateTranslation(-70, 5, -360);
-            Tire4world2 = Matrix.CreateScale(0.02f) * Matrix.CreateTranslation(-70, 10, -360);
-            Tire4world3 = Matrix.CreateScale(0.02f) * Matrix.CreateTranslation(-70, 15, -360);
+            Tire4world = Matrix.CreateScale(0.02f) * Matrix.CreateRotationX(cuartoDeVuelta) * Matrix.CreateTranslation(-70, 5, -360);
+            Tire4world1 = Matrix.CreateScale(0.02f) * Matrix.CreateRotationX(cuartoDeVuelta) * Matrix.CreateTranslation(-70, 10, -360);
+            Tire4world2 = Matrix.CreateScale(0.02f) * Matrix.CreateRotationX(cuartoDeVuelta) * Matrix.CreateTranslation(-70, 15, -360);
+            Tire4world3 = Matrix.CreateScale(0.02f) * Matrix.CreateRotationX(cuartoDeVuelta) * Matrix.CreateTranslation(-70, 20, -360);
 
             // "Tire" del lado más lejos del origen de la rampa Rampa1World
-            Tire5world = Matrix.CreateScale(0.02f) * Matrix.CreateTranslation(-130, 0, -450);
+            Tire5world = Matrix.CreateScale(0.02f) * Matrix.CreateRotationX(cuartoDeVuelta) * Matrix.CreateTranslation(-130, 5, -450);
 
-            Tire6world = Matrix.CreateScale(0.02f) * Matrix.CreateTranslation(-110, 0, -450);
-            Tire6world1 = Matrix.CreateScale(0.02f) * Matrix.CreateTranslation(-110, 5, -450);
+            Tire6world = Matrix.CreateScale(0.02f) * Matrix.CreateRotationX(cuartoDeVuelta) * Matrix.CreateTranslation(-110, 5, -450);
+            Tire6world1 = Matrix.CreateScale(0.02f) * Matrix.CreateRotationX(cuartoDeVuelta) * Matrix.CreateTranslation(-110, 10, -450);
 
-            Tire7world = Matrix.CreateScale(0.02f) * Matrix.CreateTranslation(-90, 0, -450);
-            Tire7world1 = Matrix.CreateScale(0.02f) * Matrix.CreateTranslation(-90, 5, -450);
-            Tire7world2 = Matrix.CreateScale(0.02f) * Matrix.CreateTranslation(-90, 10, -450);
+            Tire7world = Matrix.CreateScale(0.02f) * Matrix.CreateRotationX(cuartoDeVuelta) * Matrix.CreateTranslation(-90, 5, -450);
+            Tire7world1 = Matrix.CreateScale(0.02f) * Matrix.CreateRotationX(cuartoDeVuelta) * Matrix.CreateTranslation(-90, 10, -450);
+            Tire7world2 = Matrix.CreateScale(0.02f) * Matrix.CreateRotationX(cuartoDeVuelta) * Matrix.CreateTranslation(-90, 15, -450);
 
-            Tire8world = Matrix.CreateScale(0.02f) * Matrix.CreateTranslation(-70, 0, -450);
-            Tire8world1 = Matrix.CreateScale(0.02f) * Matrix.CreateTranslation(-70, 5, -450);
-            Tire8world2 = Matrix.CreateScale(0.02f) * Matrix.CreateTranslation(-70, 10, -450);
-            Tire8world3 = Matrix.CreateScale(0.02f) * Matrix.CreateTranslation(-70, 15, -450);
+            Tire8world = Matrix.CreateScale(0.02f) * Matrix.CreateRotationX(cuartoDeVuelta) * Matrix.CreateTranslation(-70, 5, -450);
+            Tire8world1 = Matrix.CreateScale(0.02f) * Matrix.CreateRotationX(cuartoDeVuelta) * Matrix.CreateTranslation(-70, 10, -450);
+            Tire8world2 = Matrix.CreateScale(0.02f) * Matrix.CreateRotationX(cuartoDeVuelta) * Matrix.CreateTranslation(-70, 15, -450);
+            Tire8world3 = Matrix.CreateScale(0.02f) * Matrix.CreateRotationX(cuartoDeVuelta) * Matrix.CreateTranslation(-70, 20, -450);
 
             // "Tire" del lado más lejos del origen de la rampa Rampa2World
-            Tire9world = Matrix.CreateScale(0.02f) * Matrix.CreateTranslation(270, 0, -430);
+            Tire9world = Matrix.CreateScale(0.02f) * Matrix.CreateRotationX(cuartoDeVuelta) * Matrix.CreateTranslation(270, 5, -430);
 
-            Tire10world = Matrix.CreateScale(0.02f) * Matrix.CreateTranslation(250, 0, -430);
-            Tire10world1 = Matrix.CreateScale(0.02f) * Matrix.CreateTranslation(250, 5, -430);
+            Tire10world = Matrix.CreateScale(0.02f) * Matrix.CreateRotationX(cuartoDeVuelta) * Matrix.CreateTranslation(250, 5, -430);
+            Tire10world1 = Matrix.CreateScale(0.02f) * Matrix.CreateRotationX(cuartoDeVuelta) * Matrix.CreateTranslation(250, 10, -430);
 
-            Tire11world = Matrix.CreateScale(0.02f) * Matrix.CreateTranslation(230, 0, -430);
-            Tire11world1 = Matrix.CreateScale(0.02f) * Matrix.CreateTranslation(230, 5, -430);
-            Tire11world2 = Matrix.CreateScale(0.02f) * Matrix.CreateTranslation(230, 10, -430);
+            Tire11world = Matrix.CreateScale(0.02f) * Matrix.CreateRotationX(cuartoDeVuelta) * Matrix.CreateTranslation(230, 5, -430);
+            Tire11world1 = Matrix.CreateScale(0.02f) * Matrix.CreateRotationX(cuartoDeVuelta) * Matrix.CreateTranslation(230, 10, -430);
+            Tire11world2 = Matrix.CreateScale(0.02f) * Matrix.CreateRotationX(cuartoDeVuelta) * Matrix.CreateTranslation(230, 15, -430);
 
-            Tire12world = Matrix.CreateScale(0.02f) * Matrix.CreateTranslation(210, 0, -430);
-            Tire12world1 = Matrix.CreateScale(0.02f) * Matrix.CreateTranslation(210, 5, -430);
-            Tire12world2 = Matrix.CreateScale(0.02f) * Matrix.CreateTranslation(210, 10, -430);
-            Tire12world3 = Matrix.CreateScale(0.02f) * Matrix.CreateTranslation(210, 15, -430);
+            Tire12world = Matrix.CreateScale(0.02f) * Matrix.CreateRotationX(cuartoDeVuelta) * Matrix.CreateTranslation(210, 5, -430);
+            Tire12world1 = Matrix.CreateScale(0.02f) * Matrix.CreateRotationX(cuartoDeVuelta) * Matrix.CreateTranslation(210, 10, -430);
+            Tire12world2 = Matrix.CreateScale(0.02f) * Matrix.CreateRotationX(cuartoDeVuelta) * Matrix.CreateTranslation(210, 15, -430);
+            Tire12world3 = Matrix.CreateScale(0.02f) * Matrix.CreateRotationX(cuartoDeVuelta) * Matrix.CreateTranslation(210, 20, -430);
 
             // "Tire" del lado más cerca del origen de la rampa Rampa2World
-            Tire13world = Matrix.CreateScale(0.02f) * Matrix.CreateTranslation(270, 0, -340);
+            Tire13world = Matrix.CreateScale(0.02f) * Matrix.CreateRotationX(cuartoDeVuelta) * Matrix.CreateTranslation(270, 5, -340);
 
-            Tire14world = Matrix.CreateScale(0.02f) * Matrix.CreateTranslation(250, 0, -340);
-            Tire14world1 = Matrix.CreateScale(0.02f) * Matrix.CreateTranslation(250, 5, -340);
+            Tire14world = Matrix.CreateScale(0.02f) * Matrix.CreateRotationX(cuartoDeVuelta) * Matrix.CreateTranslation(250, 5, -340);
+            Tire14world1 = Matrix.CreateScale(0.02f) * Matrix.CreateRotationX(cuartoDeVuelta) * Matrix.CreateTranslation(250, 10, -340);
 
-            Tire15world = Matrix.CreateScale(0.02f) * Matrix.CreateTranslation(230, 0, -340);
-            Tire15world1 = Matrix.CreateScale(0.02f) * Matrix.CreateTranslation(230, 5, -340);
-            Tire15world2 = Matrix.CreateScale(0.02f) * Matrix.CreateTranslation(230, 10, -340);
+            Tire15world = Matrix.CreateScale(0.02f) * Matrix.CreateRotationX(cuartoDeVuelta) * Matrix.CreateTranslation(230, 5, -340);
+            Tire15world1 = Matrix.CreateScale(0.02f) * Matrix.CreateRotationX(cuartoDeVuelta) * Matrix.CreateTranslation(230, 10, -340);
+            Tire15world2 = Matrix.CreateScale(0.02f) * Matrix.CreateRotationX(cuartoDeVuelta) * Matrix.CreateTranslation(230, 15, -340);
 
-            Tire16world = Matrix.CreateScale(0.02f) * Matrix.CreateTranslation(210, 0, -340);
-            Tire16world1 = Matrix.CreateScale(0.02f) * Matrix.CreateTranslation(210, 5, -340);
-            Tire16world2 = Matrix.CreateScale(0.02f) * Matrix.CreateTranslation(210, 10, -340);
-            Tire16world3 = Matrix.CreateScale(0.02f) * Matrix.CreateTranslation(210, 15, -340);
+            Tire16world = Matrix.CreateScale(0.02f) * Matrix.CreateRotationX(cuartoDeVuelta) * Matrix.CreateTranslation(210, 5, -340);
+            Tire16world1 = Matrix.CreateScale(0.02f) * Matrix.CreateRotationX(cuartoDeVuelta) * Matrix.CreateTranslation(210, 10, -340);
+            Tire16world2 = Matrix.CreateScale(0.02f) * Matrix.CreateRotationX(cuartoDeVuelta) * Matrix.CreateTranslation(210, 15, -340);
+            Tire16world3 = Matrix.CreateScale(0.02f) * Matrix.CreateRotationX(cuartoDeVuelta) * Matrix.CreateTranslation(210, 20, -340);
 
             // "Tire" del lado más lejos del origen de la rampa Rampa3World
-            Tire17world = Matrix.CreateScale(0.02f) * Matrix.CreateTranslation(-280, 0, -35);
+            Tire17world = Matrix.CreateScale(0.02f) * Matrix.CreateRotationX(cuartoDeVuelta) * Matrix.CreateTranslation(-280, 5, -35);
 
-            Tire18world = Matrix.CreateScale(0.02f) * Matrix.CreateTranslation(-280, 0, -15);
-            Tire18world1 = Matrix.CreateScale(0.02f) * Matrix.CreateTranslation(-280, 5, -15);
+            Tire18world = Matrix.CreateScale(0.02f) * Matrix.CreateRotationX(cuartoDeVuelta) * Matrix.CreateTranslation(-280, 5, -15);
+            Tire18world1 = Matrix.CreateScale(0.02f) * Matrix.CreateRotationX(cuartoDeVuelta) * Matrix.CreateTranslation(-280, 10, -15);
 
-            Tire19world = Matrix.CreateScale(0.02f) * Matrix.CreateTranslation(-280, 0, 5);
-            Tire19world1 = Matrix.CreateScale(0.02f) * Matrix.CreateTranslation(-280, 5, 5);
-            Tire19world2 = Matrix.CreateScale(0.02f) * Matrix.CreateTranslation(-280, 10, 5);
+            Tire19world = Matrix.CreateScale(0.02f) * Matrix.CreateRotationX(cuartoDeVuelta) * Matrix.CreateTranslation(-280, 5, 5);
+            Tire19world1 = Matrix.CreateScale(0.02f) * Matrix.CreateRotationX(cuartoDeVuelta) * Matrix.CreateTranslation(-280, 10, 5);
+            Tire19world2 = Matrix.CreateScale(0.02f) * Matrix.CreateRotationX(cuartoDeVuelta) * Matrix.CreateTranslation(-280, 15, 5);
 
             // "Tire" del lado más cerca del origen de la rampa Rampa3World
-            Tire20world = Matrix.CreateScale(0.02f) * Matrix.CreateTranslation(-190, 0, -35);
+            Tire20world = Matrix.CreateScale(0.02f) * Matrix.CreateRotationX(cuartoDeVuelta) * Matrix.CreateTranslation(-190, 5, -35);
 
-            Tire21world = Matrix.CreateScale(0.02f) * Matrix.CreateTranslation(-190, 0, -15);
-            Tire21world1 = Matrix.CreateScale(0.02f) * Matrix.CreateTranslation(-190, 5, -15);
+            Tire21world = Matrix.CreateScale(0.02f) * Matrix.CreateRotationX(cuartoDeVuelta) * Matrix.CreateTranslation(-190, 5, -15);
+            Tire21world1 = Matrix.CreateScale(0.02f) * Matrix.CreateRotationX(cuartoDeVuelta) * Matrix.CreateTranslation(-190, 10, -15);
 
-            Tire22world = Matrix.CreateScale(0.02f) * Matrix.CreateTranslation(-190, 0, 5);
-            Tire22world1 = Matrix.CreateScale(0.02f) * Matrix.CreateTranslation(-190, 5, 5);
-            Tire22world2 = Matrix.CreateScale(0.02f) * Matrix.CreateTranslation(-190, 10, 5);
+            Tire22world = Matrix.CreateScale(0.02f) * Matrix.CreateRotationX(cuartoDeVuelta) * Matrix.CreateTranslation(-190, 5, 5);
+            Tire22world1 = Matrix.CreateScale(0.02f) * Matrix.CreateRotationX(cuartoDeVuelta) * Matrix.CreateTranslation(-190, 10, 5);
+            Tire22world2 = Matrix.CreateScale(0.02f) * Matrix.CreateRotationX(cuartoDeVuelta) * Matrix.CreateTranslation(-190, 15, 5);
 
             BrokenColumn1World = Matrix.CreateScale(0.6f) * Matrix.CreateRotationY(-MathF.PI / 6) * Matrix.CreateTranslation(450, 0, 250);
             BrokenColumn2World = Matrix.CreateScale(0.7f) * Matrix.CreateRotationY(MathF.PI / 6) * Matrix.CreateTranslation(-230, 0, -290);
@@ -621,20 +738,20 @@ namespace TGC.MonoGame.TP
         }
         public void dibujarDetalles()
         {
-            dibujar(Tree1World, Tree, Color.Black);
-            dibujar(Tree2World, Tree, Color.Black);
-            dibujar(Tree3World, Tree, Color.Black);
-            dibujar(Tree4World, Tree, Color.Black);
+            dibujarArboles(Tree1World, Tree, Color.Black);
+            dibujarArboles(Tree2World, Tree, Color.Black);
+            dibujarArboles(Tree3World, Tree, Color.Black);
+            dibujarArboles(Tree4World, Tree, Color.Black);
 
-            dibujar(Tree5World, Tree, Color.Black);
-            dibujar(Tree6World, Tree, Color.Black);
-            dibujar(Tree7World, Tree, Color.Black);
-            dibujar(Tree8World, Tree, Color.Black);
+            dibujarArboles(Tree5World, Tree, Color.Black);
+            dibujarArboles(Tree6World, Tree, Color.Black);
+            dibujarArboles(Tree7World, Tree, Color.Black);
+            dibujarArboles(Tree8World, Tree, Color.Black);
 
-            dibujar(Tree9World, Tree, Color.Black);
-            dibujar(Tree10World, Tree, Color.Black);
-            dibujar(Tree11World, Tree, Color.Black);
-            dibujar(Tree12World, Tree, Color.Black);
+            dibujarArboles(Tree9World, Tree, Color.Black);
+            dibujarArboles(Tree10World, Tree, Color.Black);
+            dibujarArboles(Tree11World, Tree, Color.Black);
+            dibujarArboles(Tree12World, Tree, Color.Black);
 
             dibujar(Rock1World, Rock1, Color.Gray);
             dibujar(Rock2World, Rock1, Color.Gray);
