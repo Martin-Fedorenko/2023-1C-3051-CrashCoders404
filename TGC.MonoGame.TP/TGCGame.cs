@@ -42,6 +42,36 @@ namespace TGC.MonoGame.TP
         private Model Rock10 { get; set; }
         private Model Tire { get; set; }
 
+<<<<<<< Updated upstream
+=======
+        //MovimientoAuto
+        private Vector3 CarPosition;
+        private Vector3 CarDirection;
+        private float CarSpeed;
+        private float CarAcceleration;
+        private float Rozamiento;
+        private float Rotation;
+        private bool ActiveMovement;
+        private Boolean onJump;
+        private Boolean onDescend;
+        private Boolean accelerating;
+        private float jumpRotation;
+        private float jumpAcceleration;
+        private float jumpAngle;
+        private float jumpHeight;
+        private float maxSpeed;
+        private float WheelRotation;
+        private ModelBone leftBackWheelBone;
+        private ModelBone rightBackWheelBone;
+        private ModelBone leftFrontWheelBone;
+        private ModelBone rightFrontWheelBone;
+        private Matrix leftBackWheelTransform = Matrix.Identity;
+        private Matrix rightBackWheelTransform = Matrix.Identity;
+        private Matrix leftFrontWheelTransform = Matrix.Identity;
+        private Matrix rightFrontWheelTransform = Matrix.Identity;
+        private Matrix[] relativeMatrices;
+
+>>>>>>> Stashed changes
         // Matrices de Mundo
         private Matrix View { get; set; }
         private Matrix Projection { get; set; }
@@ -221,10 +251,14 @@ namespace TGC.MonoGame.TP
         // Variables
         private float mediaVuelta = MathF.PI;
         private float cuartoDeVuelta = MathF.PI / 2;
+<<<<<<< Updated upstream
         private Vector3 posicionCamara = new Vector3(400, 300, 200);
         private Vector3 posicionTarget = new Vector3(0, 0, 0);
         private float movementSpeed = 100f;
         private bool changedCamPos;
+=======
+        private Vector3 posicionCamara = new Vector3(-250, 250, -100);
+>>>>>>> Stashed changes
 
         protected override void Initialize()
         {
@@ -245,8 +279,26 @@ namespace TGC.MonoGame.TP
             //Projection = Matrix.CreatePerspectiveFieldOfView(MathHelper.PiOver4, GraphicsDevice.Viewport.AspectRatio, 1, 1500);
 
             // Cámara con vista isométrica
+<<<<<<< Updated upstream
             View = Matrix.CreateLookAt(posicionCamara, posicionTarget, Vector3.Up);
             Projection = Matrix.CreateOrthographic(250, 190, -100, 700);
+=======
+            View = Matrix.CreateLookAt(posicionCamara, CarPosition, Vector3.Up);
+            Projection = Matrix.CreateOrthographic(400, 300, -80, 1000);
+
+            //MovimientoAuto
+            CarSpeed = 0f;
+            CarAcceleration = 200f;
+            Rozamiento = -100f;
+            ActiveMovement = false;
+            jumpAngle = MathF.PI / 9;
+            jumpAcceleration = 5f;
+            onJump = false;
+            onDescend = false;
+            accelerating = false;
+            jumpHeight = 150f;
+            maxSpeed = 1000f;
+>>>>>>> Stashed changes
 
             base.Initialize();
         }
@@ -273,6 +325,20 @@ namespace TGC.MonoGame.TP
 
             Effect = Content.Load<Effect>(ContentFolderEffects + "BasicShader");
 
+<<<<<<< Updated upstream
+=======
+
+            leftBackWheelBone = AutoDeportivo.Bones["WheelD"];
+            rightBackWheelBone = AutoDeportivo.Bones["WheelC"];
+            leftFrontWheelBone = AutoDeportivo.Bones["WheelA"];
+            rightFrontWheelBone = AutoDeportivo.Bones["WheelB"];
+
+            leftBackWheelTransform = leftBackWheelBone.Transform;
+            rightBackWheelTransform = rightBackWheelBone.Transform;
+            leftFrontWheelTransform = leftFrontWheelBone.Transform;
+            rightFrontWheelTransform = rightFrontWheelBone.Transform;
+
+>>>>>>> Stashed changes
             base.LoadContent();
         }
 
@@ -300,6 +366,7 @@ namespace TGC.MonoGame.TP
             }
             if (keyboardState.IsKeyDown(Keys.D) || keyboardState.IsKeyDown(Keys.Right))
             {
+<<<<<<< Updated upstream
                 posicionCamara += Vector3.Forward * movementSpeed * elapsedTime;
                 posicionTarget += Vector3.Forward * movementSpeed * elapsedTime;
                 changedCamPos = true;
@@ -316,6 +383,85 @@ namespace TGC.MonoGame.TP
                 changedCamPos = false;
             }
 
+=======
+                accelerating = false;
+                if (CarSpeed > 0)
+                {
+                    CarSpeed += Rozamiento * elapsedTime;
+                    ActiveMovement = true;
+                }
+                else if (CarSpeed < 0)
+                {
+                    CarSpeed -= Rozamiento * elapsedTime;
+                    ActiveMovement = true;
+                }
+
+                CarPosition += CarDirection * CarSpeed * elapsedTime;
+                posicionCamara += CarDirection * CarSpeed * elapsedTime;
+            }
+            //rotar
+            if (Keyboard.GetState().IsKeyDown(Keys.D))
+            {
+                if(WheelRotation > -MathF.PI * 1 / 6) WheelRotation -= elapsedTime;
+                if(ActiveMovement) Rotation -= elapsedTime;
+         //NO DEBERIA PODER GIRAR AL ESTAR QUIETO
+            }
+            else if (Keyboard.GetState().IsKeyDown(Keys.A))
+            {
+                if (WheelRotation < MathF.PI * 1 / 6) WheelRotation += elapsedTime;
+                if(ActiveMovement) Rotation += elapsedTime;
+            }
+            else if (Keyboard.GetState().IsKeyUp(Keys.A) && Keyboard.GetState().IsKeyUp(Keys.D))
+            {
+                WheelRotation = 0f;//cuando soltas W o A el auto y las ruedas siguen recto
+            }
+            //saltar
+            if ((Keyboard.GetState().IsKeyDown(Keys.Space) || onJump) && !accelerating)
+            {
+                onJump = true;
+                if (CarSpeed >= 0)
+                {
+                    if (!onDescend && jumpRotation < jumpAngle) jumpRotation += 0.05f;
+                    if (onDescend && jumpRotation > -jumpAngle) jumpRotation -= 0.05f;
+                }
+                else if (CarSpeed < 0)
+                {
+                    if (!onDescend && jumpRotation > -jumpAngle) jumpRotation -= 0.05f;
+                    if (onDescend && jumpRotation < jumpAngle) jumpRotation += 0.05f;
+                }
+                if (CarPosition.Y <= jumpHeight && !onDescend)
+                {
+                    CarPosition += Vector3.UnitY * jumpAcceleration;
+                    posicionCamara += Vector3.UnitY * jumpAcceleration;
+                }
+                else if (CarPosition.Y >= jumpHeight && !onDescend) onDescend = true;
+                else if (CarPosition.Y >= 5 && onDescend)
+                {
+                    CarPosition -= Vector3.UnitY * jumpAcceleration;
+                    posicionCamara -= Vector3.UnitY * jumpAcceleration;
+                }
+                else if (CarPosition.Y <= jumpHeight && onDescend) //debi usar <= en lugar de ==, ya que hay veces que el auto termina parte bajo el suelo, y no permitia otros movimientos del auto
+                {
+                    jumpRotation = 0f;
+                    onDescend = false;
+                    onJump = false;
+                }
+            }
+
+            View = Matrix.CreateLookAt(posicionCamara,CarPosition, Vector3.Up);
+
+            AutoPrincipalWorld =  Matrix.CreateScale(0.1f) *
+                                  Matrix.CreateRotationX(-jumpRotation) *
+                                  Matrix.CreateRotationY(Rotation) *
+                                  Matrix.CreateTranslation(CarPosition);
+         
+            // Calculate matrices based on the current animation position.
+            var wheelRotation = Matrix.CreateRotationY(WheelRotation*2);
+
+            leftFrontWheelBone.Transform = wheelRotation * leftFrontWheelTransform;
+            rightFrontWheelBone.Transform = wheelRotation * rightFrontWheelTransform;
+
+>>>>>>> Stashed changes
             base.Update(gameTime);
         }
 
@@ -349,6 +495,32 @@ namespace TGC.MonoGame.TP
             Effect.Parameters["Projection"].SetValue(Projection);
             Effect.Parameters["DiffuseColor"].SetValue(color.ToVector3());
 
+<<<<<<< Updated upstream
+=======
+            relativeMatrices = new Matrix[modelo.Bones.Count];
+            modelo.CopyAbsoluteBoneTransformsTo(relativeMatrices);
+
+            foreach (var mesh in modelo.Meshes)
+            {
+                Effect.Parameters["World"].SetValue(relativeMatrices[mesh.ParentBone.Index]*matrizMundo);
+                mesh.Draw();
+            }
+        }
+        public void dibujarArboles(Matrix matrizMundo, Model modelo, Color color)//con el otro metodo por alguna razon el modelo del arbol no se dibuja
+        {
+            foreach (var mesh in modelo.Meshes)
+            {
+                foreach (var meshPart in mesh.MeshParts)
+                {
+                    meshPart.Effect = Effect;
+                }
+            }
+
+            Effect.Parameters["View"].SetValue(View);
+            Effect.Parameters["Projection"].SetValue(Projection);
+            Effect.Parameters["DiffuseColor"].SetValue(color.ToVector3());
+
+>>>>>>> Stashed changes
             foreach (var mesh in modelo.Meshes)
             {
                 Effect.Parameters["World"].SetValue(matrizMundo);
@@ -452,7 +624,11 @@ namespace TGC.MonoGame.TP
 
         public void inicializarAutos()
         {
+<<<<<<< Updated upstream
             AutoPrincipalWorld = Matrix.CreateScale(5) * Matrix.CreateTranslation(0, 0, 0);
+=======
+            AutoPrincipalWorld = Matrix.CreateScale(0.3f) * Matrix.CreateTranslation(0, 0, 0);
+>>>>>>> Stashed changes
 
             Auto1World = Matrix.CreateScale(5) * Matrix.CreateRotationY(mediaVuelta) * Matrix.CreateTranslation(0, 0, 50);
             Auto2World = Matrix.CreateScale(5) * Matrix.CreateRotationY(mediaVuelta) * Matrix.CreateTranslation(20, 0, 50);
@@ -460,12 +636,21 @@ namespace TGC.MonoGame.TP
             Auto4World = Matrix.CreateScale(5) * Matrix.CreateRotationY(mediaVuelta) * Matrix.CreateTranslation(-20, 0, 50);
             Auto5World = Matrix.CreateScale(5) * Matrix.CreateRotationY(mediaVuelta) * Matrix.CreateTranslation(-40, 0, 50);
 
+<<<<<<< Updated upstream
             AutoCombate1World = Matrix.CreateScale(0.35f) * Matrix.CreateRotationY(cuartoDeVuelta) * Matrix.CreateTranslation(0, 0, 100);
             AutoCombate2World = Matrix.CreateScale(0.35f) * Matrix.CreateRotationY(cuartoDeVuelta) * Matrix.CreateTranslation(35, 0, 100);
             AutoCombate3World = Matrix.CreateScale(0.35f) * Matrix.CreateRotationY(cuartoDeVuelta) * Matrix.CreateTranslation(-35, 0, 100);
         }
+=======
+            AutoCombate1World = Matrix.CreateScale(0.007f) * Matrix.CreateRotationY(cuartoDeVuelta) * Matrix.CreateTranslation(0, 0, 180);
+            AutoCombate2World = Matrix.CreateScale(0.007f) * Matrix.CreateRotationY(cuartoDeVuelta) * Matrix.CreateTranslation(50, 0, 180);
+            AutoCombate3World = Matrix.CreateScale(0.007f) * Matrix.CreateRotationY(cuartoDeVuelta) * Matrix.CreateTranslation(-50, 0, 180);
+
+            }
+>>>>>>> Stashed changes
         public void dibujarAutos()
         {
+
             dibujar(AutoPrincipalWorld, AutoDeportivo, Color.DarkRed);
 
             dibujar(Auto1World, AutoDeportivo, Color.Black);
