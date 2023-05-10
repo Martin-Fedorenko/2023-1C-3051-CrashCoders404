@@ -4,6 +4,7 @@ using BepuPhysics.CollisionDetection.CollisionTasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using TGC.MonoGame.TP.origen;
 
 namespace TGC.MonoGame.TP
 {
@@ -22,6 +23,8 @@ namespace TGC.MonoGame.TP
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
         }
+
+        private SampleClass Ejemplo = new SampleClass();
 
         private GraphicsDeviceManager Graphics { get; }
         private SpriteBatch SpriteBatch { get; set; }
@@ -332,6 +335,8 @@ namespace TGC.MonoGame.TP
             var keyboardState = Keyboard.GetState();
             var elapsedTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
             CarDirection = AutoPrincipalWorld.Backward;
+
+            Ejemplo.myMethod();
 
             if (Keyboard.GetState().IsKeyDown(Keys.Escape))
             {
