@@ -25,7 +25,6 @@ namespace TGC.MonoGame.TP
         }
 
         private SampleClass Ejemplo = new SampleClass();
-
         private GraphicsDeviceManager Graphics { get; }
         private SpriteBatch SpriteBatch { get; set; }
         private Effect Effect { get; set; }
@@ -61,7 +60,15 @@ namespace TGC.MonoGame.TP
         private float jumpAngle;
         private float jumpHeight;
         private float maxSpeed;
-        private float WheelRotation;
+        private float WheelRotationPrincipal;
+        private float WheelRotation1;
+        private float WheelRotation2;
+        private float WheelRotation3;
+        private float WheelRotation4;
+        private float WheelRotation5;
+        private float WheelRotation6;
+        private float WheelRotation7;
+        private float WheelRotation8;
         private ModelBone leftBackWheelBone;
         private ModelBone rightBackWheelBone;
         private ModelBone leftFrontWheelBone;
@@ -288,7 +295,18 @@ namespace TGC.MonoGame.TP
             onDescend = false;
             accelerating = false;
             jumpHeight = 100f;
-            maxSpeed = 1000f;
+            maxSpeed = 2000f;
+
+            //Rotaciones de Ruedas
+            WheelRotationPrincipal = 0f;
+            WheelRotation1 = 0f;
+            WheelRotation2 = 0f;
+            WheelRotation3 = 0f;
+            WheelRotation4 = 0f;
+            WheelRotation5 = 0f;
+            WheelRotation6 = 0f;
+            WheelRotation7 = 0f;
+            WheelRotation8 = 0f;
 
             base.Initialize();
         }
@@ -338,6 +356,7 @@ namespace TGC.MonoGame.TP
 
             Ejemplo.myMethod();
 
+
             if (Keyboard.GetState().IsKeyDown(Keys.Escape))
             {
                 Exit();
@@ -354,7 +373,6 @@ namespace TGC.MonoGame.TP
             else if (Keyboard.GetState().IsKeyDown(Keys.S) && !onJump)
             {
                 if (CarSpeed > -maxSpeed) CarSpeed -= CarAcceleration * elapsedTime;
-                CarSpeed -= CarAcceleration * elapsedTime;
                 CarPosition += CarDirection * CarSpeed * elapsedTime + CarAcceleration * elapsedTime * elapsedTime * CarDirection / 2f;
                 ActiveMovement = true;
                 accelerating = true;
@@ -381,18 +399,18 @@ namespace TGC.MonoGame.TP
             //rotar
             if (Keyboard.GetState().IsKeyDown(Keys.D))
             {
-                if(WheelRotation > -MathF.PI * 1 / 6) WheelRotation -= elapsedTime;
+                if(WheelRotationPrincipal > -MathF.PI * 1 / 6) WheelRotationPrincipal -= elapsedTime;
                 if(ActiveMovement) Rotation -= elapsedTime;
          //NO DEBERIA PODER GIRAR AL ESTAR QUIETO
             }
             else if (Keyboard.GetState().IsKeyDown(Keys.A))
             {
-                if (WheelRotation < MathF.PI * 1 / 6) WheelRotation += elapsedTime;
+                if (WheelRotationPrincipal < MathF.PI * 1 / 6) WheelRotationPrincipal += elapsedTime;
                 if(ActiveMovement) Rotation += elapsedTime;
             }
             else if (Keyboard.GetState().IsKeyUp(Keys.A) && Keyboard.GetState().IsKeyUp(Keys.D))
             {
-                WheelRotation = 0f;//cuando soltas W o A el auto y las ruedas siguen recto
+                WheelRotationPrincipal = 0f;//cuando soltas W o A el auto y las ruedas siguen recto
             }
             //saltar
             if ((Keyboard.GetState().IsKeyDown(Keys.Space) || onJump) && !accelerating)
@@ -431,14 +449,10 @@ namespace TGC.MonoGame.TP
 
             AutoPrincipalWorld =  Matrix.CreateScale(0.1f) *
                                   Matrix.CreateRotationX(-jumpRotation) *
-                                  Matrix.CreateRotationY(Rotation) *
+                                  Matrix.CreateRotationY(Rotation*2) *
                                   Matrix.CreateTranslation(CarPosition);
-         
-            // Calculate matrices based on the current animation position.
-            var wheelRotation = Matrix.CreateRotationY(WheelRotation*2);
+       
 
-            leftFrontWheelBone.Transform = wheelRotation * leftFrontWheelTransform;
-            rightFrontWheelBone.Transform = wheelRotation * rightFrontWheelTransform;
 
             base.Update(gameTime);
         }
@@ -476,8 +490,35 @@ namespace TGC.MonoGame.TP
             relativeMatrices = new Matrix[modelo.Bones.Count];
             modelo.CopyAbsoluteBoneTransformsTo(relativeMatrices);
 
+
             foreach (var mesh in modelo.Meshes)
             {
+                Effect.Parameters["World"].SetValue(relativeMatrices[mesh.ParentBone.Index] * matrizMundo);
+                mesh.Draw();
+            }
+        }
+        public void dibujarAutos(Matrix matrizMundo, Model modelo, Color color, float WheelRot)
+        {
+            foreach (var mesh in modelo.Meshes)
+            {
+                foreach (var meshPart in mesh.MeshParts)
+                {
+                    meshPart.Effect = Effect;
+                }
+            }
+
+            Effect.Parameters["View"].SetValue(View);
+            Effect.Parameters["Projection"].SetValue(Projection);
+            Effect.Parameters["DiffuseColor"].SetValue(color.ToVector3());
+
+            relativeMatrices = new Matrix[modelo.Bones.Count];
+            modelo.CopyAbsoluteBoneTransformsTo(relativeMatrices);
+
+
+            foreach (var mesh in modelo.Meshes)
+            {
+                relativeMatrices[rightFrontWheelBone.Index] = Matrix.CreateRotationY(WheelRot) * rightFrontWheelTransform;
+                relativeMatrices[leftFrontWheelBone.Index] = Matrix.CreateRotationY(WheelRot) * leftFrontWheelTransform;
                 Effect.Parameters["World"].SetValue(relativeMatrices[mesh.ParentBone.Index]*matrizMundo);
                 mesh.Draw();
             }
@@ -513,7 +554,7 @@ namespace TGC.MonoGame.TP
             dibujar(PisoWorld, Piso, Color.LightGoldenrodYellow);
             dibujar(ParedWorld, Pared, Color.Wheat);
         }
-
+        
         public void inicializarPlataformas()
         {
             Column1World = Matrix.CreateScale(0.35f) * Matrix.CreateRotationX(-cuartoDeVuelta) * Matrix.CreateTranslation(0, 0, -450);
@@ -555,6 +596,7 @@ namespace TGC.MonoGame.TP
 
             Platform5World = Matrix.CreateScale(50, 10, 50) * Matrix.CreateTranslation(-435, 0, -195);
         }
+        
         public void dibujarPlataformas()
         {
             dibujar(Column1World, Column, Color.SandyBrown);
@@ -596,7 +638,7 @@ namespace TGC.MonoGame.TP
 
             dibujar(Platform5World, Platform, Color.DarkGray);
         }
-
+        
         public void inicializarAutos()
         {
             AutoPrincipalWorld = Matrix.CreateScale(0.1f) * Matrix.CreateTranslation(0, 0, 0);
@@ -613,20 +655,20 @@ namespace TGC.MonoGame.TP
         }
         public void dibujarAutos()
         {
-            dibujar(AutoPrincipalWorld, AutoDeportivo, Color.DarkRed);
+            dibujarAutos(AutoPrincipalWorld, AutoDeportivo, Color.DarkRed,WheelRotationPrincipal);
 
-            dibujar(Auto1World, AutoDeportivo, Color.Black);
-            dibujar(Auto2World, AutoDeportivo, Color.Black);
-            dibujar(Auto3World, AutoDeportivo, Color.Black);
-            dibujar(Auto4World, AutoDeportivo, Color.Black);
-            dibujar(Auto5World, AutoDeportivo, Color.Black);
+            dibujarAutos(Auto1World, AutoDeportivo, Color.Black,WheelRotation1);
+            dibujarAutos(Auto2World, AutoDeportivo, Color.Black,WheelRotation2);
+            dibujarAutos(Auto3World, AutoDeportivo, Color.Black,WheelRotation3);
+            dibujarAutos(Auto4World, AutoDeportivo, Color.Black,WheelRotation4);
+            dibujarAutos(Auto5World, AutoDeportivo, Color.Black,WheelRotation5);
 
-            dibujar(AutoCombate1World, AutoDeCombate, Color.DarkGray);
-            dibujar(AutoCombate2World, AutoDeCombate, Color.DarkGray);
-            dibujar(AutoCombate3World, AutoDeCombate, Color.DarkGray);
+            dibujarAutos(AutoCombate1World, AutoDeCombate, Color.DarkGray,WheelRotation6);
+            dibujarAutos(AutoCombate2World, AutoDeCombate, Color.DarkGray,WheelRotation7);
+            dibujarAutos(AutoCombate3World, AutoDeCombate, Color.DarkGray,WheelRotation8);
 
         }
-
+        
         public void inicializarDetalles()
         {
             //Arboles piedras
@@ -908,5 +950,6 @@ namespace TGC.MonoGame.TP
             dibujar(Column11World, Column, Color.SandyBrown);
             dibujar(Column12World, Column, Color.SandyBrown);
         }
+        
     }
 }
