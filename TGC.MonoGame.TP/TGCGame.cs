@@ -1,9 +1,10 @@
-﻿using System;
+﻿﻿using System;
 using System.Collections.Generic;
 using BepuPhysics.CollisionDetection.CollisionTasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using TGC.MonoGame.TP.Collisions;
 
 namespace TGC.MonoGame.TP
 {
@@ -51,10 +52,14 @@ namespace TGC.MonoGame.TP
         private Matrix View { get; set; }
         private Matrix Projection { get; set; }
 
-        
-       
+        //Camara
         private Vector3 posicionTarget = new Vector3(0, 0, 0);
         private Vector3 posicionCamara = new Vector3(-250, 250, -100);
+
+        //Colisiones
+        private BoundingBox AutoPrincipalBox;
+        private BoundingBox Auto1Box;
+        private Boolean collided;
 
 
         protected override void Initialize()
@@ -109,6 +114,11 @@ namespace TGC.MonoGame.TP
 
             Effect = Content.Load<Effect>(ContentFolderEffects + "BasicShader");
 
+            AutoPrincipalBox = BoundingVolumesExtensions.CreateAABBFrom(AutoDeportivo);
+            Auto1Box = BoundingVolumesExtensions.CreateAABBFrom(AutoDeportivo);
+            AutoPrincipalBox = new BoundingBox(AutoPrincipalBox.Min + autos.posAutoPrincipal(), AutoPrincipalBox.Max + autos.posAutoPrincipal());
+            Auto1Box = new BoundingBox(Auto1Box.Min + autos.posAuto1(), Auto1Box.Max + autos.posAuto1());
+
 
             base.LoadContent();
         }
@@ -116,7 +126,7 @@ namespace TGC.MonoGame.TP
         protected override void Update(GameTime gameTime)
         {
             var keyboardState = Keyboard.GetState();
-
+            collided = false;
 
             if (Keyboard.GetState().IsKeyDown(Keys.Escape))
             {
@@ -126,6 +136,10 @@ namespace TGC.MonoGame.TP
             autos.Update(gameTime);
             View = Matrix.CreateLookAt(posicionCamara + autos.posAutoPrincipal(),autos.posAutoPrincipal(), Vector3.Up);
 
+            AutoPrincipalBox = new BoundingBox(AutoPrincipalBox.Min + autos.increment() , AutoPrincipalBox.Max + autos.increment());
+            
+           collided = AutoPrincipalBox.Intersects(Auto1Box);
+
             base.Update(gameTime);
         }
 
@@ -133,40 +147,13 @@ namespace TGC.MonoGame.TP
         {
             GraphicsDevice.Clear(Color.Black);
             escenario.dibujarEscenario(View,Projection,Effect);
-            autos.dibujarAutos(View,Projection,Effect);
+            autos.dibujarAutos(View,Projection,Effect,collided);
             detalles.dibujarDetalles(View,Projection,Effect);
         }
-
         protected override void UnloadContent()
         {
             Content.Unload();
             base.UnloadContent();
-        }
-
-        // Funciones Auxiliares
-        public void dibujar(Matrix matrizMundo, Model modelo, Color color)
-        {
-            foreach (var mesh in modelo.Meshes)
-            {
-                foreach (var meshPart in mesh.MeshParts)
-                {
-                    meshPart.Effect = Effect;
-                }
-            }
-
-            Effect.Parameters["View"].SetValue(View);
-            Effect.Parameters["Projection"].SetValue(Projection);
-            Effect.Parameters["DiffuseColor"].SetValue(color.ToVector3());
-
-            relativeMatrices = new Matrix[modelo.Bones.Count];
-            modelo.CopyAbsoluteBoneTransformsTo(relativeMatrices);
-
-
-            foreach (var mesh in modelo.Meshes)
-            {
-                Effect.Parameters["World"].SetValue(relativeMatrices[mesh.ParentBone.Index] * matrizMundo);
-                mesh.Draw();
-            }
         }
     }
 }

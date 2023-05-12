@@ -69,6 +69,7 @@ namespace TGC.MonoGame.TP
         private Vector3 Auto7Pos = new Vector3(50, 0, 180);
         private Vector3 Auto8Pos = new Vector3(-50, 0, 180);        
         private Vector3 Desplazamiento;
+        private Vector3 Increment = Vector3.Zero;
        
         
       public void Initialize()
@@ -217,6 +218,8 @@ namespace TGC.MonoGame.TP
                     onJump = false;
                 }
             }
+
+            Increment = Desplazamiento;
             AutoPrincipalPos += Desplazamiento;
             AutoPrincipalWorld = Matrix.CreateScale(0.1f) *
                                   Matrix.CreateRotationX(-jumpRotation) *
@@ -250,9 +253,13 @@ namespace TGC.MonoGame.TP
             }
         }
 
-        public void dibujarAutos(Matrix view,Matrix projection,Effect effect)
+        public void dibujarAutos(Matrix view,Matrix projection,Effect effect,Boolean collided)
         {
-            dibujarAuto(view, projection, effect, AutoDeportivo, Color.Red,WheelRotationPrincipal,AutoPrincipalWorld);
+            Color color;
+            if(collided) color = Color.Yellow;
+            else color = Color.Red; 
+
+            dibujarAuto(view, projection, effect, AutoDeportivo, color,WheelRotationPrincipal,AutoPrincipalWorld);
 
             dibujarAuto(view, projection, effect, AutoDeportivo, Color.Black,WheelRotation1,Auto1World);
             dibujarAuto(view, projection, effect, AutoDeportivo, Color.Black,WheelRotation2,Auto2World);
@@ -268,6 +275,14 @@ namespace TGC.MonoGame.TP
         public Vector3 posAutoPrincipal()
         {
             return AutoPrincipalPos;
+        }
+        public Vector3 posAuto1()
+        {
+            return Auto1Pos;
+        }
+        public Vector3 increment()
+        {
+            return Increment;
         }
     }
 }
