@@ -27,6 +27,7 @@ namespace TGC.MonoGame.TP
         private GraphicsDeviceManager Graphics { get; }
         private SpriteBatch SpriteBatch { get; set; }
         private Effect Effect { get; set; }
+        private Effect TextureShader { get; set; }
 
         private Autos autos;
         private Detalles detalles;
@@ -94,28 +95,32 @@ namespace TGC.MonoGame.TP
         {
             SpriteBatch = new SpriteBatch(GraphicsDevice);
 
-            Piso = Content.Load<Model>(ContentFolder3D + "Arena/Plano");
-            Pared = Content.Load<Model>(ContentFolder3D + "Arena/Arena");
-            Column = Content.Load<Model>(ContentFolder3D + "Platforms/Column/Column");
-            Ramp = Content.Load<Model>(ContentFolder3D + "Platforms/Ramps/Ramp");
-            Platform = Content.Load<Model>(ContentFolder3D + "Platforms/Cubo/Cube");
+            Piso = Content.Load<Model>(ContentFolder3D + "Arena/Plano"); //No tiene textura incluida
+            Pared = Content.Load<Model>(ContentFolder3D + "Arena/Arena"); //No tiene textura incluida
+            Column = Content.Load<Model>(ContentFolder3D + "Platforms/Column/Column"); //Tiene textura incluida pero HAY QUE ARREGLAR O CAMBIAR EL MODELO
+            Ramp = Content.Load<Model>(ContentFolder3D + "Platforms/Ramps/Ramp"); //No tiene textura incluida
+            Platform = Content.Load<Model>(ContentFolder3D + "Platforms/Cubo/Cube"); //No tiene textura incluida
             escenario.LoadContent(Piso,Pared,Column,Ramp,Platform,Cube);
 
-            AutoDeportivo = Content.Load<Model>(ContentFolder3D + "Derby/RacingCar/RacingCar");
-            AutoDeCombate = Content.Load<Model>(ContentFolder3D + "Derby/CombatVehicle/Vehicle");
-            autos.LoadContent(AutoDeportivo,AutoDeCombate);
+            AutoDeportivo = Content.Load<Model>(ContentFolder3D + "Derby/RacingCar/RacingCar"); //Tiene textura incluida
+            AutoDeCombate = Content.Load<Model>(ContentFolder3D + "Derby/CombatVehicle/Vehicle"); //Tiene textura incluida
 
-            Tree = Content.Load<Model>(ContentFolder3D + "Decoration/ArbolSinHojas/TreeWinter");
-            Rock1 = Content.Load<Model>(ContentFolder3D + "Decoration/Rocks/Rock1");
-            Rock5 = Content.Load<Model>(ContentFolder3D + "Decoration/Rocks/Rock5");
-            Rock10 = Content.Load<Model>(ContentFolder3D + "Decoration/Rocks/Rock10");
-            Tire = Content.Load<Model>(ContentFolder3D + "Decoration/Tire/Tire");
+
+            Tree = Content.Load<Model>(ContentFolder3D + "Decoration/ArbolSinHojas/TreeWinter"); //No tiene textura incluida
+            Rock1 = Content.Load<Model>(ContentFolder3D + "Decoration/Rocks/Rock1"); //No tiene textura incluida
+            Rock5 = Content.Load<Model>(ContentFolder3D + "Decoration/Rocks/Rock5"); //No tiene textura incluida
+            Rock10 = Content.Load<Model>(ContentFolder3D + "Decoration/Rocks/Rock10"); //No tiene textura incluida
+            Tire = Content.Load<Model>(ContentFolder3D + "Decoration/Tire/Tire"); //No tiene textura incluida
             detalles.LoadContent(Tree,Rock1,Rock5,Rock10,Tire);
 
             Effect = Content.Load<Effect>(ContentFolderEffects + "BasicShader");
+            TextureShader = Content.Load<Effect>(ContentFolderEffects + "TextureShader");
+            autos.LoadContent(AutoDeportivo,AutoDeCombate,TextureShader);
 
             AutoPrincipalBox = BoundingVolumesExtensions.CreateAABBFrom(AutoDeportivo);
             Auto1Box = BoundingVolumesExtensions.CreateAABBFrom(AutoDeportivo);
+            AutoPrincipalBox = BoundingVolumesExtensions.Scale(AutoPrincipalBox,0.1f);
+            Auto1Box = BoundingVolumesExtensions.Scale(Auto1Box,0.1f);
             AutoPrincipalBox = new BoundingBox(AutoPrincipalBox.Min + autos.posAutoPrincipal(), AutoPrincipalBox.Max + autos.posAutoPrincipal());
             Auto1Box = new BoundingBox(Auto1Box.Min + autos.posAuto1(), Auto1Box.Max + autos.posAuto1());
 
@@ -138,7 +143,7 @@ namespace TGC.MonoGame.TP
 
             AutoPrincipalBox = new BoundingBox(AutoPrincipalBox.Min + autos.increment() , AutoPrincipalBox.Max + autos.increment());
             
-           collided = AutoPrincipalBox.Intersects(Auto1Box);
+            collided = AutoPrincipalBox.Intersects(Auto1Box);
 
             base.Update(gameTime);
         }
@@ -147,7 +152,7 @@ namespace TGC.MonoGame.TP
         {
             GraphicsDevice.Clear(Color.Black);
             escenario.dibujarEscenario(View,Projection,Effect);
-            autos.dibujarAutos(View,Projection,Effect,collided);
+            autos.dibujarAutos(View,Projection,TextureShader,collided);
             detalles.dibujarDetalles(View,Projection,Effect);
         }
         protected override void UnloadContent()

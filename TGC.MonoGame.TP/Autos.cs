@@ -1,7 +1,9 @@
 using System;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+
 
 namespace TGC.MonoGame.TP
 {
@@ -11,6 +13,7 @@ namespace TGC.MonoGame.TP
         public Autos() {}
         private Model AutoDeportivo { get; set; }
         private Model AutoDeCombate { get; set; }
+
         //MovimientoAuto
         private Vector3 CarDirection;
         private float CarSpeed;
@@ -71,6 +74,8 @@ namespace TGC.MonoGame.TP
         private Vector3 Desplazamiento;
         private Vector3 Increment = Vector3.Zero;
        
+       //Texturas
+       private List<Texture2D> ColorTextures { get; set; }
         
       public void Initialize()
      {
@@ -98,6 +103,9 @@ namespace TGC.MonoGame.TP
             WheelRotation7 = 0f;
             WheelRotation8 = 0f;
 
+            //Listas
+            ColorTextures = new List<Texture2D>();
+
             AutoPrincipalWorld = Matrix.CreateScale(0.1f) * Matrix.CreateTranslation(AutoPrincipalPos);
 
             Auto1World = Matrix.CreateScale(0.1f) * Matrix.CreateRotationY(mediaVuelta) * Matrix.CreateTranslation(Auto1Pos);
@@ -111,7 +119,7 @@ namespace TGC.MonoGame.TP
             AutoCombate3World = Matrix.CreateScale(0.007f) * Matrix.CreateRotationY(cuartoDeVuelta) * Matrix.CreateTranslation(Auto8Pos);
         }
 
-        public void LoadContent(Model Auto1,Model Auto2)
+        public void LoadContent(Model Auto1,Model Auto2,Effect effect)
         {
             AutoDeportivo = Auto1;
             AutoDeCombate = Auto2;
@@ -125,8 +133,25 @@ namespace TGC.MonoGame.TP
             rightBackWheelTransform = rightBackWheelBone.Transform;
             leftFrontWheelTransform = leftFrontWheelBone.Transform;
             rightFrontWheelTransform = rightFrontWheelBone.Transform;
+            
+            //Texturas
+            foreach(var mesh in AutoDeportivo.Meshes)
+            {
+                foreach(var meshPart in mesh.MeshParts)
+                {
+                    ColorTextures.Add(((BasicEffect)meshPart.Effect).Texture);
+                    meshPart.Effect= effect;
+                }
+            } 
 
-
+           foreach(var mesh in AutoDeCombate.Meshes)
+            {
+                foreach(var meshPart in mesh.MeshParts)
+                {
+                    ColorTextures.Add(((BasicEffect)meshPart.Effect).Texture);
+                    meshPart.Effect= effect;
+                }
+            } 
         }
 
       public void Update(GameTime gameTime)
@@ -221,55 +246,55 @@ namespace TGC.MonoGame.TP
 
             Increment = Desplazamiento;
             AutoPrincipalPos += Desplazamiento;
-            AutoPrincipalWorld = Matrix.CreateScale(0.1f) *
+            AutoPrincipalWorld =  Matrix.CreateScale(0.1f) *
                                   Matrix.CreateRotationX(-jumpRotation) *
                                   Matrix.CreateRotationY(Rotation*2) *
                                   Matrix.CreateTranslation(AutoPrincipalPos);
       }
-      public void dibujarAuto(Matrix view,Matrix projection,Effect effect,Model modelo,Color color,float WheelRot,Matrix matrizMundo)
+      public void dibujarAuto(Matrix view,Matrix projection,Effect effect,Model modelo,float WheelRot,Matrix matrizMundo)
         {
-            foreach (var mesh in AutoDeportivo.Meshes)
-            {
-                foreach (var meshPart in mesh.MeshParts)
-                {
-                    meshPart.Effect = effect;
-                }
-            }
-
             effect.Parameters["View"].SetValue(view);
             effect.Parameters["Projection"].SetValue(projection);
-            effect.Parameters["DiffuseColor"].SetValue(color.ToVector3());
 
             relativeMatrices = new Matrix[modelo.Bones.Count];
             modelo.CopyAbsoluteBoneTransformsTo(relativeMatrices);
-
-
+            int index = 0;
             foreach (var mesh in modelo.Meshes)
             {
                 relativeMatrices[rightFrontWheelBone.Index] = Matrix.CreateRotationY(WheelRot) * rightFrontWheelTransform;
                 relativeMatrices[leftFrontWheelBone.Index] = Matrix.CreateRotationY(WheelRot) * leftFrontWheelTransform;
                 effect.Parameters["World"].SetValue(relativeMatrices[mesh.ParentBone.Index]*matrizMundo);
+                foreach(var meshPart in mesh.MeshParts)
+                {
+                    effect.GraphicsDevice.SetVertexBuffer(meshPart.VertexBuffer);
+                    effect.GraphicsDevice.Indices = meshPart.IndexBuffer;
+                    effect.Parameters["ModelTexture"].SetValue(ColorTextures[index]);
+                    foreach(var pass in effect.CurrentTechnique.Passes)
+                    {
+                        pass.Apply();
+                        effect.GraphicsDevice.DrawIndexedPrimitives(PrimitiveType.TriangleList,meshPart.VertexOffset,meshPart.StartIndex,meshPart.PrimitiveCount);
+                    }
+                }
                 mesh.Draw();
+                index++;
             }
         }
 
         public void dibujarAutos(Matrix view,Matrix projection,Effect effect,Boolean collided)
-        {
-            Color color;
-            if(collided) color = Color.Yellow;
-            else color = Color.Red; 
+        {  
 
-            dibujarAuto(view, projection, effect, AutoDeportivo, color,WheelRotationPrincipal,AutoPrincipalWorld);
+           dibujarAuto(view, projection, effect, AutoDeportivo,WheelRotationPrincipal,AutoPrincipalWorld);
 
-            dibujarAuto(view, projection, effect, AutoDeportivo, Color.Black,WheelRotation1,Auto1World);
-            dibujarAuto(view, projection, effect, AutoDeportivo, Color.Black,WheelRotation2,Auto2World);
-            dibujarAuto(view, projection, effect, AutoDeportivo, Color.Black,WheelRotation3,Auto3World);
-            dibujarAuto(view, projection, effect, AutoDeportivo, Color.Black,WheelRotation4,Auto4World);
-            dibujarAuto(view, projection, effect, AutoDeportivo, Color.Black,WheelRotation5,Auto5World);
+           dibujarAuto(view, projection, effect, AutoDeportivo,WheelRotation1,Auto1World);
+           if(collided)
+                dibujarAuto(view, projection, effect, AutoDeportivo,WheelRotation2,Auto2World);
+           dibujarAuto(view, projection, effect, AutoDeportivo,WheelRotation3,Auto3World);
+           dibujarAuto(view, projection, effect, AutoDeportivo,WheelRotation4,Auto4World);
+           dibujarAuto(view, projection, effect, AutoDeportivo,WheelRotation5,Auto5World);
 
-            dibujarAuto(view, projection, effect, AutoDeCombate, Color.DarkGray,WheelRotation6,AutoCombate1World);
-            dibujarAuto(view, projection, effect, AutoDeCombate, Color.DarkGray,WheelRotation7,AutoCombate2World);
-            dibujarAuto(view, projection, effect, AutoDeCombate, Color.DarkGray,WheelRotation8,AutoCombate3World);
+           dibujarAuto(view, projection, effect, AutoDeCombate,WheelRotation6,AutoCombate1World);
+           dibujarAuto(view, projection, effect, AutoDeCombate,WheelRotation7,AutoCombate2World);
+           dibujarAuto(view, projection, effect, AutoDeCombate,WheelRotation8,AutoCombate3World);
         }
 
         public Vector3 posAutoPrincipal()
