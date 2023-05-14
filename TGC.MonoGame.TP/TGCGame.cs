@@ -57,11 +57,6 @@ namespace TGC.MonoGame.TP
         private Vector3 posicionTarget = new Vector3(0, 0, 0);
         private Vector3 posicionCamara = new Vector3(-250, 250, -100);
 
-        //Colisiones
-        private BoundingBox AutoPrincipalBox;
-        private BoundingBox Auto1Box;
-        private Boolean collided;
-
 
         protected override void Initialize()
         {
@@ -117,21 +112,13 @@ namespace TGC.MonoGame.TP
             TextureShader = Content.Load<Effect>(ContentFolderEffects + "TextureShader");
             autos.LoadContent(AutoDeportivo,AutoDeCombate,TextureShader);
 
-            AutoPrincipalBox = BoundingVolumesExtensions.CreateAABBFrom(AutoDeportivo);
-            Auto1Box = BoundingVolumesExtensions.CreateAABBFrom(AutoDeportivo);
-            AutoPrincipalBox = BoundingVolumesExtensions.Scale(AutoPrincipalBox,0.1f);
-            Auto1Box = BoundingVolumesExtensions.Scale(Auto1Box,0.1f);
-            AutoPrincipalBox = new BoundingBox(AutoPrincipalBox.Min + autos.posAutoPrincipal(), AutoPrincipalBox.Max + autos.posAutoPrincipal());
-            Auto1Box = new BoundingBox(Auto1Box.Min + autos.posAuto1(), Auto1Box.Max + autos.posAuto1());
-
-
             base.LoadContent();
         }
 
         protected override void Update(GameTime gameTime)
         {
             var keyboardState = Keyboard.GetState();
-            collided = false;
+
 
             if (Keyboard.GetState().IsKeyDown(Keys.Escape))
             {
@@ -140,10 +127,7 @@ namespace TGC.MonoGame.TP
 
             autos.Update(gameTime);
             View = Matrix.CreateLookAt(posicionCamara + autos.posAutoPrincipal(),autos.posAutoPrincipal(), Vector3.Up);
-
-            AutoPrincipalBox = new BoundingBox(AutoPrincipalBox.Min + autos.increment() , AutoPrincipalBox.Max + autos.increment());
-            
-            collided = AutoPrincipalBox.Intersects(Auto1Box);
+       
 
             base.Update(gameTime);
         }
@@ -152,7 +136,7 @@ namespace TGC.MonoGame.TP
         {
             GraphicsDevice.Clear(Color.Black);
             escenario.dibujarEscenario(View,Projection,Effect);
-            autos.dibujarAutos(View,Projection,TextureShader,collided);
+            autos.dibujarAutos(View,Projection,TextureShader);
             detalles.dibujarDetalles(View,Projection,Effect);
         }
         protected override void UnloadContent()
