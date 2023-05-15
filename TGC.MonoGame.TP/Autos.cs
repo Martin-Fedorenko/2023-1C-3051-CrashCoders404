@@ -14,8 +14,8 @@ namespace TGC.MonoGame.TP
     private Model AutoDeCombate { get; set; }
 
     //MovimientoAuto
-    private Vector3 CarDirection;
-    private float CarSpeed;
+    public Vector3 CarDirection;
+    public float CarSpeed;
     private float CarAcceleration;
     private float CarBrakes;
     private float Rozamiento;
@@ -68,7 +68,7 @@ namespace TGC.MonoGame.TP
     // Variables
     private float mediaVuelta = MathF.PI;
     private float cuartoDeVuelta = MathF.PI / 2;
-    private Vector3 AutoPrincipalPos = new Vector3(0, 0, 0);
+    public Vector3 AutoPrincipalPos = new Vector3(0, 0, 0);
     private Vector3 Auto1Pos = new Vector3(0, 0, 70);
     private Vector3 Auto2Pos = new Vector3(30, 0, 70);
     private Vector3 Auto3Pos = new Vector3(60, 0, 70);
@@ -85,7 +85,7 @@ namespace TGC.MonoGame.TP
     //Colisiones
     private BoundingBox AutoDeportivoBoxAABB;
     private BoundingBox AutoDeCombateBoxAABB;
-    private OrientedBoundingBox AutoPrincipalBox;
+    public OrientedBoundingBox AutoPrincipalBox;
     private OrientedBoundingBox[] CollideCars;
     private Boolean collided;
     private int CollisionIndex;
