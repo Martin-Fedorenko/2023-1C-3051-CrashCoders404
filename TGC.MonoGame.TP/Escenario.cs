@@ -2,6 +2,7 @@ using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using TGC.MonoGame.TP.Collisions;
 
 namespace TGC.MonoGame.TP
 {
@@ -14,8 +15,14 @@ namespace TGC.MonoGame.TP
     private Model Ramp { get; set; }
     private Model Platform { get; set; }
     private Model Cube { get; set; }
+
+
     private Matrix PisoWorld { get; set; }
     private Matrix ParedWorld { get; set; }
+    private Matrix[] PlatformWorld { get; set; }
+    private Matrix[] RampWorld { get; set; }
+  private Matrix[] ColumnWorld { get; set; }
+
     private Matrix Platform1World { get; set; }
     private Matrix Platform2World { get; set; }
     private Matrix Platform3World { get; set; }
@@ -93,6 +100,13 @@ namespace TGC.MonoGame.TP
     //Bones
     private Matrix[] relativeMatrices;
 
+    //Colisiones
+    private BoundingBox ColumnBox;
+    private BoundingBox PlatformBox;
+    private BoundingBox[] ColumnBoxes;
+    private BoundingBox[] PlatformBoxes;
+    private BoundingBox[] RampBoxes;
+
     public void Initialize()
     {
       //Arena
@@ -100,51 +114,51 @@ namespace TGC.MonoGame.TP
       ParedWorld = Matrix.CreateScale(30, 50, 30);
 
       //Plataformas
-      Column1World = Matrix.CreateScale(0.35f) * Matrix.CreateRotationX(-cuartoDeVuelta) * Matrix.CreateTranslation(0, 0, -450);
-      Column2World = Matrix.CreateScale(0.35f) * Matrix.CreateRotationX(-cuartoDeVuelta) * Matrix.CreateTranslation(0, 0, -350);
-      Column3World = Matrix.CreateScale(0.35f) * Matrix.CreateRotationX(-cuartoDeVuelta) * Matrix.CreateTranslation(140, 0, -450);
-      Column4World = Matrix.CreateScale(0.35f) * Matrix.CreateRotationX(-cuartoDeVuelta) * Matrix.CreateTranslation(140, 0, -350);
+      ColumnWorld = new Matrix[]
+      {
+        Matrix.CreateScale(0.35f) * Matrix.CreateRotationX(-cuartoDeVuelta) * Matrix.CreateTranslation(Column1Position),
+        Matrix.CreateScale(0.35f) * Matrix.CreateRotationX(-cuartoDeVuelta) * Matrix.CreateTranslation(Column2Position),
+        Matrix.CreateScale(0.35f) * Matrix.CreateRotationX(-cuartoDeVuelta) * Matrix.CreateTranslation(Column3Position),
+        Matrix.CreateScale(0.35f) * Matrix.CreateRotationX(-cuartoDeVuelta) * Matrix.CreateTranslation(Column4Position),
+        Matrix.CreateScale(0.35f, 0.35f, 0.15f) * Matrix.CreateRotationX(-cuartoDeVuelta) * Matrix.CreateTranslation(Column5Position),
+        Matrix.CreateScale(0.35f, 0.35f, 0.15f) * Matrix.CreateRotationX(-cuartoDeVuelta) * Matrix.CreateTranslation(Column6Position),
+        Matrix.CreateScale(0.35f, 0.35f, 0.5f) * Matrix.CreateRotationX(-cuartoDeVuelta) * Matrix.CreateTranslation(Column7Position),
+        Matrix.CreateScale(0.35f, 0.35f, 0.5f) * Matrix.CreateRotationX(-cuartoDeVuelta) * Matrix.CreateTranslation(Column8Position),
+        Matrix.CreateScale(0.35f, 0.35f, 0.5f) * Matrix.CreateRotationX(-cuartoDeVuelta) * Matrix.CreateTranslation(Column9Position),
+        Matrix.CreateScale(0.35f, 0.35f, 0.5f) * Matrix.CreateRotationX(-cuartoDeVuelta) * Matrix.CreateTranslation(Column10Position),
+        Matrix.CreateScale(0.6f) * Matrix.CreateRotationX(-cuartoDeVuelta) * Matrix.CreateTranslation(Column11Position),
+        Matrix.CreateScale(0.6f) * Matrix.CreateRotationX(-cuartoDeVuelta) * Matrix.CreateTranslation(Column12Position),
 
-      Ramp1World = Matrix.CreateScale(0.45f, 0.35f, 0.65f) * Matrix.CreateRotationX(-cuartoDeVuelta) * Matrix.CreateTranslation(-80, 0, -380);
-      Ramp2World = Matrix.CreateScale(0.45f, 0.35f, 0.65f) * Matrix.CreateRotationX(-cuartoDeVuelta) * Matrix.CreateRotationY(mediaVuelta) * Matrix.CreateTranslation(230, 0, -395);
+        Matrix.CreateScale(0.6f) * Matrix.CreateRotationY(-MathF.PI / 6) * Matrix.CreateTranslation(BrokenColumn1Position),
+        Matrix.CreateScale(0.7f) * Matrix.CreateRotationY(MathF.PI / 6) * Matrix.CreateTranslation(BrokenColumn2Position),
+      };
 
-      Platform1World = Matrix.CreateScale(100, 5, 80) * Matrix.CreateTranslation(70, 64, -390);
 
-      Column5World = Matrix.CreateScale(0.35f, 0.35f, 0.15f) * Matrix.CreateRotationX(-cuartoDeVuelta) * Matrix.CreateTranslation(-170, 0, 50);
-      Column6World = Matrix.CreateScale(0.35f, 0.35f, 0.15f) * Matrix.CreateRotationX(-cuartoDeVuelta) * Matrix.CreateTranslation(-330, 0, 50);
-      Column7World = Matrix.CreateScale(0.35f, 0.35f, 0.5f) * Matrix.CreateRotationX(-cuartoDeVuelta) * Matrix.CreateTranslation(-170, 0, 175);
-      Column8World = Matrix.CreateScale(0.35f, 0.35f, 0.5f) * Matrix.CreateRotationX(-cuartoDeVuelta) * Matrix.CreateTranslation(-330, 0, 175);
+      PlatformWorld = new Matrix[]
+      {
+        Matrix.CreateScale(100, 5, 80) * Matrix.CreateTranslation(Platform1Position),
+        Matrix.CreateScale(100, 5, 80) * Matrix.CreateTranslation(Platform2Position),
+        Matrix.CreateScale(100, 5, 70) * Matrix.CreateTranslation(Platform3Position),
+        Matrix.CreateScale(50, 10, 50) * Matrix.CreateTranslation(Platform4Position),
+        Matrix.CreateScale(50, 10, 50) * Matrix.CreateTranslation(Platform5Position)
+      };
+     
 
-      Platform2World = Matrix.CreateScale(100, 5, 80) * Matrix.CreateTranslation(-250, 30, 100);
-
-      Column9World = Matrix.CreateScale(0.35f, 0.35f, 0.5f) * Matrix.CreateRotationX(-cuartoDeVuelta) * Matrix.CreateTranslation(-170, 0, 290);
-      Column10World = Matrix.CreateScale(0.35f, 0.35f, 0.5f) * Matrix.CreateRotationX(-cuartoDeVuelta) * Matrix.CreateTranslation(-330, 0, 290);
-
-      Ramp3World = Matrix.CreateScale(0.25f, 0.35f, 0.3f) * Matrix.CreateRotationX(-cuartoDeVuelta) * Matrix.CreateRotationY(-cuartoDeVuelta) * Matrix.CreateTranslation(-250, 0, -10);
-      Ramp4World = Matrix.CreateScale(0.4f, 0.15f, 0.6f) * Matrix.CreateRotationX(-cuartoDeVuelta) * Matrix.CreateRotationY(-cuartoDeVuelta) * Matrix.CreateTranslation(-300, 35, 130);
-
-      Platform3World = Matrix.CreateScale(100, 5, 70) * Matrix.CreateTranslation(-250, 93, 235);
-
-      Ramp5World = Matrix.CreateScale(0.1f, 0.52f, 0.1f) * Matrix.CreateRotationX(-cuartoDeVuelta) * Matrix.CreateRotationY(-cuartoDeVuelta) * Matrix.CreateTranslation(185, 0, 243);
-      Ramp6World = Matrix.CreateScale(0.1f, 0.52f, 0.1f) * Matrix.CreateRotationX(-cuartoDeVuelta) * Matrix.CreateRotationY(cuartoDeVuelta) * Matrix.CreateTranslation(235, 0, 359);
-      Ramp7World = Matrix.CreateScale(0.1f, 0.52f, 0.1f) * Matrix.CreateRotationX(-cuartoDeVuelta) * Matrix.CreateTranslation(155, 0, 325);
-      Ramp8World = Matrix.CreateScale(0.1f, 0.52f, 0.1f) * Matrix.CreateRotationX(-cuartoDeVuelta) * Matrix.CreateRotationY(mediaVuelta) * Matrix.CreateTranslation(265, 0, 274);
-
-      Platform4World = Matrix.CreateScale(50, 10, 50) * Matrix.CreateTranslation(210, 0, 300);
-
-      Ramp9World = Matrix.CreateScale(0.1f, 0.52f, 0.1f) * Matrix.CreateRotationX(-cuartoDeVuelta) * Matrix.CreateRotationY(-cuartoDeVuelta) * Matrix.CreateTranslation(-461, 0, -254);
-      Ramp10World = Matrix.CreateScale(0.1f, 0.52f, 0.1f) * Matrix.CreateRotationX(-cuartoDeVuelta) * Matrix.CreateRotationY(cuartoDeVuelta) * Matrix.CreateTranslation(-410, 0, -136);
-      Ramp11World = Matrix.CreateScale(0.1f, 0.52f, 0.1f) * Matrix.CreateRotationX(-cuartoDeVuelta) * Matrix.CreateTranslation(-495, 0, -169);
-      Ramp12World = Matrix.CreateScale(0.1f, 0.52f, 0.1f) * Matrix.CreateRotationX(-cuartoDeVuelta) * Matrix.CreateRotationY(mediaVuelta) * Matrix.CreateTranslation(-376, 0, -221);
-
-      Platform5World = Matrix.CreateScale(50, 10, 50) * Matrix.CreateTranslation(-435, 0, -195);
-
-      //Columnas Individuales
-      BrokenColumn1World = Matrix.CreateScale(0.6f) * Matrix.CreateRotationY(-MathF.PI / 6) * Matrix.CreateTranslation(450, 0, 250);
-      BrokenColumn2World = Matrix.CreateScale(0.7f) * Matrix.CreateRotationY(MathF.PI / 6) * Matrix.CreateTranslation(-230, 0, -290);
-
-      Column11World = Matrix.CreateScale(0.6f) * Matrix.CreateRotationX(-cuartoDeVuelta) * Matrix.CreateTranslation(-500, 0, 0);
-      Column12World = Matrix.CreateScale(0.6f) * Matrix.CreateRotationX(-cuartoDeVuelta) * Matrix.CreateTranslation(436, 0, -80);
+      RampWorld = new Matrix[]
+      {
+      Matrix.CreateScale(0.45f, 0.35f, 0.65f) * Matrix.CreateRotationX(-cuartoDeVuelta) * Matrix.CreateTranslation(Ramp1Position),
+        Matrix.CreateScale(0.45f, 0.35f, 0.65f) * Matrix.CreateRotationX(-cuartoDeVuelta) * Matrix.CreateRotationY(mediaVuelta) * Matrix.CreateTranslation(Ramp2Position),
+        Matrix.CreateScale(0.25f, 0.35f, 0.3f) * Matrix.CreateRotationX(-cuartoDeVuelta) * Matrix.CreateRotationY(-cuartoDeVuelta) * Matrix.CreateTranslation(Ramp3Position),
+        Matrix.CreateScale(0.4f, 0.15f, 0.6f) * Matrix.CreateRotationX(-cuartoDeVuelta) * Matrix.CreateRotationY(-cuartoDeVuelta) * Matrix.CreateTranslation(Ramp4Position),
+        Matrix.CreateScale(0.1f, 0.52f, 0.1f) * Matrix.CreateRotationX(-cuartoDeVuelta) * Matrix.CreateRotationY(-cuartoDeVuelta) * Matrix.CreateTranslation(Ramp5Position),
+        Matrix.CreateScale(0.1f, 0.52f, 0.1f) * Matrix.CreateRotationX(-cuartoDeVuelta) * Matrix.CreateRotationY(cuartoDeVuelta) * Matrix.CreateTranslation(Ramp6Position),
+        Matrix.CreateScale(0.1f, 0.52f, 0.1f) * Matrix.CreateRotationX(-cuartoDeVuelta) * Matrix.CreateTranslation(Ramp7Position),
+        Matrix.CreateScale(0.1f, 0.52f, 0.1f) * Matrix.CreateRotationX(-cuartoDeVuelta) * Matrix.CreateRotationY(mediaVuelta) * Matrix.CreateTranslation(Ramp8Position),
+        Matrix.CreateScale(0.1f, 0.52f, 0.1f) * Matrix.CreateRotationX(-cuartoDeVuelta) * Matrix.CreateRotationY(-cuartoDeVuelta) * Matrix.CreateTranslation(Ramp9Position),
+        Matrix.CreateScale(0.1f, 0.52f, 0.1f) * Matrix.CreateRotationX(-cuartoDeVuelta) * Matrix.CreateRotationY(cuartoDeVuelta) * Matrix.CreateTranslation(Ramp10Position),
+        Matrix.CreateScale(0.1f, 0.52f, 0.1f) * Matrix.CreateRotationX(-cuartoDeVuelta) * Matrix.CreateTranslation(Ramp11Position),
+        Matrix.CreateScale(0.1f, 0.52f, 0.1f) * Matrix.CreateRotationX(-cuartoDeVuelta) * Matrix.CreateRotationY(mediaVuelta) * Matrix.CreateTranslation(Ramp12Position)
+      };
     }
 
 
@@ -156,7 +170,66 @@ namespace TGC.MonoGame.TP
       Ramp = ramp;
       Platform = platform;
       Cube = cube;
+
+
+      Vector3 correctorPosicionBoxColumnas = new Vector3(0f,0f,0f);
+        
+      ColumnBox = BoundingVolumesExtensions.CreateAABBFrom(Column);
+      ColumnBox = BoundingVolumesExtensions.Scale(ColumnBox,new Vector3(0.01f,0.5f,0.01f));
+
+      ColumnBoxes = new BoundingBox[]
+      {
+        new BoundingBox(ColumnBox.Min  , ColumnBox.Max  ),
+        new BoundingBox(ColumnBox.Min + Column1Position -correctorPosicionBoxColumnas, ColumnBox.Max + Column1Position - correctorPosicionBoxColumnas),
+        new BoundingBox(ColumnBox.Min + Column2Position -correctorPosicionBoxColumnas, ColumnBox.Max + Column2Position - correctorPosicionBoxColumnas),
+        new BoundingBox(ColumnBox.Min + Column3Position -correctorPosicionBoxColumnas, ColumnBox.Max + Column3Position - correctorPosicionBoxColumnas),
+        new BoundingBox(ColumnBox.Min + Column4Position -correctorPosicionBoxColumnas, ColumnBox.Max + Column4Position - correctorPosicionBoxColumnas),
+        new BoundingBox(ColumnBox.Min + Column5Position -correctorPosicionBoxColumnas, ColumnBox.Max + Column5Position - correctorPosicionBoxColumnas),
+        new BoundingBox(ColumnBox.Min + Column6Position -correctorPosicionBoxColumnas, ColumnBox.Max + Column6Position - correctorPosicionBoxColumnas),
+        new BoundingBox(ColumnBox.Min + Column7Position -correctorPosicionBoxColumnas, ColumnBox.Max + Column7Position - correctorPosicionBoxColumnas),
+        new BoundingBox(ColumnBox.Min + Column8Position -correctorPosicionBoxColumnas, ColumnBox.Max + Column8Position - correctorPosicionBoxColumnas),
+        new BoundingBox(ColumnBox.Min + Column9Position -correctorPosicionBoxColumnas, ColumnBox.Max + Column9Position - correctorPosicionBoxColumnas),
+        new BoundingBox(ColumnBox.Min + Column10Position -correctorPosicionBoxColumnas, ColumnBox.Max + Column10Position - correctorPosicionBoxColumnas),
+        new BoundingBox(ColumnBox.Min + Column11Position -correctorPosicionBoxColumnas, ColumnBox.Max + Column11Position - correctorPosicionBoxColumnas),
+        new BoundingBox(ColumnBox.Min + Column12Position -correctorPosicionBoxColumnas, ColumnBox.Max + Column12Position - correctorPosicionBoxColumnas),
+
+        new BoundingBox(ColumnBox.Min + BrokenColumn1Position -correctorPosicionBoxColumnas, ColumnBox.Max + BrokenColumn1Position - correctorPosicionBoxColumnas),
+        new BoundingBox(ColumnBox.Min + BrokenColumn2Position -correctorPosicionBoxColumnas, ColumnBox.Max + BrokenColumn2Position - correctorPosicionBoxColumnas)
+      };
+
+
+      Vector3 correctorPosicionBoxPlataformas = new Vector3(0f,0f,0f);
+        
+      PlatformBox = BoundingVolumesExtensions.CreateAABBFrom(Platform);
+      PlatformBox = BoundingVolumesExtensions.Scale(PlatformBox,new Vector3(0.01f,0.5f,0.01f));
+
+      PlatformBoxes = new BoundingBox[]
+      {
+        new BoundingBox(ColumnBox.Min  , ColumnBox.Max  ),
+        new BoundingBox(ColumnBox.Min + Platform1Position -correctorPosicionBoxPlataformas, ColumnBox.Max + Platform1Position - correctorPosicionBoxPlataformas),
+        new BoundingBox(ColumnBox.Min + Platform2Position -correctorPosicionBoxPlataformas, ColumnBox.Max + Platform2Position - correctorPosicionBoxPlataformas),
+        new BoundingBox(ColumnBox.Min + Platform3Position -correctorPosicionBoxPlataformas, ColumnBox.Max + Platform3Position - correctorPosicionBoxPlataformas),
+        new BoundingBox(ColumnBox.Min + Platform4Position -correctorPosicionBoxPlataformas, ColumnBox.Max + Platform4Position - correctorPosicionBoxPlataformas),
+        new BoundingBox(ColumnBox.Min + Platform5Position -correctorPosicionBoxPlataformas, ColumnBox.Max + Platform5Position - correctorPosicionBoxPlataformas)
+        
+
+      };
     }
+
+    public Boolean DetectorDeColisionesDeEscenario(GameTime gameTime, OrientedBoundingBox autoCollider)
+        {
+            for(int index = 0; index < ColumnBoxes.Length; index++)
+            {
+                if(autoCollider.Intersects(ColumnBoxes[index]))
+                {
+                    return true;
+                }
+            }
+
+            
+            return false;
+
+        }
     public void dibujar(Matrix view, Matrix projection, Effect effect, Matrix matrizMundo, Model modelo, Color color)
     {
       foreach (var mesh in modelo.Meshes)

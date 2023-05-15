@@ -140,7 +140,8 @@ namespace TGC.MonoGame.TP
       autos.Update(gameTime);
       powerUps.Update(gameTime, autos.GetAutoPrincipalBox());
 
-      if(detalles.DetectorDeColisiones(gameTime, autos.GetAutoPrincipalBox())) autos.FrenarAuto();
+      if(detalles.DetectorDeColisionesDeDetalles(gameTime, autos.GetAutoPrincipalBox())) autos.FrenarAuto();
+      if(escenario.DetectorDeColisionesDeEscenario(gameTime, autos.GetAutoPrincipalBox())) autos.FrenarAuto();
 
       View = Matrix.CreateLookAt(posicionCamara + autos.posAutoPrincipal(), autos.posAutoPrincipal(), Vector3.Up);
 
