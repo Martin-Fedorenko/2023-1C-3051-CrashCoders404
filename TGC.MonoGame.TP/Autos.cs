@@ -89,6 +89,9 @@ namespace TGC.MonoGame.TP
     private OrientedBoundingBox[] CollideCars;
     private Boolean collided;
     private int CollisionIndex;
+    private float PreviousSpeed;
+    private float pesoAuto;
+    private int collidedCars;
 
     public void Initialize()
     {
@@ -199,6 +202,7 @@ namespace TGC.MonoGame.TP
       CarDirection = AutoPrincipalWorld.Backward;
       Desplazamiento = Vector3.Zero;
       collided = false;
+      collidedCars = 0;
 
       if (Keyboard.GetState().IsKeyDown(Keys.W) && !onJump)
       {
@@ -290,53 +294,63 @@ namespace TGC.MonoGame.TP
           onJump = false;
         }
       }
+    // collided = AutoPrincipalBox.Intersects(Auto1Box);
 
-      // collided = AutoPrincipalBox.Intersects(Auto1Box);
-      AutoPrincipalPos += Desplazamiento;
+            PreviousSpeed = CarSpeed;
+            for(var index = 0; index < CollideCars.Length; index++)
+            {
+                if(index < 5) pesoAuto = 250;
+                else pesoAuto = 450;
+                if(AutoPrincipalBox.Intersects(CollideCars[index]))
+                {
+                collidedCars ++;
+                if(PreviousSpeed > 0)
+                {
+                    if(CarSpeed > 0)
+                    {
+                        CarSpeed -= pesoAuto * collidedCars * elapsedTime ;
+                        AutosPosiciones[index] += Desplazamiento;
+                    }
+                }
+                else
+                    if(CarSpeed < 0)
+                    {
+                        CarSpeed += pesoAuto * collidedCars * elapsedTime ;
+                        AutosPosiciones[index] += Desplazamiento;
+                    }
+                }
+            }
+            //PROBLEMA: EL AUTO QUEDA TRABADO CON LOS OTROS AUTOS SI LO FRENAN CHEQUEAR QUE A VECES SE ATRAVIESAN UNAS PARTES
 
-      Vector3 postChoque = CarDirection * CarSpeed / 5;
+            AutoPrincipalPos += Desplazamiento;
 
-      for (var index = 0; index < CollideCars.Length; index++)
-      {
-        if (AutoPrincipalBox.Intersects(CollideCars[index]))
-        {
-          //  collided = true;
-          // CollisionIndex = index;
+            AutoPrincipalWorld =  Matrix.CreateScale(0.1f) *
+                                  Matrix.CreateRotationX(-jumpRotation) *
+                                  Matrix.CreateRotationY(Rotation*2) *
+                                  Matrix.CreateTranslation(AutoPrincipalPos);
 
-          AutoPrincipalPos -= postChoque;
-          AutosPosiciones[index] += postChoque;
+            for(var index = 0; index < CollideCars.Length; index++)
+            {
+                if(index < 5)
+                {
+                AutosWorld[index] = Matrix.CreateScale(0.09f) *
+                                    Matrix.CreateRotationY(mediaVuelta) *
+                                    Matrix.CreateTranslation(AutosPosiciones[index]);
+                }
+                else
+                {
+                AutosWorld[index] = Matrix.CreateScale(0.006f) *
+                                    Matrix.CreateRotationY(cuartoDeVuelta) *
+                                    Matrix.CreateTranslation(AutosPosiciones[index]);
+                }
 
-          CarSpeed = 0;
-        }
-      }
+                 CollideCars[index] = OrientedBoundingBox.FromAABB(new BoundingBox(AutoDeportivoBoxAABB.Min +  AutosPosiciones[index], AutoDeportivoBoxAABB.Max +  AutosPosiciones[index]));
 
+            }
 
-      AutoPrincipalWorld = Matrix.CreateScale(0.1f) *
-                            Matrix.CreateRotationX(-jumpRotation) *
-                            Matrix.CreateRotationY(Rotation * 2) *
-                            Matrix.CreateTranslation(AutoPrincipalPos);
-
-      for (var index = 0; index < CollideCars.Length; index++)
-      {
-        if (index < 5)
-        {
-          AutosWorld[index] = Matrix.CreateScale(0.1f) *
-                              Matrix.CreateRotationY(mediaVuelta) *
-                              Matrix.CreateTranslation(AutosPosiciones[index]);
-        }
-        else
-        {
-          AutosWorld[index] = Matrix.CreateScale(0.007f) *
-                              Matrix.CreateRotationY(cuartoDeVuelta) *
-                              Matrix.CreateTranslation(AutosPosiciones[index]);
-        }
-
-        CollideCars[index] = OrientedBoundingBox.FromAABB(new BoundingBox(AutoDeportivoBoxAABB.Min + AutosPosiciones[index], AutoDeportivoBoxAABB.Max + AutosPosiciones[index]));
-
-      }
-
-      AutoPrincipalBox = OrientedBoundingBox.FromAABB(new BoundingBox(AutoDeportivoBoxAABB.Min + AutoPrincipalPos, AutoDeportivoBoxAABB.Max + AutoPrincipalPos));
-      AutoPrincipalBox.Rotate(Matrix.CreateRotationX(-jumpRotation) * Matrix.CreateRotationY(Rotation * 2));
+            AutoPrincipalBox = OrientedBoundingBox.FromAABB(new BoundingBox(AutoDeportivoBoxAABB.Min + AutoPrincipalPos, AutoDeportivoBoxAABB.Max + AutoPrincipalPos));
+            AutoPrincipalBox.Rotate(Matrix.CreateRotationX(-jumpRotation)*Matrix.CreateRotationY(Rotation*2));
+    
 
 
     }
