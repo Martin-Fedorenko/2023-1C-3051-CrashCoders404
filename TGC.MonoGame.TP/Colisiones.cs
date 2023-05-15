@@ -82,7 +82,7 @@ namespace TGC.MonoGame.TP
     public void LoadContent()
     {
         
-        detalles.LoadContent(Tree,Rock1,Rock5,Rock10,Tire);
+       /* detalles.LoadContent(Tree,Rock1,Rock5,Rock10,Tire);
         escenario.LoadContent(Piso,Pared,Column,Ramp,Platform,Cube);
 
         detalles.Tree1World = Matrix.CreateScale(0.5f) * Matrix.CreateTranslation(detalles.Tree1Position);
@@ -94,7 +94,7 @@ namespace TGC.MonoGame.TP
                 TreeBoxAABB = BoundingVolumesExtensions.FromMatrix(detalles.Tree1World),
             };
            
-        
+        */
     }
 
     public void Upadate(GameTime gameTieme)

@@ -2,6 +2,7 @@ using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using TGC.MonoGame.TP.Collisions;
 
 namespace TGC.MonoGame.TP
 {
@@ -9,24 +10,15 @@ namespace TGC.MonoGame.TP
     {
         public Detalles() {}
 
+        private Autos autos;
         private Model Tree { get; set; }
         private Model Rock1 { get; set; }
         private Model Rock5 { get; set; }
         private Model Rock10 { get; set; }
         private Model Tire { get; set; }
 
-        public Matrix Tree1World { get; set; }
-        private Matrix Tree2World { get; set; }
-        private Matrix Tree3World { get; set; }
-        private Matrix Tree4World { get; set; }
-        private Matrix Tree5World { get; set; }
-        private Matrix Tree6World { get; set; }
-        private Matrix Tree7World { get; set; }
-        private Matrix Tree8World { get; set; }
-        private Matrix Tree9World { get; set; }
-        private Matrix Tree10World { get; set; }
-        private Matrix Tree11World { get; set; }
-        private Matrix Tree12World { get; set; }
+        private Matrix[] TreesWorld;
+        private Matrix[] RocksWorld;
 
         private Matrix Rock1World { get; set; }
         private Matrix Rock2World { get; set; }
@@ -273,62 +265,78 @@ namespace TGC.MonoGame.TP
 
         //Bones
         private Matrix[] relativeMatrices;
+
+        //Colisiones
+        private BoundingBox TreeBox;
+        private BoundingBox Rock1Box;
+        private BoundingBox Rock5Box;
+        private BoundingBox Rock10Box;
+        private BoundingBox[] TreeBoxes;
         
       public void Initialize()
         {
+            autos = new Autos();
             //Árboles
-            Tree1World = Matrix.CreateScale(0.5f) * Matrix.CreateTranslation(Tree1Position);
-            Tree2World = Matrix.CreateScale(0.6f) * Matrix.CreateTranslation(Tree2Position);
-            Tree3World = Matrix.CreateScale(0.4f) * Matrix.CreateTranslation(Tree3Position);
-            Tree4World = Matrix.CreateScale(0.7f) * Matrix.CreateTranslation(Tree4Position);
+            TreesWorld = new Matrix[]
+            {
+            Matrix.CreateScale(0.5f) * Matrix.CreateTranslation(Tree1Position),
+            Matrix.CreateScale(0.6f) * Matrix.CreateTranslation(Tree2Position),
+            Matrix.CreateScale(0.4f) * Matrix.CreateTranslation(Tree3Position),
+            Matrix.CreateScale(0.7f) * Matrix.CreateTranslation(Tree4Position),
 
-            Tree5World = Matrix.CreateScale(0.5f) * Matrix.CreateTranslation(Tree5Position);
-            Tree6World = Matrix.CreateScale(0.5f) * Matrix.CreateTranslation(Tree6Position);
-            Tree7World = Matrix.CreateScale(0.6f) * Matrix.CreateTranslation(Tree7Position);
-            Tree8World = Matrix.CreateScale(0.4f) * Matrix.CreateTranslation(Tree8Position);
+            Matrix.CreateScale(0.5f) * Matrix.CreateTranslation(Tree5Position),
+            Matrix.CreateScale(0.5f) * Matrix.CreateTranslation(Tree6Position),
+            Matrix.CreateScale(0.6f) * Matrix.CreateTranslation(Tree7Position),
+            Matrix.CreateScale(0.4f) * Matrix.CreateTranslation(Tree8Position),
 
-            Tree9World = Matrix.CreateScale(0.6f) * Matrix.CreateTranslation(Tree9Position);
-            Tree10World = Matrix.CreateScale(0.6f) * Matrix.CreateTranslation(Tree10Position);
-            Tree11World = Matrix.CreateScale(0.7f) * Matrix.CreateTranslation(Tree11Position);
-            Tree12World = Matrix.CreateScale(0.5f) * Matrix.CreateTranslation(Tree12Position);
+            Matrix.CreateScale(0.6f) * Matrix.CreateTranslation(Tree9Position),
+            Matrix.CreateScale(0.6f) * Matrix.CreateTranslation(Tree10Position),
+            Matrix.CreateScale(0.7f) * Matrix.CreateTranslation(Tree11Position),
+            Matrix.CreateScale(0.5f) * Matrix.CreateTranslation(Tree12Position)
+            };
+
 
             //Piedras
-            Rock1World = Matrix.CreateScale(0.05f) * Matrix.CreateRotationY(cuartoDeVuelta) * Matrix.CreateTranslation(Rock1Position);
-            Rock2World = Matrix.CreateScale(0.05f) * Matrix.CreateRotationY(cuartoDeVuelta) * Matrix.CreateTranslation(Rock2Position);
-            Rock3World = Matrix.CreateScale(0.05f) * Matrix.CreateRotationY(cuartoDeVuelta) * Matrix.CreateTranslation(Rock3Position);
-            Rock4World = Matrix.CreateScale(0.05f) * Matrix.CreateRotationY(cuartoDeVuelta) * Matrix.CreateTranslation(Rock4Position);
+            RocksWorld = new Matrix[]
+            {
+            Matrix.CreateScale(0.05f) * Matrix.CreateRotationY(cuartoDeVuelta) * Matrix.CreateTranslation(Rock1Position),
+            Matrix.CreateScale(0.05f) * Matrix.CreateRotationY(cuartoDeVuelta) * Matrix.CreateTranslation(Rock2Position),
+            Matrix.CreateScale(0.05f) * Matrix.CreateRotationY(cuartoDeVuelta) * Matrix.CreateTranslation(Rock3Position),
+            Matrix.CreateScale(0.05f) * Matrix.CreateRotationY(cuartoDeVuelta) * Matrix.CreateTranslation(Rock4Position),
 
-            Rock5World = Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(Rock5Position);
-            Rock6World = Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(Rock6Position);
-            Rock7World = Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(Rock7Position);
-            Rock8World = Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(Rock8Position);
+            Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(Rock5Position),
+            Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(Rock6Position),
+            Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(Rock7Position),
+            Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(Rock8Position),
 
-            Rock9World = Matrix.CreateScale(0.1f) * Matrix.CreateRotationY(MathF.PI / 8) * Matrix.CreateTranslation(Rock9Position);
-            Rock10World = Matrix.CreateScale(0.1f) * Matrix.CreateRotationY(MathF.PI / 8) * Matrix.CreateTranslation(Rock10Position);
-            Rock11World = Matrix.CreateScale(0.1f) * Matrix.CreateRotationY(MathF.PI / 8) * Matrix.CreateTranslation(Rock11Position);
-            Rock12World = Matrix.CreateScale(0.1f) * Matrix.CreateRotationY(MathF.PI / 8) * Matrix.CreateTranslation(Rock12Position);
+            Matrix.CreateScale(0.1f) * Matrix.CreateRotationY(MathF.PI / 8) * Matrix.CreateTranslation(Rock9Position),
+            Matrix.CreateScale(0.1f) * Matrix.CreateRotationY(MathF.PI / 8) * Matrix.CreateTranslation(Rock10Position),
+            Matrix.CreateScale(0.1f) * Matrix.CreateRotationY(MathF.PI / 8) * Matrix.CreateTranslation(Rock11Position),
+            Matrix.CreateScale(0.1f) * Matrix.CreateRotationY(MathF.PI / 8) * Matrix.CreateTranslation(Rock12Position),
 
-            Rock13World = Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(Rock13Position);
-            Rock14World = Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(Rock14Position);
-            Rock15World = Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(Rock15Position);
-            Rock16World = Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(Rock16Position);
-            Rock17World = Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(Rock17Position);
-            Rock18World = Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(Rock18Position);
-            Rock19World = Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(Rock19Position);
-            Rock20World = Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(Rock20Position);
-            Rock21World = Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(Rock21Position);
-            Rock22World = Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(Rock22Position);
-            Rock23World = Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(Rock23Position);
-            Rock24World = Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(Rock24Position);
+            Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(Rock13Position),
+            Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(Rock14Position),
+            Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(Rock15Position),
+            Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(Rock16Position),
+            Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(Rock17Position),
+            Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(Rock18Position),
+            Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(Rock19Position),
+            Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(Rock20Position),
+            Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(Rock21Position),
+            Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(Rock22Position),
+            Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(Rock23Position),
+            Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(Rock24Position),
 
-            Rock25World = Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(Rock25Position);
-            Rock26World = Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(Rock26Position);
-            Rock27World = Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(Rock27Position);
-            Rock28World = Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(Rock28Position);
-            Rock29World = Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(Rock29Position);
-            Rock30World = Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(Rock30Position);
-            Rock31World = Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(Rock31Position);
-            Rock32World = Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(Rock32Position);
+            Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(Rock25Position),
+            Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(Rock26Position),
+            Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(Rock27Position),
+            Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(Rock28Position),
+            Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(Rock29Position),
+            Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(Rock30Position),
+            Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(Rock31Position),
+            Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(Rock32Position)
+            };
+
 
             // "Tire" del lado más cerca del origen de la rampa Rampa1World
             Tire1World = Matrix.CreateScale(0.02f) * Matrix.CreateRotationX(cuartoDeVuelta) * Matrix.CreateTranslation(Tire1Position);
@@ -421,8 +429,46 @@ namespace TGC.MonoGame.TP
             Rock10 = rock10;
             Tire = tire;
 
-        }
+            Vector3 correctorPosicionBoxTree = new Vector3(3695f,228.1747f,5875f);//Sino la bounding box aparecia en posiciones lejanas al modelo, de esta forma la llevo al origen
+        
+            
+            TreeBox = BoundingVolumesExtensions.CreateAABBFrom(Tree);
+            TreeBox = BoundingVolumesExtensions.Scale(TreeBox,new Vector3(0.01f,0.5f,0.01f));
 
+
+            TreeBoxes = new BoundingBox[]
+            {
+                new BoundingBox(TreeBox.Min  , TreeBox.Max  ),
+                new BoundingBox(TreeBox.Min + Tree8Position -correctorPosicionBoxTree, TreeBox.Max + Tree8Position - correctorPosicionBoxTree),
+
+                new BoundingBox(TreeBox.Min + Tree1Position -correctorPosicionBoxTree, TreeBox.Max + Tree1Position - correctorPosicionBoxTree),
+                new BoundingBox(TreeBox.Min + Tree5Position -correctorPosicionBoxTree, TreeBox.Max + Tree5Position - correctorPosicionBoxTree),
+                new BoundingBox(TreeBox.Min + Tree6Position -correctorPosicionBoxTree, TreeBox.Max + Tree6Position - correctorPosicionBoxTree),
+                new BoundingBox(TreeBox.Min + Tree12Position -correctorPosicionBoxTree, TreeBox.Max + Tree12Position - correctorPosicionBoxTree),
+
+                new BoundingBox(TreeBox.Min + Tree2Position -correctorPosicionBoxTree, TreeBox.Max + Tree2Position - correctorPosicionBoxTree),
+                new BoundingBox(TreeBox.Min + Tree7Position -correctorPosicionBoxTree, TreeBox.Max + Tree7Position - correctorPosicionBoxTree),
+                new BoundingBox(TreeBox.Min + Tree9Position -correctorPosicionBoxTree, TreeBox.Max + Tree9Position - correctorPosicionBoxTree),
+                new BoundingBox(TreeBox.Min + Tree10Position -correctorPosicionBoxTree, TreeBox.Max + Tree10Position - correctorPosicionBoxTree),
+
+                new BoundingBox(TreeBox.Min + Tree4Position -correctorPosicionBoxTree, TreeBox.Max + Tree4Position - correctorPosicionBoxTree),
+                new BoundingBox(TreeBox.Min + Tree11Position -correctorPosicionBoxTree, TreeBox.Max + Tree11Position - correctorPosicionBoxTree)
+            };
+
+        }
+        
+        public Boolean DetectorDeColisiones(GameTime gameTime, OrientedBoundingBox autoCollider)
+        {
+            for(int index = 0; index < TreeBoxes.Length; index++)
+            {
+            if(autoCollider.Intersects(TreeBoxes[index]))
+            {
+                return true;
+            }
+            }
+            return false;
+
+        }
       public void dibujar(Matrix view,Matrix projection,Effect effect,Matrix matrizMundo,Model modelo,Color color)
         {
             foreach (var mesh in modelo.Meshes)
@@ -471,57 +517,30 @@ namespace TGC.MonoGame.TP
         }
         public void dibujarDetalles(Matrix view,Matrix projection,Effect effect)
         {
-            dibujarArboles(view,projection,effect,Tree1World, Tree, Color.Black);
-            dibujarArboles(view,projection,effect,Tree2World, Tree, Color.Black);
-            dibujarArboles(view,projection,effect,Tree3World, Tree, Color.Black);
-            dibujarArboles(view,projection,effect,Tree4World, Tree, Color.Black);
+            for(int index = 0; index < TreesWorld.Length; index++)
+            {
+                 dibujarArboles(view,projection,effect,TreesWorld[index], Tree, Color.Black);
+            }
 
-            dibujarArboles(view,projection,effect,Tree5World, Tree, Color.Black);
-            dibujarArboles(view,projection,effect,Tree6World, Tree, Color.Black);
-            dibujarArboles(view,projection,effect,Tree7World, Tree, Color.Black);
-            dibujarArboles(view,projection,effect,Tree8World, Tree, Color.Black);
-
-            dibujarArboles(view,projection,effect,Tree9World, Tree, Color.Black);
-            dibujarArboles(view,projection,effect,Tree10World, Tree, Color.Black);
-            dibujarArboles(view,projection,effect,Tree11World, Tree, Color.Black);
-            dibujarArboles(view,projection,effect,Tree12World, Tree, Color.Black);
-
-            dibujar(view,projection,effect,Rock1World, Rock1, Color.Gray);
-            dibujar(view,projection,effect,Rock2World, Rock1, Color.Gray);
-            dibujar(view,projection,effect,Rock3World, Rock1, Color.Gray);
-            dibujar(view,projection,effect,Rock4World, Rock1, Color.Gray);
-
-            dibujar(view,projection,effect,Rock5World, Rock1, Color.Gray);
-            dibujar(view,projection,effect,Rock6World, Rock1, Color.Gray);
-            dibujar(view,projection,effect,Rock7World, Rock1, Color.Gray);
-            dibujar(view,projection,effect,Rock8World, Rock1, Color.Gray);
-
-            dibujar(view,projection,effect,Rock9World, Rock5, Color.Gray);
-            dibujar(view,projection,effect,Rock10World, Rock5, Color.Gray);
-            dibujar(view,projection,effect,Rock11World, Rock5, Color.Gray);
-            dibujar(view,projection,effect,Rock12World, Rock5, Color.Gray);
-
-            dibujar(view,projection,effect,Rock13World, Rock5, Color.Gray);
-            dibujar(view,projection,effect,Rock14World, Rock10, Color.Gray);
-            dibujar(view,projection,effect,Rock15World, Rock10, Color.Gray);
-            dibujar(view,projection,effect,Rock16World, Rock5, Color.Gray);
-            dibujar(view,projection,effect,Rock17World, Rock5, Color.Gray);
-            dibujar(view,projection,effect,Rock18World, Rock10, Color.Gray);
-            dibujar(view,projection,effect,Rock19World, Rock10, Color.Gray);
-            dibujar(view,projection,effect,Rock20World, Rock5, Color.Gray);
-            dibujar(view,projection,effect,Rock21World, Rock5, Color.Gray);
-            dibujar(view,projection,effect,Rock22World, Rock10, Color.Gray);
-            dibujar(view,projection,effect,Rock23World, Rock10, Color.Gray);
-            dibujar(view,projection,effect,Rock24World, Rock5, Color.Gray);
-
-            dibujar(view,projection,effect,Rock25World, Rock5, Color.Gray);
-            dibujar(view,projection,effect,Rock26World, Rock5, Color.Gray);
-            dibujar(view,projection,effect,Rock27World, Rock5, Color.Gray);
-            dibujar(view,projection,effect,Rock28World, Rock5, Color.Gray);
-            dibujar(view,projection,effect,Rock29World, Rock5, Color.Gray);
-            dibujar(view,projection,effect,Rock30World, Rock5, Color.Gray);
-            dibujar(view,projection,effect,Rock31World, Rock5, Color.Gray);
-            dibujar(view,projection,effect,Rock32World, Rock5, Color.Gray);
+            for(int index = 0; index < RocksWorld.Length; index++)
+            {
+                if(index < 7)
+                    dibujar(view,projection,effect,RocksWorld[index], Rock1, Color.Gray);
+                if(index < 13 )
+                    dibujar(view,projection,effect,RocksWorld[index], Rock5, Color.Gray);
+                if(index < 15)
+                     dibujar(view,projection,effect,RocksWorld[index], Rock10, Color.Gray);
+                if(index < 17)
+                    dibujar(view,projection,effect,RocksWorld[index], Rock5, Color.Gray);
+                if(index < 19)
+                    dibujar(view,projection,effect,RocksWorld[index], Rock10, Color.Gray);
+                if(index < 21)
+                    dibujar(view,projection,effect,RocksWorld[index], Rock5, Color.Gray);
+                if(index < 23)
+                    dibujar(view,projection,effect,RocksWorld[index], Rock10, Color.Gray);
+                if(index >= 23)
+                    dibujar(view,projection,effect,RocksWorld[index], Rock5, Color.Gray);
+            }   
 
             // "Tire" del lado más cerca del origen de la rampa Rampa1World
             dibujar(view,projection,effect,Tire1World, Tire, Color.Black);

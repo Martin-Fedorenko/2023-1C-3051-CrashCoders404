@@ -92,6 +92,7 @@ namespace TGC.MonoGame.TP
     private float PreviousSpeed;
     private float pesoAuto;
     private int collidedCars;
+    Vector3 coreccionAltura = new Vector3(0,70.2f,0); //el centro de la oriented bounding box esta quedando muy arriba
 
     public void Initialize()
     {
@@ -344,11 +345,12 @@ namespace TGC.MonoGame.TP
                                     Matrix.CreateTranslation(AutosPosiciones[index]);
                 }
 
-                 CollideCars[index] = OrientedBoundingBox.FromAABB(new BoundingBox(AutoDeportivoBoxAABB.Min +  AutosPosiciones[index], AutoDeportivoBoxAABB.Max +  AutosPosiciones[index]));
+                 CollideCars[index] = OrientedBoundingBox.FromAABB(new BoundingBox(AutoDeportivoBoxAABB.Min +  AutosPosiciones[index] - coreccionAltura, AutoDeportivoBoxAABB.Max +  AutosPosiciones[index] - coreccionAltura));
 
             }
 
-            AutoPrincipalBox = OrientedBoundingBox.FromAABB(new BoundingBox(AutoDeportivoBoxAABB.Min + AutoPrincipalPos, AutoDeportivoBoxAABB.Max + AutoPrincipalPos));
+           
+            AutoPrincipalBox = OrientedBoundingBox.FromAABB(new BoundingBox(AutoDeportivoBoxAABB.Min + AutoPrincipalPos - coreccionAltura, AutoDeportivoBoxAABB.Max + AutoPrincipalPos - coreccionAltura));
             AutoPrincipalBox.Rotate(Matrix.CreateRotationX(-jumpRotation)*Matrix.CreateRotationY(Rotation*2));
     
 
@@ -407,6 +409,11 @@ namespace TGC.MonoGame.TP
     {
       return AutoPrincipalBox;
     }
+
+    public void FrenarAuto()
+    {
+      CarSpeed = 0;
+    }
     public void inicializarBoundingBoxes()
     {
       AutoDeportivoBoxAABB = BoundingVolumesExtensions.CreateAABBFrom(AutoDeportivo);
@@ -414,18 +421,18 @@ namespace TGC.MonoGame.TP
       AutoDeCombateBoxAABB = BoundingVolumesExtensions.CreateAABBFrom(AutoDeCombate);
       AutoDeCombateBoxAABB = BoundingVolumesExtensions.Scale(AutoDeCombateBoxAABB, 0.007f);
 
-      AutoPrincipalBox = OrientedBoundingBox.FromAABB(new BoundingBox(AutoDeportivoBoxAABB.Min + AutoPrincipalPos, AutoDeportivoBoxAABB.Max + AutoPrincipalPos));
+      AutoPrincipalBox = OrientedBoundingBox.FromAABB(new BoundingBox(AutoDeportivoBoxAABB.Min - coreccionAltura, AutoDeportivoBoxAABB.Max - coreccionAltura));
 
       CollideCars = new OrientedBoundingBox[]
       {
-            OrientedBoundingBox.FromAABB(new BoundingBox(AutoDeportivoBoxAABB.Min + Auto1Pos, AutoDeportivoBoxAABB.Max + Auto1Pos)),
-            OrientedBoundingBox.FromAABB(new BoundingBox(AutoDeportivoBoxAABB.Min + Auto2Pos, AutoDeportivoBoxAABB.Max + Auto2Pos)),
-            OrientedBoundingBox.FromAABB(new BoundingBox(AutoDeportivoBoxAABB.Min + Auto3Pos, AutoDeportivoBoxAABB.Max + Auto3Pos)),
-            OrientedBoundingBox.FromAABB(new BoundingBox(AutoDeportivoBoxAABB.Min + Auto4Pos, AutoDeportivoBoxAABB.Max + Auto4Pos)),
-            OrientedBoundingBox.FromAABB(new BoundingBox(AutoDeportivoBoxAABB.Min + Auto5Pos, AutoDeportivoBoxAABB.Max + Auto5Pos)),
-            OrientedBoundingBox.FromAABB(new BoundingBox(AutoDeCombateBoxAABB.Min + Auto6Pos, AutoDeCombateBoxAABB.Max + Auto6Pos)),
-            OrientedBoundingBox.FromAABB(new BoundingBox(AutoDeCombateBoxAABB.Min + Auto7Pos, AutoDeCombateBoxAABB.Max + Auto7Pos)),
-            OrientedBoundingBox.FromAABB(new BoundingBox(AutoDeCombateBoxAABB.Min + Auto8Pos, AutoDeCombateBoxAABB.Max + Auto8Pos)),
+            OrientedBoundingBox.FromAABB(new BoundingBox(AutoDeportivoBoxAABB.Min + Auto1Pos - coreccionAltura, AutoDeportivoBoxAABB.Max + Auto1Pos - coreccionAltura)),
+            OrientedBoundingBox.FromAABB(new BoundingBox(AutoDeportivoBoxAABB.Min + Auto2Pos - coreccionAltura, AutoDeportivoBoxAABB.Max + Auto2Pos - coreccionAltura)),
+            OrientedBoundingBox.FromAABB(new BoundingBox(AutoDeportivoBoxAABB.Min + Auto3Pos - coreccionAltura, AutoDeportivoBoxAABB.Max + Auto3Pos - coreccionAltura)),
+            OrientedBoundingBox.FromAABB(new BoundingBox(AutoDeportivoBoxAABB.Min + Auto4Pos - coreccionAltura, AutoDeportivoBoxAABB.Max + Auto4Pos - coreccionAltura)),
+            OrientedBoundingBox.FromAABB(new BoundingBox(AutoDeportivoBoxAABB.Min + Auto5Pos - coreccionAltura, AutoDeportivoBoxAABB.Max + Auto5Pos - coreccionAltura)),
+            OrientedBoundingBox.FromAABB(new BoundingBox(AutoDeCombateBoxAABB.Min + Auto6Pos - coreccionAltura, AutoDeCombateBoxAABB.Max + Auto6Pos - coreccionAltura)),
+            OrientedBoundingBox.FromAABB(new BoundingBox(AutoDeCombateBoxAABB.Min + Auto7Pos - coreccionAltura, AutoDeCombateBoxAABB.Max + Auto7Pos - coreccionAltura)),
+            OrientedBoundingBox.FromAABB(new BoundingBox(AutoDeCombateBoxAABB.Min + Auto8Pos - coreccionAltura, AutoDeCombateBoxAABB.Max + Auto8Pos - coreccionAltura)),
       };
     }
   }

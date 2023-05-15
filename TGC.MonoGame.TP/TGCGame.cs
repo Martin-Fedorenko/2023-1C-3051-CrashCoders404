@@ -62,6 +62,8 @@ namespace TGC.MonoGame.TP
     private Vector3 posicionTarget = new Vector3(0, 0, 0);
     private Vector3 posicionCamara = new Vector3(-250, 250, -100);
 
+    //Colisiones
+    private Boolean collided = false;
     protected override void Initialize()
     {
       // Dimensiones de la pantalla
@@ -137,6 +139,8 @@ namespace TGC.MonoGame.TP
 
       autos.Update(gameTime);
       powerUps.Update(gameTime, autos.GetAutoPrincipalBox());
+
+      if(detalles.DetectorDeColisiones(gameTime, autos.GetAutoPrincipalBox())) autos.FrenarAuto();
 
       View = Matrix.CreateLookAt(posicionCamara + autos.posAutoPrincipal(), autos.posAutoPrincipal(), Vector3.Up);
 

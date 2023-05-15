@@ -46,8 +46,9 @@ namespace TGC.MonoGame.TP
     private BoundingBox[] collidersTurbos;
     private BoundingBox[] collidersMisiles;
     private BoundingBox PowerUpBox;
-    private List<int> collidedindex;
-
+    private List<int> collidedindexAmetralladora;
+    private List<int> collidedindexMisil;
+    private List<int> collidedindexTurbo;
     //Bones
     private Matrix[] relativeMatrices;
 
@@ -58,7 +59,9 @@ namespace TGC.MonoGame.TP
 
     public void Initialize(GraphicsDevice graphicsDevice)
     { 
-        collidedindex = new List<int>();
+        collidedindexAmetralladora = new List<int>();
+        collidedindexMisil = new List<int>();
+        collidedindexTurbo = new List<int>();
         
       // PowerAmetralladora
       AmetralladorasWorld = new Matrix[]
@@ -136,7 +139,7 @@ namespace TGC.MonoGame.TP
       {
         if (autoCollider.Intersects(collidersAmetralladoras[index]))
         {
-          collidedindex.Add(index);
+          collidedindexAmetralladora.Add(index);
         }
       }
       
@@ -144,7 +147,7 @@ namespace TGC.MonoGame.TP
       {
         if (autoCollider.Intersects(collidersMisiles[index]))
         {
-          collidedindex.Add(index);
+          collidedindexMisil.Add(index);
         }
       }
 
@@ -152,7 +155,7 @@ namespace TGC.MonoGame.TP
       {
         if (autoCollider.Intersects(collidersTurbos[index]))
         {
-          collidedindex.Add(index);
+          collidedindexTurbo.Add(index);
         }
       }
 
@@ -189,21 +192,21 @@ namespace TGC.MonoGame.TP
 
       for(int index = 0; index < AmetralladorasWorld.Length; index++)
       {
-        if(!collidedindex.Contains(index))
+        if(!collidedindexAmetralladora.Contains(index))
         {
           dibujar(view, projection, effect, AmetralladorasWorld[index], CajaAmetralladora, Color.Red);
         }
       }
       for(int index = 0; index < MisilesWorld.Length; index++)
       {
-        if(!collidedindex.Contains(index))
+        if(!collidedindexMisil.Contains(index))
         {
           dibujar(view, projection, effect, MisilesWorld[index], CajaMisil, Color.Yellow);
         }
       }
       for(int index = 0; index < TurbosWorld.Length; index++)
       {
-        if(!collidedindex.Contains(index))
+        if(!collidedindexTurbo.Contains(index))
         {
           dibujar(view, projection, effect, TurbosWorld[index], CajaTurbo, Color.Blue);
         }
