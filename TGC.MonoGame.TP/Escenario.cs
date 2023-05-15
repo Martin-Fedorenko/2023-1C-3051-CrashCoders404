@@ -255,6 +255,7 @@ namespace TGC.MonoGame.TP
       }
     }
 
+
     public void dibujarEscenario(Matrix view, Matrix projection, Effect effect)
     {
       //Arena
@@ -262,51 +263,22 @@ namespace TGC.MonoGame.TP
       dibujar(view, projection, effect, ParedWorld, Pared, Color.Wheat);
 
       //Plataformas
-      dibujar(view, projection, effect, Column1World, Column, Color.SandyBrown);
-      dibujar(view, projection, effect, Column2World, Column, Color.SandyBrown);
-      dibujar(view, projection, effect, Column3World, Column, Color.SandyBrown);
-      dibujar(view, projection, effect, Column4World, Column, Color.SandyBrown);
+      for(int index = 0; index < PlatformWorld.Length; index++)
+      {
+        dibujar(view,projection,effect,PlatformWorld[index], Platform, Color.Black);
+      }
 
-      dibujar(view, projection, effect, Ramp1World, Ramp, Color.Gray);
-      dibujar(view, projection, effect, Ramp2World, Ramp, Color.Gray);
+      //Columnas
+      for(int index = 0; index < ColumnWorld.Length; index++)
+      {
+        dibujar(view,projection,effect,ColumnWorld[index], Column, Color.Orange);
+      }
 
-      dibujar(view, projection, effect, Platform1World, Platform, Color.DarkSalmon);
-
-      dibujar(view, projection, effect, Column5World, Column, Color.SandyBrown);
-      dibujar(view, projection, effect, Column6World, Column, Color.SandyBrown);
-      dibujar(view, projection, effect, Column7World, Column, Color.SandyBrown);
-      dibujar(view, projection, effect, Column8World, Column, Color.SandyBrown);
-
-      dibujar(view, projection, effect, Platform2World, Platform, Color.DarkSalmon);
-
-      dibujar(view, projection, effect, Column9World, Column, Color.SandyBrown);
-      dibujar(view, projection, effect, Column10World, Column, Color.SandyBrown);
-
-      dibujar(view, projection, effect, Ramp3World, Ramp, Color.Gray);
-      dibujar(view, projection, effect, Ramp4World, Ramp, Color.Gray);
-
-      dibujar(view, projection, effect, Platform3World, Platform, Color.DarkSalmon);
-
-      dibujar(view, projection, effect, Ramp5World, Ramp, Color.DarkGray);
-      dibujar(view, projection, effect, Ramp6World, Ramp, Color.DarkGray);
-      dibujar(view, projection, effect, Ramp7World, Ramp, Color.DarkGray);
-      dibujar(view, projection, effect, Ramp8World, Ramp, Color.DarkGray);
-
-      dibujar(view, projection, effect, Platform4World, Platform, Color.DarkGray);
-
-      dibujar(view, projection, effect, Ramp9World, Ramp, Color.DarkGray);
-      dibujar(view, projection, effect, Ramp10World, Ramp, Color.DarkGray);
-      dibujar(view, projection, effect, Ramp11World, Ramp, Color.DarkGray);
-      dibujar(view, projection, effect, Ramp12World, Ramp, Color.DarkGray);
-
-      dibujar(view, projection, effect, Platform5World, Platform, Color.DarkGray);
-
-      //Columnas Individuales
-      dibujar(view, projection, effect, BrokenColumn1World, Column, Color.SandyBrown);
-      dibujar(view, projection, effect, BrokenColumn2World, Column, Color.SandyBrown);
-
-      dibujar(view, projection, effect, Column11World, Column, Color.SandyBrown);
-      dibujar(view, projection, effect, Column12World, Column, Color.SandyBrown);
+      //Rampas
+      for(int index = 0; index < RampWorld.Length; index++)
+      {
+        dibujar(view,projection,effect,RampWorld[index], Ramp, Color.SandyBrown);
+      }
     }
   }
 }

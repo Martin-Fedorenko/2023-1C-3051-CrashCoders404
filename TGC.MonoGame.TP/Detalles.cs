@@ -348,7 +348,7 @@ namespace TGC.MonoGame.TP
             TiresWorld = new Matrix[]
             {
             // "Tire" del lado más cerca del origen de la rampa Rampa1World
-                Matrix.CreateScale(0.02f) * Matrix.CreateRotationX(cuartoDeVuelta) * Matrix.CreateTranslation(Tire1Position),
+                Tire1World = Matrix.CreateScale(0.02f) * Matrix.CreateRotationX(cuartoDeVuelta) * Matrix.CreateTranslation(Tire1Position),
 
                 Matrix.CreateScale(0.02f) * Matrix.CreateRotationX(cuartoDeVuelta) * Matrix.CreateTranslation(Tire2Position),
                 Matrix.CreateScale(0.02f) * Matrix.CreateRotationX(cuartoDeVuelta) * Matrix.CreateTranslation(Tire2Position1),
@@ -648,12 +648,15 @@ namespace TGC.MonoGame.TP
                 mesh.Draw();
             }
         }
+
+        
         public void dibujarDetalles(Matrix view,Matrix projection,Effect effect)
         {
             for(int index = 0; index < TreesWorld.Length; index++)
             {
-                 dibujarArboles(view,projection,effect,TreesWorld[index], Tree, Color.Black);
+                dibujarArboles(view,projection,effect,TreesWorld[index], Tree, Color.Black);
             }
+
 
             for(int index = 0; index < RocksWorld.Length; index++)
             {
@@ -675,85 +678,14 @@ namespace TGC.MonoGame.TP
                     dibujar(view,projection,effect,RocksWorld[index], Rock5, Color.Gray);
             }   
 
-            // "Tire" del lado más cerca del origen de la rampa Rampa1World
-            dibujar(view,projection,effect,Tire1World, Tire, Color.Black);
-
-            dibujar(view,projection,effect,Tire2World, Tire, Color.Black);
-            dibujar(view,projection,effect,Tire2World1, Tire, Color.Gray);
-
-            dibujar(view,projection,effect,Tire3World, Tire, Color.Black);
-            dibujar(view,projection,effect,Tire3World1, Tire, Color.Gray);
-            dibujar(view,projection,effect,Tire3World2, Tire, Color.Black);
-
-            dibujar(view,projection,effect,Tire4World, Tire, Color.Black);
-            dibujar(view,projection,effect,Tire4World1, Tire, Color.Gray);
-            dibujar(view,projection,effect,Tire4World2, Tire, Color.Black);
-            dibujar(view,projection,effect,Tire4World3, Tire, Color.Gray);
-
-            // "Tire" del lado más lejos del origen de la rampa Rampa1World
-            dibujar(view,projection,effect,Tire5World, Tire, Color.Black);
-
-            dibujar(view,projection,effect,Tire6World, Tire, Color.Black);
-            dibujar(view,projection,effect,Tire6World1, Tire, Color.Gray);
-
-            dibujar(view,projection,effect,Tire7World, Tire, Color.Black);
-            dibujar(view,projection,effect,Tire7World1, Tire, Color.Gray);
-            dibujar(view,projection,effect,Tire7World2, Tire, Color.Black);
-
-            dibujar(view,projection,effect,Tire8World, Tire, Color.Black);
-            dibujar(view,projection,effect,Tire8World1, Tire, Color.Gray);
-            dibujar(view,projection,effect,Tire8World2, Tire, Color.Black);
-            dibujar(view,projection,effect,Tire8World3, Tire, Color.Gray);
-
-            // "Tire" del lado más lejos del origen de la rampa Rampa2World
-            dibujar(view,projection,effect,Tire9World, Tire, Color.Black);
-
-            dibujar(view,projection,effect,Tire10World, Tire, Color.Black);
-            dibujar(view,projection,effect,Tire10World1, Tire, Color.Gray);
-
-            dibujar(view,projection,effect,Tire11World, Tire, Color.Black);
-            dibujar(view,projection,effect,Tire11World1, Tire, Color.Gray);
-            dibujar(view,projection,effect,Tire11World2, Tire, Color.Black);
-
-            dibujar(view,projection,effect,Tire12World, Tire, Color.Black);
-            dibujar(view,projection,effect,Tire12World1, Tire, Color.Gray);
-            dibujar(view,projection,effect,Tire12World2, Tire, Color.Black);
-            dibujar(view,projection,effect,Tire12World3, Tire, Color.Gray);
-
-            // "Tire" del lado más cerca del origen de la rampa Rampa2World
-            dibujar(view,projection,effect,Tire13World, Tire, Color.Black);
-
-            dibujar(view,projection,effect,Tire14World, Tire, Color.Black);
-            dibujar(view,projection,effect,Tire14World1, Tire, Color.Gray);
-
-            dibujar(view,projection,effect,Tire15World, Tire, Color.Black);
-            dibujar(view,projection,effect,Tire15World1, Tire, Color.Gray);
-            dibujar(view,projection,effect,Tire15World2, Tire, Color.Black);
-
-            dibujar(view,projection,effect,Tire16World, Tire, Color.Black);
-            dibujar(view,projection,effect,Tire16World1, Tire, Color.Gray);
-            dibujar(view,projection,effect,Tire16World2, Tire, Color.Black);
-            dibujar(view,projection,effect,Tire16World3, Tire, Color.Gray);
-
-            // "Tire" del lado más lejos del origen de la rampa Rampa3World
-            dibujar(view,projection,effect,Tire17World, Tire, Color.Black);
-
-            dibujar(view,projection,effect,Tire18World, Tire, Color.Black);
-            dibujar(view,projection,effect,Tire18World1, Tire, Color.Gray);
-
-            dibujar(view,projection,effect,Tire19World, Tire, Color.Black);
-            dibujar(view,projection,effect,Tire19World1, Tire, Color.Gray);
-            dibujar(view,projection,effect,Tire19World2, Tire, Color.Black);
-
-            // "Tire" del lado más cerca del origen de la rampa Rampa3World
-            dibujar(view,projection,effect,Tire20World, Tire, Color.Black);
-
-            dibujar(view,projection,effect,Tire21World, Tire, Color.Black);
-            dibujar(view,projection,effect,Tire21World1, Tire, Color.Gray);
-
-            dibujar(view,projection,effect,Tire22World, Tire, Color.Black);
-            dibujar(view,projection,effect,Tire22World1, Tire, Color.Gray);
-            dibujar(view,projection,effect,Tire22World2, Tire, Color.Black);
+            //TIRES
+            for(int index = 0; index < TiresWorld.Length; index++)
+            {
+                dibujar(view,projection,effect,TiresWorld[index], Tire, Color.Black);
+                index++;
+                dibujar(view,projection,effect,TiresWorld[index], Tire, Color.Gray);
+            }
+            
         }
 
     }
