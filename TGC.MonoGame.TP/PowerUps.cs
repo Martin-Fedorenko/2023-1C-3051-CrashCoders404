@@ -24,22 +24,25 @@ namespace TGC.MonoGame.TP
 
     //Posiciones
     private Vector3 AmetralladoraPos = new Vector3(70, 90, -390);
-    private Vector3 Ametralladora1Pos = new Vector3(-250, 55, 100);
-    private Vector3 Ametralladora2Pos = new Vector3(-250, 115, 235);
+    private Vector3 Ametralladora1Pos = new Vector3(0, 20, 650);
+    private Vector3 Ametralladora2Pos = new Vector3(-210, 115, 210);
     private Vector3 Ametralladora3Pos = new Vector3(210, 35, 300); 
-    private Vector3 Ametralladora4Pos = new Vector3(-435, 35, -195); 
+    private Vector3 Ametralladora4Pos = new Vector3(-435, 35, -195);
+    private Vector3 Ametralladora5Pos = new Vector3(600, 20, 80);  
 
     private Vector3 MisilPos = new Vector3(70, 90, -370);
     private Vector3 Misil1Pos = new Vector3(-250, 55, 80);
-    private Vector3 Misil2Pos = new Vector3(-250, 115, 215);
+    private Vector3 Misil2Pos = new Vector3(-510, 20, 570);
     private Vector3 Misil3Pos = new Vector3(210, 35, 280); 
     private Vector3 Misil4Pos = new Vector3(-435, 35, -175); 
+     private Vector3 Misil5Pos = new Vector3(490, 20, -350);  
 
     private Vector3 TurboPos = new Vector3(70, 90, -410);
-    private Vector3 Turbo1Pos = new Vector3(-250, 55, 120);
-    private Vector3 Turbo2Pos = new Vector3(-250, 115, 255);
+    private Vector3 Turbo1Pos = new Vector3(-230, 27, -40);
+    private Vector3 Turbo2Pos = new Vector3(-310, 115, 290);
     private Vector3 Turbo3Pos = new Vector3(210, 35, 320); 
     private Vector3 Turbo4Pos = new Vector3(-435, 35, -215); 
+    private Vector3 Turbo5Pos = new Vector3(90, 20, -90); 
 
     // Colliders
     private BoundingBox[] collidersAmetralladoras;
@@ -55,7 +58,6 @@ namespace TGC.MonoGame.TP
     // Variables
     private float mediaVuelta = MathF.PI;
     private float cuartoDeVuelta = MathF.PI / 2;
-    private GraphicsDevice gD;
 
     public void Initialize(GraphicsDevice graphicsDevice)
     { 
@@ -66,31 +68,33 @@ namespace TGC.MonoGame.TP
       // PowerAmetralladora
       AmetralladorasWorld = new Matrix[]
       {
-      Matrix.CreateScale(0.2f, 0.1f, 0.1f) * Matrix.CreateRotationZ(-mediaVuelta / 2) * Matrix.CreateTranslation(AmetralladoraPos),
-      Matrix.CreateScale(0.2f, 0.1f, 0.1f) * Matrix.CreateRotationZ(-mediaVuelta / 2) * Matrix.CreateTranslation(Ametralladora1Pos),
-      Matrix.CreateScale(0.2f, 0.1f, 0.1f) * Matrix.CreateRotationZ(-mediaVuelta / 2) * Matrix.CreateTranslation(Ametralladora2Pos),
-      Matrix.CreateScale(0.2f, 0.1f, 0.1f) * Matrix.CreateRotationZ(-mediaVuelta / 2) * Matrix.CreateTranslation(Ametralladora3Pos),
-      Matrix.CreateScale(0.2f, 0.1f, 0.1f) * Matrix.CreateRotationZ(-mediaVuelta / 2) * Matrix.CreateTranslation(Ametralladora4Pos)
+      Matrix.CreateScale(0.2f, 0.1f, 0.1f) * Matrix.CreateRotationZ(-cuartoDeVuelta) * Matrix.CreateTranslation(AmetralladoraPos),
+      Matrix.CreateScale(0.2f, 0.1f, 0.1f) * Matrix.CreateRotationZ(-cuartoDeVuelta) * Matrix.CreateTranslation(Ametralladora1Pos),
+      Matrix.CreateScale(0.2f, 0.1f, 0.1f) * Matrix.CreateRotationZ(-cuartoDeVuelta) * Matrix.CreateRotationY(cuartoDeVuelta) * Matrix.CreateTranslation(Ametralladora2Pos),
+      Matrix.CreateScale(0.2f, 0.1f, 0.1f) * Matrix.CreateRotationZ(-cuartoDeVuelta) * Matrix.CreateTranslation(Ametralladora3Pos),
+      Matrix.CreateScale(0.2f, 0.1f, 0.1f) * Matrix.CreateRotationZ(-cuartoDeVuelta) * Matrix.CreateTranslation(Ametralladora4Pos),
+      Matrix.CreateScale(0.2f, 0.1f, 0.1f) * Matrix.CreateRotationZ(-cuartoDeVuelta) * Matrix.CreateRotationY(cuartoDeVuelta) * Matrix.CreateTranslation(Ametralladora5Pos),
       };
      
       MisilesWorld = new Matrix[]
       {
-      Matrix.CreateScale(0.2f, 0.1f, 0.1f) * Matrix.CreateRotationZ(-mediaVuelta / 2) * Matrix.CreateTranslation(MisilPos),
-      Matrix.CreateScale(0.2f, 0.1f, 0.1f) * Matrix.CreateRotationZ(-mediaVuelta / 2) * Matrix.CreateTranslation(Misil1Pos),
-      Matrix.CreateScale(0.2f, 0.1f, 0.1f) * Matrix.CreateRotationZ(-mediaVuelta / 2) * Matrix.CreateTranslation(Misil2Pos),
-      Matrix.CreateScale(0.2f, 0.1f, 0.1f) * Matrix.CreateRotationZ(-mediaVuelta / 2) * Matrix.CreateTranslation(Misil3Pos),
-      Matrix.CreateScale(0.2f, 0.1f, 0.1f) * Matrix.CreateRotationZ(-mediaVuelta / 2) * Matrix.CreateTranslation(Misil4Pos)
+      Matrix.CreateScale(0.2f, 0.1f, 0.1f) * Matrix.CreateRotationZ(-cuartoDeVuelta) * Matrix.CreateTranslation(MisilPos),
+      Matrix.CreateScale(0.2f, 0.1f, 0.1f) * Matrix.CreateRotationZ(-cuartoDeVuelta) * Matrix.CreateRotationY(cuartoDeVuelta) * Matrix.CreateTranslation(Misil1Pos),
+      Matrix.CreateScale(0.2f, 0.1f, 0.1f) * Matrix.CreateRotationZ(-cuartoDeVuelta) * Matrix.CreateRotationY(cuartoDeVuelta) * Matrix.CreateTranslation(Misil2Pos),
+      Matrix.CreateScale(0.2f, 0.1f, 0.1f) * Matrix.CreateRotationZ(-cuartoDeVuelta) * Matrix.CreateTranslation(Misil3Pos),
+      Matrix.CreateScale(0.2f, 0.1f, 0.1f) * Matrix.CreateRotationZ(-cuartoDeVuelta) * Matrix.CreateTranslation(Misil4Pos),
+      Matrix.CreateScale(0.2f, 0.1f, 0.1f) * Matrix.CreateRotationZ(-cuartoDeVuelta) * Matrix.CreateRotationY(cuartoDeVuelta) * Matrix.CreateTranslation(Misil5Pos)
 
       };
 
       TurbosWorld = new Matrix[]
       {
       Matrix.CreateScale(0.2f, 0.1f, 0.1f) * Matrix.CreateRotationZ(-mediaVuelta / 2) * Matrix.CreateTranslation(TurboPos),
-      Matrix.CreateScale(0.2f, 0.1f, 0.1f) * Matrix.CreateRotationZ(-mediaVuelta / 2) * Matrix.CreateTranslation(Turbo1Pos),
-      Matrix.CreateScale(0.2f, 0.1f, 0.1f) * Matrix.CreateRotationZ(-mediaVuelta / 2) * Matrix.CreateTranslation(Turbo2Pos),
+      Matrix.CreateScale(0.2f, 0.1f, 0.1f) * Matrix.CreateRotationZ(-mediaVuelta / 2) * Matrix.CreateRotationY(cuartoDeVuelta) * Matrix.CreateTranslation(Turbo1Pos),
+      Matrix.CreateScale(0.2f, 0.1f, 0.1f) * Matrix.CreateRotationZ(-mediaVuelta / 2) * Matrix.CreateRotationY(cuartoDeVuelta) * Matrix.CreateTranslation(Turbo2Pos),
       Matrix.CreateScale(0.2f, 0.1f, 0.1f) * Matrix.CreateRotationZ(-mediaVuelta / 2) * Matrix.CreateTranslation(Turbo3Pos),
-      Matrix.CreateScale(0.2f, 0.1f, 0.1f) * Matrix.CreateRotationZ(-mediaVuelta / 2) * Matrix.CreateTranslation(Turbo4Pos)
-
+      Matrix.CreateScale(0.2f, 0.1f, 0.1f) * Matrix.CreateRotationZ(-mediaVuelta / 2) * Matrix.CreateTranslation(Turbo4Pos),
+      Matrix.CreateScale(0.2f, 0.1f, 0.1f) * Matrix.CreateRotationZ(-mediaVuelta / 2) * Matrix.CreateTranslation(Turbo5Pos)
       };
     }
 
@@ -103,38 +107,56 @@ namespace TGC.MonoGame.TP
       //Collisions
       PowerUpBox = BoundingVolumesExtensions.CreateAABBFrom(CajaAmetralladora);
       PowerUpBox = BoundingVolumesExtensions.Scale(PowerUpBox,new Vector3(0.2f, 0.1f, 0.1f));
-
+      Vector3 correccionAltura = new Vector3(0,15,0);
       collidersAmetralladoras = new BoundingBox[]
       {
-       new BoundingBox(PowerUpBox.Min + AmetralladoraPos,PowerUpBox.Max + AmetralladoraPos),
-       new BoundingBox(PowerUpBox.Min + Ametralladora1Pos,PowerUpBox.Max + Ametralladora1Pos),
-       new BoundingBox(PowerUpBox.Min + Ametralladora2Pos,PowerUpBox.Max + Ametralladora2Pos),
-       new BoundingBox(PowerUpBox.Min + Ametralladora3Pos,PowerUpBox.Max + Ametralladora3Pos),
-       new BoundingBox(PowerUpBox.Min + Ametralladora4Pos,PowerUpBox.Max + Ametralladora4Pos)
+       new BoundingBox(PowerUpBox.Min + AmetralladoraPos - correccionAltura,PowerUpBox.Max + AmetralladoraPos - correccionAltura),
+       new BoundingBox(PowerUpBox.Min + Ametralladora1Pos - correccionAltura,PowerUpBox.Max + Ametralladora1Pos - correccionAltura),
+       new BoundingBox(PowerUpBox.Min + Ametralladora2Pos - correccionAltura,PowerUpBox.Max + Ametralladora2Pos - correccionAltura),
+       new BoundingBox(PowerUpBox.Min + Ametralladora3Pos - correccionAltura,PowerUpBox.Max + Ametralladora3Pos - correccionAltura),
+       new BoundingBox(PowerUpBox.Min + Ametralladora4Pos - correccionAltura,PowerUpBox.Max + Ametralladora4Pos - correccionAltura),
+       new BoundingBox(PowerUpBox.Min + Ametralladora5Pos - correccionAltura,PowerUpBox.Max + Ametralladora5Pos - correccionAltura)
       };
       
       collidersMisiles = new BoundingBox[]
       {
-       new BoundingBox(PowerUpBox.Min + MisilPos,PowerUpBox.Max + MisilPos),
-       new BoundingBox(PowerUpBox.Min + Misil1Pos,PowerUpBox.Max + Misil1Pos),
-       new BoundingBox(PowerUpBox.Min + Misil2Pos,PowerUpBox.Max + Misil2Pos),
-       new BoundingBox(PowerUpBox.Min + Misil3Pos,PowerUpBox.Max + Misil3Pos),
-       new BoundingBox(PowerUpBox.Min + Misil4Pos,PowerUpBox.Max + Misil4Pos)
+       new BoundingBox(PowerUpBox.Min + MisilPos - correccionAltura,PowerUpBox.Max + MisilPos - correccionAltura),
+       new BoundingBox(PowerUpBox.Min + Misil1Pos - correccionAltura,PowerUpBox.Max + Misil1Pos - correccionAltura),
+       new BoundingBox(PowerUpBox.Min + Misil2Pos - correccionAltura,PowerUpBox.Max + Misil2Pos - correccionAltura),
+       new BoundingBox(PowerUpBox.Min + Misil3Pos - correccionAltura,PowerUpBox.Max + Misil3Pos - correccionAltura),
+       new BoundingBox(PowerUpBox.Min + Misil4Pos - correccionAltura,PowerUpBox.Max + Misil4Pos - correccionAltura),
+       new BoundingBox(PowerUpBox.Min + Misil5Pos - correccionAltura,PowerUpBox.Max + Misil5Pos - correccionAltura)
       };
 
       collidersTurbos = new BoundingBox[]
       {
-       new BoundingBox(PowerUpBox.Min + TurboPos,PowerUpBox.Max + TurboPos),
-       new BoundingBox(PowerUpBox.Min + Turbo1Pos,PowerUpBox.Max + Turbo1Pos),
-       new BoundingBox(PowerUpBox.Min + Turbo2Pos,PowerUpBox.Max + Turbo2Pos),
-       new BoundingBox(PowerUpBox.Min + Turbo3Pos,PowerUpBox.Max + Turbo3Pos),
-       new BoundingBox(PowerUpBox.Min + Turbo4Pos,PowerUpBox.Max + Turbo4Pos)
+       new BoundingBox(PowerUpBox.Min + TurboPos - correccionAltura,PowerUpBox.Max + TurboPos - correccionAltura),
+       new BoundingBox(PowerUpBox.Min + Turbo1Pos - correccionAltura,PowerUpBox.Max + Turbo1Pos - correccionAltura),
+       new BoundingBox(PowerUpBox.Min + Turbo2Pos - correccionAltura,PowerUpBox.Max + Turbo2Pos - correccionAltura),
+       new BoundingBox(PowerUpBox.Min + Turbo3Pos - correccionAltura,PowerUpBox.Max + Turbo3Pos - correccionAltura),
+       new BoundingBox(PowerUpBox.Min + Turbo4Pos - correccionAltura,PowerUpBox.Max + Turbo4Pos - correccionAltura),
+       new BoundingBox(PowerUpBox.Min + Turbo5Pos - correccionAltura,PowerUpBox.Max + Turbo5Pos - correccionAltura)
       };
 
     }
 
     public void Update(GameTime gameTime, OrientedBoundingBox autoCollider)
     {
+      var Rotation = (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+      for(int index = 0 ; index < AmetralladorasWorld.Length; index++)
+      {
+          AmetralladorasWorld[index] = Matrix.CreateRotationX(Rotation*1.2f) * AmetralladorasWorld[index];
+      }
+      for(int index = 0 ; index < MisilesWorld.Length; index++)
+      {
+          MisilesWorld[index] = Matrix.CreateRotationX(Rotation*1.2f) * MisilesWorld[index];
+      }
+      for(int index = 0 ; index < TurbosWorld.Length; index++)
+      {
+          TurbosWorld[index] = Matrix.CreateRotationX(Rotation*1.2f) * TurbosWorld[index];
+      }
+
       for (var index = 0; index < collidersAmetralladoras.Length; index++)
       {
         if (autoCollider.Intersects(collidersAmetralladoras[index]))
@@ -158,8 +180,6 @@ namespace TGC.MonoGame.TP
           collidedindexTurbo.Add(index);
         }
       }
-
-
     }
 
     public void dibujar(Matrix view, Matrix projection, Effect effect, Matrix matrizMundo, Model modelo, Color color)
