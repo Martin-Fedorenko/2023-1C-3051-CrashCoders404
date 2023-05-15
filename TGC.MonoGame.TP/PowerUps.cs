@@ -18,35 +18,35 @@ namespace TGC.MonoGame.TP
     private Model CajaMisil { get; set; }
 
     // Matrices
-    private Matrix PowerTurboWorld { get; set; }
-    private Matrix PowerTurboWorld1 { get; set; }
-    private Matrix PowerTurboWorld2 { get; set; }
-    private Matrix PowerTurboWorld3 { get; set; }
-    private Matrix PowerTurboWorld4 { get; set; }
+    private Matrix[] AmetralladorasWorld;
+    private Matrix[] TurbosWorld;
+    private Matrix[] MisilesWorld;
 
-    private Matrix PowerAmetralladoraWorld { get; set; }
-    private Matrix PowerAmetralladoraWorld1 { get; set; }
-    private Matrix PowerAmetralladoraWorld2 { get; set; }
-    private Matrix PowerAmetralladoraWorld3 { get; set; }
-    private Matrix PowerAmetralladoraWorld4 { get; set; }
+    //Posiciones
+    private Vector3 AmetralladoraPos = new Vector3(70, 90, -390);
+    private Vector3 Ametralladora1Pos = new Vector3(-250, 55, 100);
+    private Vector3 Ametralladora2Pos = new Vector3(-250, 115, 235);
+    private Vector3 Ametralladora3Pos = new Vector3(210, 35, 300); 
+    private Vector3 Ametralladora4Pos = new Vector3(-435, 35, -195); 
 
-    private Matrix PowerMisilWorld { get; set; }
-    private Matrix PowerMisilWorld1 { get; set; }
-    private Matrix PowerMisilWorld2 { get; set; }
-    private Matrix PowerMisilWorld3 { get; set; }
-    private Matrix PowerMisilWorld4 { get; set; }
+    private Vector3 MisilPos = new Vector3(70, 90, -370);
+    private Vector3 Misil1Pos = new Vector3(-250, 55, 80);
+    private Vector3 Misil2Pos = new Vector3(-250, 115, 215);
+    private Vector3 Misil3Pos = new Vector3(210, 35, 280); 
+    private Vector3 Misil4Pos = new Vector3(-435, 35, -175); 
+
+    private Vector3 TurboPos = new Vector3(70, 90, -410);
+    private Vector3 Turbo1Pos = new Vector3(-250, 55, 120);
+    private Vector3 Turbo2Pos = new Vector3(-250, 115, 255);
+    private Vector3 Turbo3Pos = new Vector3(210, 35, 320); 
+    private Vector3 Turbo4Pos = new Vector3(-435, 35, -215); 
 
     // Colliders
     private BoundingBox[] collidersAmetralladoras;
     private BoundingBox[] collidersTurbos;
     private BoundingBox[] collidersMisiles;
-    private CubePrimitive cubo1;
-    private Matrix cubo1World;
-    private BoundingBox colliderCubo1;
-
-    private CubePrimitive cubo2;
-    private Matrix cubo2World;
-    private BoundingBox colliderCubo2;
+    private BoundingBox PowerUpBox;
+    private List<int> collidedindex;
 
     //Bones
     private Matrix[] relativeMatrices;
@@ -57,49 +57,37 @@ namespace TGC.MonoGame.TP
     private GraphicsDevice gD;
 
     public void Initialize(GraphicsDevice graphicsDevice)
-    {
+    { 
+        collidedindex = new List<int>();
+        
       // PowerAmetralladora
-      PowerAmetralladoraWorld = Matrix.CreateScale(0.2f, 0.1f, 0.1f) * Matrix.CreateRotationZ(-mediaVuelta / 2) * Matrix.CreateTranslation(70, 90, -390);
-      PowerAmetralladoraWorld1 = Matrix.CreateScale(0.2f, 0.1f, 0.1f) * Matrix.CreateRotationZ(-mediaVuelta / 2) * Matrix.CreateTranslation(-250, 55, 100);
-      PowerAmetralladoraWorld2 = Matrix.CreateScale(0.2f, 0.1f, 0.1f) * Matrix.CreateRotationZ(-mediaVuelta / 2) * Matrix.CreateTranslation(-250, 115, 235);
-      PowerAmetralladoraWorld3 = Matrix.CreateScale(0.2f, 0.1f, 0.1f) * Matrix.CreateRotationZ(-mediaVuelta / 2) * Matrix.CreateTranslation(210, 35, 300);
-      PowerAmetralladoraWorld4 = Matrix.CreateScale(0.2f, 0.1f, 0.1f) * Matrix.CreateRotationZ(-mediaVuelta / 2) * Matrix.CreateTranslation(-435, 35, -195);
-
-      // PowerMisil
-      PowerMisilWorld = Matrix.CreateScale(0.2f, 0.1f, 0.1f) * Matrix.CreateRotationZ(-mediaVuelta / 2) * Matrix.CreateTranslation(70, 90, -370);
-      PowerMisilWorld1 = Matrix.CreateScale(0.2f, 0.1f, 0.1f) * Matrix.CreateRotationZ(-mediaVuelta / 2) * Matrix.CreateTranslation(-250, 55, 80);
-      PowerMisilWorld2 = Matrix.CreateScale(0.2f, 0.1f, 0.1f) * Matrix.CreateRotationZ(-mediaVuelta / 2) * Matrix.CreateTranslation(-250, 115, 215);
-      PowerMisilWorld3 = Matrix.CreateScale(0.2f, 0.1f, 0.1f) * Matrix.CreateRotationZ(-mediaVuelta / 2) * Matrix.CreateTranslation(210, 35, 280);
-      PowerMisilWorld4 = Matrix.CreateScale(0.2f, 0.1f, 0.1f) * Matrix.CreateRotationZ(-mediaVuelta / 2) * Matrix.CreateTranslation(-435, 35, -175);
-
-      // PowerTurbo
-      PowerTurboWorld = Matrix.CreateScale(0.2f, 0.1f, 0.1f) * Matrix.CreateRotationZ(-mediaVuelta / 2) * Matrix.CreateTranslation(70, 90, -410);
-      PowerTurboWorld1 = Matrix.CreateScale(0.2f, 0.1f, 0.1f) * Matrix.CreateRotationZ(-mediaVuelta / 2) * Matrix.CreateTranslation(-250, 55, 120);
-      PowerTurboWorld2 = Matrix.CreateScale(0.2f, 0.1f, 0.1f) * Matrix.CreateRotationZ(-mediaVuelta / 2) * Matrix.CreateTranslation(-250, 115, 255);
-      PowerTurboWorld3 = Matrix.CreateScale(0.2f, 0.1f, 0.1f) * Matrix.CreateRotationZ(-mediaVuelta / 2) * Matrix.CreateTranslation(210, 35, 320);
-      PowerTurboWorld4 = Matrix.CreateScale(0.2f, 0.1f, 0.1f) * Matrix.CreateRotationZ(-mediaVuelta / 2) * Matrix.CreateTranslation(-435, 35, -215);
-
-      // Colliders
-      gD = graphicsDevice; //Solo para probar lo de cambiar el color al cubo1 en Update
-
-      cubo1 = new CubePrimitive(graphicsDevice, 5, Color.Aqua);
-      cubo1World = Matrix.CreateScale(5f, 5f, 5f) * Matrix.CreateTranslation(0, 0, 0);
-      colliderCubo1 = crearBoxCollider(cubo1World);
-
-      cubo2 = new CubePrimitive(graphicsDevice, 5, Color.Red);
-      cubo2World = Matrix.CreateScale(5f, 5f, 5f) * Matrix.CreateTranslation(-20f, 0, 0);
-      colliderCubo2 = crearBoxCollider(cubo2World);
-
-      collidersAmetralladoras = new BoundingBox[]
+      AmetralladorasWorld = new Matrix[]
       {
+      Matrix.CreateScale(0.2f, 0.1f, 0.1f) * Matrix.CreateRotationZ(-mediaVuelta / 2) * Matrix.CreateTranslation(AmetralladoraPos),
+      Matrix.CreateScale(0.2f, 0.1f, 0.1f) * Matrix.CreateRotationZ(-mediaVuelta / 2) * Matrix.CreateTranslation(Ametralladora1Pos),
+      Matrix.CreateScale(0.2f, 0.1f, 0.1f) * Matrix.CreateRotationZ(-mediaVuelta / 2) * Matrix.CreateTranslation(Ametralladora2Pos),
+      Matrix.CreateScale(0.2f, 0.1f, 0.1f) * Matrix.CreateRotationZ(-mediaVuelta / 2) * Matrix.CreateTranslation(Ametralladora3Pos),
+      Matrix.CreateScale(0.2f, 0.1f, 0.1f) * Matrix.CreateRotationZ(-mediaVuelta / 2) * Matrix.CreateTranslation(Ametralladora4Pos)
+      };
+     
+      MisilesWorld = new Matrix[]
+      {
+      Matrix.CreateScale(0.2f, 0.1f, 0.1f) * Matrix.CreateRotationZ(-mediaVuelta / 2) * Matrix.CreateTranslation(MisilPos),
+      Matrix.CreateScale(0.2f, 0.1f, 0.1f) * Matrix.CreateRotationZ(-mediaVuelta / 2) * Matrix.CreateTranslation(Misil1Pos),
+      Matrix.CreateScale(0.2f, 0.1f, 0.1f) * Matrix.CreateRotationZ(-mediaVuelta / 2) * Matrix.CreateTranslation(Misil2Pos),
+      Matrix.CreateScale(0.2f, 0.1f, 0.1f) * Matrix.CreateRotationZ(-mediaVuelta / 2) * Matrix.CreateTranslation(Misil3Pos),
+      Matrix.CreateScale(0.2f, 0.1f, 0.1f) * Matrix.CreateRotationZ(-mediaVuelta / 2) * Matrix.CreateTranslation(Misil4Pos)
+
       };
 
-      collidersTurbos = new BoundingBox[]
+      TurbosWorld = new Matrix[]
       {
-      };
+      Matrix.CreateScale(0.2f, 0.1f, 0.1f) * Matrix.CreateRotationZ(-mediaVuelta / 2) * Matrix.CreateTranslation(TurboPos),
+      Matrix.CreateScale(0.2f, 0.1f, 0.1f) * Matrix.CreateRotationZ(-mediaVuelta / 2) * Matrix.CreateTranslation(Turbo1Pos),
+      Matrix.CreateScale(0.2f, 0.1f, 0.1f) * Matrix.CreateRotationZ(-mediaVuelta / 2) * Matrix.CreateTranslation(Turbo2Pos),
+      Matrix.CreateScale(0.2f, 0.1f, 0.1f) * Matrix.CreateRotationZ(-mediaVuelta / 2) * Matrix.CreateTranslation(Turbo3Pos),
+      Matrix.CreateScale(0.2f, 0.1f, 0.1f) * Matrix.CreateRotationZ(-mediaVuelta / 2) * Matrix.CreateTranslation(Turbo4Pos)
 
-      collidersMisiles = new BoundingBox[]
-      {
       };
     }
 
@@ -108,24 +96,55 @@ namespace TGC.MonoGame.TP
       CajaAmetralladora = cajaAmetralladora;
       CajaMisil = cajaMisil;
       CajaTurbo = cajaTurbo;
+
+      //Collisions
+      PowerUpBox = BoundingVolumesExtensions.CreateAABBFrom(CajaAmetralladora);
+      PowerUpBox = BoundingVolumesExtensions.Scale(PowerUpBox,new Vector3(0.2f, 0.1f, 0.1f));
+
+      collidersAmetralladoras = new BoundingBox[]
+      {
+       new BoundingBox(PowerUpBox.Min + AmetralladoraPos,PowerUpBox.Max + AmetralladoraPos),
+       new BoundingBox(PowerUpBox.Min + Ametralladora1Pos,PowerUpBox.Max + Ametralladora1Pos),
+       new BoundingBox(PowerUpBox.Min + Ametralladora2Pos,PowerUpBox.Max + Ametralladora2Pos),
+       new BoundingBox(PowerUpBox.Min + Ametralladora3Pos,PowerUpBox.Max + Ametralladora3Pos),
+       new BoundingBox(PowerUpBox.Min + Ametralladora4Pos,PowerUpBox.Max + Ametralladora4Pos)
+      };
+      
+      collidersMisiles = new BoundingBox[]
+      {
+       new BoundingBox(PowerUpBox.Min + MisilPos,PowerUpBox.Max + MisilPos),
+       new BoundingBox(PowerUpBox.Min + Misil1Pos,PowerUpBox.Max + Misil1Pos),
+       new BoundingBox(PowerUpBox.Min + Misil2Pos,PowerUpBox.Max + Misil2Pos),
+       new BoundingBox(PowerUpBox.Min + Misil3Pos,PowerUpBox.Max + Misil3Pos),
+       new BoundingBox(PowerUpBox.Min + Misil4Pos,PowerUpBox.Max + Misil4Pos)
+      };
+
+      collidersTurbos = new BoundingBox[]
+      {
+       new BoundingBox(PowerUpBox.Min + TurboPos,PowerUpBox.Max + TurboPos),
+       new BoundingBox(PowerUpBox.Min + Turbo1Pos,PowerUpBox.Max + Turbo1Pos),
+       new BoundingBox(PowerUpBox.Min + Turbo2Pos,PowerUpBox.Max + Turbo2Pos),
+       new BoundingBox(PowerUpBox.Min + Turbo3Pos,PowerUpBox.Max + Turbo3Pos),
+       new BoundingBox(PowerUpBox.Min + Turbo4Pos,PowerUpBox.Max + Turbo4Pos)
+      };
+
     }
 
     public void Update(GameTime gameTime, OrientedBoundingBox autoCollider)
     {
-      if (colliderCubo1.Intersects(colliderCubo2))
-      {
-        cubo1 = new CubePrimitive(gD, 5, Color.Blue);
-      }
-
-      if (autoCollider.Intersects(colliderCubo2)) // No anda
-      {
-        cubo1 = new CubePrimitive(gD, 5, Color.Green);
-      }
-
       for (var index = 0; index < collidersAmetralladoras.Length; index++)
       {
         if (autoCollider.Intersects(collidersAmetralladoras[index]))
         {
+          collidedindex.Add(index);
+        }
+      }
+      
+      for (var index = 0; index < collidersMisiles.Length; index++)
+      {
+        if (autoCollider.Intersects(collidersMisiles[index]))
+        {
+          collidedindex.Add(index);
         }
       }
 
@@ -133,22 +152,11 @@ namespace TGC.MonoGame.TP
       {
         if (autoCollider.Intersects(collidersTurbos[index]))
         {
+          collidedindex.Add(index);
         }
       }
 
-      for (var index = 0; index < collidersMisiles.Length; index++)
-      {
-        if (autoCollider.Intersects(collidersMisiles[index]))
-        {
-        }
-      }
-    }
 
-    public BoundingBox crearBoxCollider(Matrix worldMatrix)
-    {
-      BoundingBox colliderCubo = BoundingVolumesExtensions.FromMatrix(worldMatrix);
-      colliderCubo = BoundingVolumesExtensions.Scale(colliderCubo, new Vector3(5, 5, 5));
-      return colliderCubo;
     }
 
     public void dibujar(Matrix view, Matrix projection, Effect effect, Matrix matrizMundo, Model modelo, Color color)
@@ -178,27 +186,29 @@ namespace TGC.MonoGame.TP
 
     public void dibujarPowerUps(Matrix view, Matrix projection, Effect effect)
     {
-      // Los neumáticos azules son los turbos
-      dibujar(view, projection, effect, PowerTurboWorld, CajaTurbo, Color.Blue);
-      dibujar(view, projection, effect, PowerTurboWorld1, CajaTurbo, Color.Blue);
-      dibujar(view, projection, effect, PowerTurboWorld2, CajaTurbo, Color.Blue);
-      dibujar(view, projection, effect, PowerTurboWorld3, CajaTurbo, Color.Blue);
-      dibujar(view, projection, effect, PowerTurboWorld4, CajaTurbo, Color.Blue);
-      // Los neumáticos rojos son las ametralladoras
-      dibujar(view, projection, effect, PowerAmetralladoraWorld, CajaAmetralladora, Color.Red);
-      dibujar(view, projection, effect, PowerAmetralladoraWorld1, CajaAmetralladora, Color.Red);
-      dibujar(view, projection, effect, PowerAmetralladoraWorld2, CajaAmetralladora, Color.Red);
-      dibujar(view, projection, effect, PowerAmetralladoraWorld3, CajaAmetralladora, Color.Red);
-      dibujar(view, projection, effect, PowerAmetralladoraWorld4, CajaAmetralladora, Color.Red);
-      // Los neumáticos amarillos son los misiles
-      dibujar(view, projection, effect, PowerMisilWorld, CajaMisil, Color.Yellow);
-      dibujar(view, projection, effect, PowerMisilWorld1, CajaMisil, Color.Yellow);
-      dibujar(view, projection, effect, PowerMisilWorld2, CajaMisil, Color.Yellow);
-      dibujar(view, projection, effect, PowerMisilWorld3, CajaMisil, Color.Yellow);
-      dibujar(view, projection, effect, PowerMisilWorld4, CajaMisil, Color.Yellow);
 
-      cubo1.Draw(cubo1World, view, projection);
-      cubo2.Draw(cubo2World, view, projection);
+      for(int index = 0; index < AmetralladorasWorld.Length; index++)
+      {
+        if(!collidedindex.Contains(index))
+        {
+          dibujar(view, projection, effect, AmetralladorasWorld[index], CajaAmetralladora, Color.Red);
+        }
+      }
+      for(int index = 0; index < MisilesWorld.Length; index++)
+      {
+        if(!collidedindex.Contains(index))
+        {
+          dibujar(view, projection, effect, MisilesWorld[index], CajaMisil, Color.Yellow);
+        }
+      }
+      for(int index = 0; index < TurbosWorld.Length; index++)
+      {
+        if(!collidedindex.Contains(index))
+        {
+          dibujar(view, projection, effect, TurbosWorld[index], CajaTurbo, Color.Blue);
+        }
+      }
+
     }
   }
 }
