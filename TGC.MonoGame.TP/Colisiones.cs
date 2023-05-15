@@ -23,42 +23,7 @@ namespace TGC.MonoGame.TP
         private Model Cube { get; set; }
 
         private Escenario escenario;
-        
-        private Vector3 PisoAABB = new Vector3 (-30, 0, 70);
-        private Vector3 ParedAABB = new Vector3 (-30, 0, 70);
-        private Vector3 Platform1AABB = new Vector3 (-30, 0, 70);
-        private Vector3 Platform2AABB = new Vector3 (-30, 0, 70);
-        private Vector3 Platform3AABB = new Vector3 (-30, 0, 70);
-        private Vector3 Platform4AABB = new Vector3 (-30, 0, 70);
-        private Vector3 Platform5AABB = new Vector3 (-30, 0, 70);
-
-        private Vector3 Column1AABB = new Vector3 (-30, 0, 70);
-        private Vector3 Column2AABB = new Vector3 (-30, 0, 70);
-        private Vector3 Column3AABB = new Vector3 (-30, 0, 70);
-        private Vector3 Column4AABB = new Vector3 (-30, 0, 70);
-        private Vector3 Column5AABB = new Vector3 (-30, 0, 70);
-        private Vector3 Column6AABB = new Vector3 (-30, 0, 70);
-        private Vector3 Column7AABB = new Vector3 (-30, 0, 70);
-        private Vector3 Column8AABB = new Vector3 (-30, 0, 70);
-        private Vector3 Column9AABB = new Vector3 (-30, 0, 70);
-        private Vector3 Column10AABB = new Vector3 (-30, 0, 70);
-        private Vector3 Column11AABB = new Vector3 (-30, 0, 70);
-        private Vector3 Column12AABB = new Vector3 (-30, 0, 70);
-        private Vector3 BrokenColumn1AABB = new Vector3 (-30, 0, 70);
-        private Vector3 BrokenColumn2AABB = new Vector3 (-30, 0, 70);
-        private Vector3 Ramp1AABB = new Vector3 (-30, 0, 70);
-        private Vector3 Ramp2AABB = new Vector3 (-30, 0, 70);
-        private Vector3 Ramp3AABB = new Vector3 (-30, 0, 70);
-        private Vector3 Ramp4AABB = new Vector3 (-30, 0, 70);
-        private Vector3 Ramp5AABB = new Vector3 (-30, 0, 70);
-        private Vector3 Ramp6AABB = new Vector3 (-30, 0, 70);
-        private Vector3 Ramp7AABB = new Vector3 (-30, 0, 70);
-        private Vector3 Ramp8AABB = new Vector3 (-30, 0, 70);
-        private Vector3 Ramp9AABB = new Vector3 (-30, 0, 70);
-        private Vector3 Ramp10AABB = new Vector3 (-30, 0, 70);
-        private Vector3 Ramp11AABB = new Vector3 (-30, 0, 70);
-        private Vector3 Ramp12AABB = new Vector3 (-30, 0, 70);
-
+    
 
         //DETALLES 
          
