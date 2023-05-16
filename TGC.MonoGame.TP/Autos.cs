@@ -232,16 +232,18 @@ namespace TGC.MonoGame.TP
       if ((keyboardState.IsKeyUp(Keys.S) && keyboardState.IsKeyUp(Keys.W)) || onJump)
       {
         accelerating = false;
-        if (CarSpeed > 0)
+        if (CarSpeed > 3)
         {
           CarSpeed += Rozamiento * elapsedTime;
           ActiveMovement = true;
         }
-        else if (CarSpeed < 0)
+        else if (CarSpeed < -3) //La velocidad nunca acaba siendo menor al |3|, de esta forma podemos saber si el auto se queda "quieto" y podemos evitar que gire sin avanzar/retroceder
         {
           CarSpeed -= Rozamiento * elapsedTime;
           ActiveMovement = true;
         }
+        else 
+          ActiveMovement = false;
         Desplazamiento += CarDirection * CarSpeed * elapsedTime;
 
       }
@@ -250,8 +252,7 @@ namespace TGC.MonoGame.TP
       {
         if (CarSpeed >= 0 && WheelRotationPrincipal > -MathF.PI * 1 / 6) WheelRotationPrincipal -= elapsedTime;
         else if (CarSpeed < 0 && WheelRotationPrincipal < MathF.PI * 1 / 6) WheelRotationPrincipal += elapsedTime;
-        if (ActiveMovement) Rotation -= elapsedTime;
-        //NO DEBERIA PODER GIRAR AL ESTAR QUIETO
+        if (ActiveMovement) Rotation -= elapsedTime;         //NO DEBERIA PODER GIRAR AL ESTAR QUIETO
       }
       else if (Keyboard.GetState().IsKeyDown(Keys.A))
       {
