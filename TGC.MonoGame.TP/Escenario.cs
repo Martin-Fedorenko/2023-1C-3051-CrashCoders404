@@ -18,7 +18,7 @@ namespace TGC.MonoGame.TP
 
 
     private Matrix PisoWorld { get; set; }
-    private Matrix ParedWorld { get; set; }
+    private Matrix[] ParedWorld { get; set; }
     private Matrix[] PlatformWorld { get; set; }
     private Matrix[] RampWorld { get; set; }
   private Matrix[] ColumnWorld { get; set; }
@@ -93,6 +93,7 @@ namespace TGC.MonoGame.TP
      public Vector3  Ramp12Position = new Vector3(-376, 0, -221);
 
 
+
     // Variables
     private float mediaVuelta = MathF.PI;
     private float cuartoDeVuelta = MathF.PI / 2;
@@ -103,6 +104,7 @@ namespace TGC.MonoGame.TP
     //Colisiones
     private BoundingBox ColumnBox;
     private BoundingBox PlatformBox;
+    private BoundingBox[] ParedBoxes;
     private BoundingBox[] ColumnBoxes;
     private BoundingBox[] PlatformBoxes;
     private BoundingBox[] RampBoxes;
@@ -111,7 +113,17 @@ namespace TGC.MonoGame.TP
     {
       //Arena
       PisoWorld = Matrix.CreateScale(30, 0, 30);
-      ParedWorld = Matrix.CreateScale(30, 50, 30);
+      //ParedWorld = Matrix.CreateScale(30, 0, 30);
+
+      var scale = new Vector3(200f, 1f, 200f);
+      ParedWorld = new Matrix[]
+      {
+        Matrix.CreateScale(scale) * Matrix.CreateRotationX(MathHelper.PiOver2) * Matrix.CreateTranslation(-Vector3.UnitZ * 800f + Vector3.UnitY * 0f),
+        Matrix.CreateScale(scale) * Matrix.CreateRotationX(-MathHelper.PiOver2) * Matrix.CreateTranslation(Vector3.UnitZ * 800f + Vector3.UnitY * 0f),
+        Matrix.CreateScale(scale) * Matrix.CreateRotationZ(MathHelper.PiOver2) * Matrix.CreateTranslation(Vector3.UnitX * 800f + Vector3.UnitY * 0f),
+        Matrix.CreateScale(scale) * Matrix.CreateRotationZ(-MathHelper.PiOver2) * Matrix.CreateTranslation(-Vector3.UnitX * 800f + Vector3.UnitY * 0f)
+      };
+      
 
       //Plataformas
       ColumnWorld = new Matrix[]
@@ -146,7 +158,7 @@ namespace TGC.MonoGame.TP
 
       RampWorld = new Matrix[]
       {
-      Matrix.CreateScale(0.45f, 0.35f, 0.65f) * Matrix.CreateRotationX(-cuartoDeVuelta) * Matrix.CreateTranslation(Ramp1Position),
+        Matrix.CreateScale(0.45f, 0.35f, 0.65f) * Matrix.CreateRotationX(-cuartoDeVuelta) * Matrix.CreateTranslation(Ramp1Position),
         Matrix.CreateScale(0.45f, 0.35f, 0.65f) * Matrix.CreateRotationX(-cuartoDeVuelta) * Matrix.CreateRotationY(mediaVuelta) * Matrix.CreateTranslation(Ramp2Position),
         Matrix.CreateScale(0.25f, 0.35f, 0.3f) * Matrix.CreateRotationX(-cuartoDeVuelta) * Matrix.CreateRotationY(-cuartoDeVuelta) * Matrix.CreateTranslation(Ramp3Position),
         Matrix.CreateScale(0.4f, 0.15f, 0.6f) * Matrix.CreateRotationX(-cuartoDeVuelta) * Matrix.CreateRotationY(-cuartoDeVuelta) * Matrix.CreateTranslation(Ramp4Position),
@@ -171,6 +183,14 @@ namespace TGC.MonoGame.TP
       Platform = platform;
       Cube = cube;
 
+      var minVector = Vector3.One * 0.25f;
+      ParedBoxes = new BoundingBox[]
+      {
+        new BoundingBox(new Vector3(-800f, 0f, -800f) - minVector, new Vector3(800f, 0f, -800f) + minVector),
+        new BoundingBox(new Vector3(-800f, 0f, 800f) - minVector, new Vector3(800f, 0f, 800f) + minVector),
+        new BoundingBox(new Vector3(800f, 0f, -800f) - minVector, new Vector3(800f, 0f, 800f) + minVector),
+        new BoundingBox(new Vector3(-800f, 0f, -800f) - minVector, new Vector3(-800f, 0f, 800f) + minVector)
+      };
 
       Vector3 correctorPosicionBoxColumnas = new Vector3(0f,0f,0f);
         
@@ -226,6 +246,13 @@ namespace TGC.MonoGame.TP
                 }
             }
 
+            for(int index = 0; index < ParedBoxes.Length; index++)
+            {
+                if(autoCollider.Intersects(ParedBoxes[index]))
+                {
+                    return true;
+                }
+            }
             
             return false;
 
@@ -260,7 +287,11 @@ namespace TGC.MonoGame.TP
     {
       //Arena
       dibujar(view, projection, effect, PisoWorld, Piso, Color.LightGoldenrodYellow);
-      dibujar(view, projection, effect, ParedWorld, Pared, Color.Wheat);
+      
+      for(int index = 0; index < ParedWorld.Length; index++)
+      {
+        dibujar(view,projection,effect,ParedWorld[index], Platform, Color.LightSalmon);
+      }
 
       //Plataformas
       for(int index = 0; index < PlatformWorld.Length; index++)
