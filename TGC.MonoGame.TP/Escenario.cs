@@ -125,13 +125,14 @@ namespace TGC.MonoGame.TP
       PisoWorld = Matrix.CreateScale(30, 0, 30);
       //ParedWorld = Matrix.CreateScale(30, 0, 30);
 
-      var scale = new Vector3(200f, 1f, 200f);
+      var scale1 = new Vector3(800f, 1f, 200f);
+      var scale2 = new Vector3(200f,1f,800f);
       ParedWorld = new Matrix[]
       {
-        Matrix.CreateScale(scale) * Matrix.CreateRotationX(MathHelper.PiOver2) * Matrix.CreateTranslation(-Vector3.UnitZ * 800f + Vector3.UnitY * 0f),
-        Matrix.CreateScale(scale) * Matrix.CreateRotationX(-MathHelper.PiOver2) * Matrix.CreateTranslation(Vector3.UnitZ * 800f + Vector3.UnitY * 0f),
-        Matrix.CreateScale(scale) * Matrix.CreateRotationZ(MathHelper.PiOver2) * Matrix.CreateTranslation(Vector3.UnitX * 800f + Vector3.UnitY * 0f),
-        Matrix.CreateScale(scale) * Matrix.CreateRotationZ(-MathHelper.PiOver2) * Matrix.CreateTranslation(-Vector3.UnitX * 800f + Vector3.UnitY * 0f)
+        Matrix.CreateScale(scale1) * Matrix.CreateRotationX(MathHelper.PiOver2) * Matrix.CreateTranslation(-Vector3.UnitZ * 800f),
+        Matrix.CreateScale(scale1) * Matrix.CreateRotationX(-MathHelper.PiOver2) * Matrix.CreateTranslation(Vector3.UnitZ * 800f),
+        Matrix.CreateScale(scale2) * Matrix.CreateRotationZ(MathHelper.PiOver2) * Matrix.CreateTranslation(Vector3.UnitX * 800f),
+        Matrix.CreateScale(scale2) * Matrix.CreateRotationZ(-MathHelper.PiOver2) * Matrix.CreateTranslation(-Vector3.UnitX * 800f)
       };
       
 
