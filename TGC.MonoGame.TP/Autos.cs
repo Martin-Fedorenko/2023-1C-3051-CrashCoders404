@@ -414,11 +414,12 @@ namespace TGC.MonoGame.TP
     public void FrenarAuto()
     {
       CarSpeed = 0;
+      onDescend = true;
     }
     public void inicializarBoundingBoxes()
     {
       AutoDeportivoBoxAABB = BoundingVolumesExtensions.CreateAABBFrom(AutoDeportivo);
-      AutoDeportivoBoxAABB = BoundingVolumesExtensions.Scale(AutoDeportivoBoxAABB, 0.1f);
+      AutoDeportivoBoxAABB = BoundingVolumesExtensions.Scale(AutoDeportivoBoxAABB, new Vector3(0.06f,0.1f,0.09f));
       AutoDeCombateBoxAABB = BoundingVolumesExtensions.CreateAABBFrom(AutoDeCombate);
       AutoDeCombateBoxAABB = BoundingVolumesExtensions.Scale(AutoDeCombateBoxAABB, 0.007f);
 

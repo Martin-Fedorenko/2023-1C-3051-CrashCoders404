@@ -21,7 +21,8 @@ namespace TGC.MonoGame.TP
     private Matrix[] ParedWorld { get; set; }
     private Matrix[] PlatformWorld { get; set; }
     private Matrix[] RampWorld { get; set; }
-  private Matrix[] ColumnWorld { get; set; }
+    private Matrix[] ColumnWorld { get; set; }
+    private Matrix[] BrokenColumnWorld { get; set; }
 
     private Matrix Platform1World { get; set; }
     private Matrix Platform2World { get; set; }
@@ -103,9 +104,18 @@ namespace TGC.MonoGame.TP
 
     //Colisiones
     private BoundingBox ColumnBox;
+    private BoundingBox ColumnBox1;
+    private BoundingBox ColumnBox2;
+    private BoundingBox ColumnBox3;
+    private BoundingBox BrokenColumnAABB1;
+    private BoundingBox BrokenColumnAABB2;
     private BoundingBox PlatformBox;
+    private BoundingBox PlatformBox1;
+    private BoundingBox PlatformBox2;
+    private BoundingBox PlatformBox3;
     private BoundingBox[] ParedBoxes;
     private BoundingBox[] ColumnBoxes;
+    private OrientedBoundingBox[] BrokenColumnBoxes;
     private BoundingBox[] PlatformBoxes;
     private BoundingBox[] RampBoxes;
 
@@ -140,7 +150,10 @@ namespace TGC.MonoGame.TP
         Matrix.CreateScale(0.35f, 0.35f, 0.5f) * Matrix.CreateRotationX(-cuartoDeVuelta) * Matrix.CreateTranslation(Column10Position),
         Matrix.CreateScale(0.6f) * Matrix.CreateRotationX(-cuartoDeVuelta) * Matrix.CreateTranslation(Column11Position),
         Matrix.CreateScale(0.6f) * Matrix.CreateRotationX(-cuartoDeVuelta) * Matrix.CreateTranslation(Column12Position),
+      };
 
+      BrokenColumnWorld = new Matrix[]
+      {
         Matrix.CreateScale(0.6f) * Matrix.CreateRotationY(-MathF.PI / 6) * Matrix.CreateTranslation(BrokenColumn1Position),
         Matrix.CreateScale(0.7f) * Matrix.CreateRotationY(MathF.PI / 6) * Matrix.CreateTranslation(BrokenColumn2Position),
       };
@@ -192,55 +205,83 @@ namespace TGC.MonoGame.TP
         new BoundingBox(new Vector3(-800f, 0f, -800f) - minVector, new Vector3(-800f, 0f, 800f) + minVector)
       };
 
-      Vector3 correctorPosicionBoxColumnas = new Vector3(0f,0f,0f);
+      Vector3 correctorPosicionBoxColumnas = new Vector3(0.1f,6f,97f);
         
       ColumnBox = BoundingVolumesExtensions.CreateAABBFrom(Column);
-      ColumnBox = BoundingVolumesExtensions.Scale(ColumnBox,new Vector3(0.01f,0.5f,0.01f));
+      ColumnBox1 = BoundingVolumesExtensions.Scale(ColumnBox,new Vector3(0.1f,0.35f,0.1f));
+      ColumnBox2 = BoundingVolumesExtensions.Scale(ColumnBox,new Vector3(0.1f, 0.35f, 0.05f));
+      ColumnBox3 = BoundingVolumesExtensions.Scale(ColumnBox,new Vector3(0.4f,0.6f,0.1f));
+
+
 
       ColumnBoxes = new BoundingBox[]
       {
-        new BoundingBox(ColumnBox.Min  , ColumnBox.Max  ),
-        new BoundingBox(ColumnBox.Min + Column1Position -correctorPosicionBoxColumnas, ColumnBox.Max + Column1Position - correctorPosicionBoxColumnas),
-        new BoundingBox(ColumnBox.Min + Column2Position -correctorPosicionBoxColumnas, ColumnBox.Max + Column2Position - correctorPosicionBoxColumnas),
-        new BoundingBox(ColumnBox.Min + Column3Position -correctorPosicionBoxColumnas, ColumnBox.Max + Column3Position - correctorPosicionBoxColumnas),
-        new BoundingBox(ColumnBox.Min + Column4Position -correctorPosicionBoxColumnas, ColumnBox.Max + Column4Position - correctorPosicionBoxColumnas),
-        new BoundingBox(ColumnBox.Min + Column5Position -correctorPosicionBoxColumnas, ColumnBox.Max + Column5Position - correctorPosicionBoxColumnas),
-        new BoundingBox(ColumnBox.Min + Column6Position -correctorPosicionBoxColumnas, ColumnBox.Max + Column6Position - correctorPosicionBoxColumnas),
-        new BoundingBox(ColumnBox.Min + Column7Position -correctorPosicionBoxColumnas, ColumnBox.Max + Column7Position - correctorPosicionBoxColumnas),
-        new BoundingBox(ColumnBox.Min + Column8Position -correctorPosicionBoxColumnas, ColumnBox.Max + Column8Position - correctorPosicionBoxColumnas),
-        new BoundingBox(ColumnBox.Min + Column9Position -correctorPosicionBoxColumnas, ColumnBox.Max + Column9Position - correctorPosicionBoxColumnas),
-        new BoundingBox(ColumnBox.Min + Column10Position -correctorPosicionBoxColumnas, ColumnBox.Max + Column10Position - correctorPosicionBoxColumnas),
-        new BoundingBox(ColumnBox.Min + Column11Position -correctorPosicionBoxColumnas, ColumnBox.Max + Column11Position - correctorPosicionBoxColumnas),
-        new BoundingBox(ColumnBox.Min + Column12Position -correctorPosicionBoxColumnas, ColumnBox.Max + Column12Position - correctorPosicionBoxColumnas),
-
-        new BoundingBox(ColumnBox.Min + BrokenColumn1Position -correctorPosicionBoxColumnas, ColumnBox.Max + BrokenColumn1Position - correctorPosicionBoxColumnas),
-        new BoundingBox(ColumnBox.Min + BrokenColumn2Position -correctorPosicionBoxColumnas, ColumnBox.Max + BrokenColumn2Position - correctorPosicionBoxColumnas)
-      };
+        new BoundingBox(ColumnBox1.Min + Column1Position -correctorPosicionBoxColumnas, ColumnBox1.Max + Column1Position - correctorPosicionBoxColumnas),
+        new BoundingBox(ColumnBox1.Min + Column2Position -correctorPosicionBoxColumnas, ColumnBox1.Max + Column2Position - correctorPosicionBoxColumnas),
+        new BoundingBox(ColumnBox1.Min + Column3Position -correctorPosicionBoxColumnas, ColumnBox1.Max + Column3Position - correctorPosicionBoxColumnas),
+        new BoundingBox(ColumnBox1.Min + Column4Position -correctorPosicionBoxColumnas, ColumnBox1.Max + Column4Position - correctorPosicionBoxColumnas),
+        new BoundingBox(ColumnBox2.Min + Column5Position -correctorPosicionBoxColumnas, ColumnBox2.Max + Column5Position - correctorPosicionBoxColumnas),
+        new BoundingBox(ColumnBox2.Min + Column6Position -correctorPosicionBoxColumnas, ColumnBox2.Max + Column6Position - correctorPosicionBoxColumnas),
+        new BoundingBox(ColumnBox2.Min + Column7Position -correctorPosicionBoxColumnas, ColumnBox2.Max + Column7Position - correctorPosicionBoxColumnas),
+        new BoundingBox(ColumnBox2.Min + Column8Position -correctorPosicionBoxColumnas, ColumnBox2.Max + Column8Position - correctorPosicionBoxColumnas),
+        new BoundingBox(ColumnBox2.Min + Column9Position -correctorPosicionBoxColumnas, ColumnBox2.Max + Column9Position - correctorPosicionBoxColumnas),
+        new BoundingBox(ColumnBox2.Min + Column10Position -correctorPosicionBoxColumnas, ColumnBox2.Max + Column10Position - correctorPosicionBoxColumnas),
+        new BoundingBox(ColumnBox3.Min + Column11Position -correctorPosicionBoxColumnas, ColumnBox3.Max + Column11Position - correctorPosicionBoxColumnas),
+        new BoundingBox(ColumnBox3.Min + Column12Position -correctorPosicionBoxColumnas, ColumnBox3.Max + Column12Position - correctorPosicionBoxColumnas)
+        };
 
 
-      Vector3 correctorPosicionBoxPlataformas = new Vector3(0f,0f,0f);
-        
+      BrokenColumnAABB1 = BoundingVolumesExtensions.Scale(ColumnBox,new Vector3(0.4f,0.6f,0.1f));
+      BrokenColumnAABB2 = BoundingVolumesExtensions.Scale(ColumnBox,new Vector3(0.5f,0.7f,0.2f));
+
+      BrokenColumnBoxes = new OrientedBoundingBox[]
+      {
+          OrientedBoundingBox.FromAABB(new BoundingBox(BrokenColumnAABB1.Min + BrokenColumn1Position -correctorPosicionBoxColumnas, BrokenColumnAABB1.Max + BrokenColumn1Position - correctorPosicionBoxColumnas)),
+          OrientedBoundingBox.FromAABB(new BoundingBox(BrokenColumnAABB2.Min + BrokenColumn2Position -correctorPosicionBoxColumnas, BrokenColumnAABB2.Max + BrokenColumn2Position - correctorPosicionBoxColumnas))
+     };
+     
+      BrokenColumnBoxes[0].Rotate( Matrix.CreateRotationY(-MathF.PI / 6));
+      BrokenColumnBoxes[1].Rotate( Matrix.CreateRotationY(MathF.PI / 6));
+
       PlatformBox = BoundingVolumesExtensions.CreateAABBFrom(Platform);
-      PlatformBox = BoundingVolumesExtensions.Scale(PlatformBox,new Vector3(0.01f,0.5f,0.01f));
+      PlatformBox1 = BoundingVolumesExtensions.Scale(PlatformBox,new Vector3(100, 5, 80));
+      PlatformBox2 = BoundingVolumesExtensions.Scale(PlatformBox,new Vector3(100, 5, 70));
+      PlatformBox3 = BoundingVolumesExtensions.Scale(PlatformBox,new Vector3(50, 10, 50));
+
 
       PlatformBoxes = new BoundingBox[]
       {
-        new BoundingBox(ColumnBox.Min  , ColumnBox.Max  ),
-        new BoundingBox(ColumnBox.Min + Platform1Position -correctorPosicionBoxPlataformas, ColumnBox.Max + Platform1Position - correctorPosicionBoxPlataformas),
-        new BoundingBox(ColumnBox.Min + Platform2Position -correctorPosicionBoxPlataformas, ColumnBox.Max + Platform2Position - correctorPosicionBoxPlataformas),
-        new BoundingBox(ColumnBox.Min + Platform3Position -correctorPosicionBoxPlataformas, ColumnBox.Max + Platform3Position - correctorPosicionBoxPlataformas),
-        new BoundingBox(ColumnBox.Min + Platform4Position -correctorPosicionBoxPlataformas, ColumnBox.Max + Platform4Position - correctorPosicionBoxPlataformas),
-        new BoundingBox(ColumnBox.Min + Platform5Position -correctorPosicionBoxPlataformas, ColumnBox.Max + Platform5Position - correctorPosicionBoxPlataformas)
+        new BoundingBox(PlatformBox1.Min + Platform1Position , PlatformBox1.Max + Platform1Position),
+        new BoundingBox(PlatformBox1.Min + Platform2Position , PlatformBox1.Max + Platform2Position),
+        new BoundingBox(PlatformBox2.Min + Platform3Position , PlatformBox2.Max + Platform3Position),
+        new BoundingBox(PlatformBox3.Min + Platform4Position , PlatformBox3.Max + Platform4Position),
+        new BoundingBox(PlatformBox3.Min + Platform5Position , PlatformBox3.Max + Platform5Position)
         
-
       };
     }
 
     public Boolean DetectorDeColisionesDeEscenario(GameTime gameTime, OrientedBoundingBox autoCollider)
         {
+
+            for(int index = 0; index < PlatformBoxes.Length; index++)
+            {
+                if(autoCollider.Intersects(PlatformBoxes[index]))
+                {
+                    return true;
+                }
+            }
+
             for(int index = 0; index < ColumnBoxes.Length; index++)
             {
                 if(autoCollider.Intersects(ColumnBoxes[index]))
+                {
+                    return true;
+                }
+            }
+
+            for(int index = 0; index < BrokenColumnBoxes.Length; index++)
+            {
+                if(autoCollider.Intersects(BrokenColumnBoxes[index]))
                 {
                     return true;
                 }
@@ -303,6 +344,12 @@ namespace TGC.MonoGame.TP
       for(int index = 0; index < ColumnWorld.Length; index++)
       {
         dibujar(view,projection,effect,ColumnWorld[index], Column, Color.Orange);
+      }
+      
+      //ColumnasRotas
+      for(int index = 0; index < BrokenColumnWorld.Length; index++)
+      {
+        dibujar(view,projection,effect,BrokenColumnWorld[index], Column, Color.Orange);
       }
 
       //Rampas
