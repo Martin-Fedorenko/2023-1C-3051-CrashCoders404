@@ -22,10 +22,10 @@ namespace TGC.MonoGame.TP
     private float Rotation;
     private bool ActiveMovement;
     private Boolean onJump;
-    private Boolean onDescend;
     private Boolean accelerating;
     private float jumpRotation;
-    private float jumpAcceleration;
+    private float jumpSpeed;
+    private float jumpPower;
     private float gravity;
     private float jumpAngle;
     private float jumpHeight;
@@ -78,6 +78,8 @@ namespace TGC.MonoGame.TP
     private Vector3 Auto7Pos = new Vector3(50, 0, 180);
     private Vector3 Auto8Pos = new Vector3(-50, 0, 180);
     private Vector3 Desplazamiento;
+    private Boolean enElPiso;
+    float tiempoEnAire;
 
     //Texturas
     private List<Texture2D> ColorTextures { get; set; }
@@ -103,13 +105,14 @@ namespace TGC.MonoGame.TP
       Rozamiento = -500f;
       ActiveMovement = false;
       jumpAngle = MathF.PI / 9;
-      jumpAcceleration = 5f;
-      gravity = 5f;
+      jumpSpeed = 5f;
+      gravity = 2f;
       onJump = false;
-      onDescend = false;
       accelerating = false;
       jumpHeight = 100f;
       maxSpeed = 2800f;
+      enElPiso = true;
+      tiempoEnAire = 0f;
 
       //Rotaciones de Ruedas
       WheelRotationWorld = new float[]
@@ -268,34 +271,38 @@ namespace TGC.MonoGame.TP
       if ((Keyboard.GetState().IsKeyDown(Keys.Space) || onJump) && !accelerating)
       {
         onJump = true;
+        jumpSpeed -= gravity * tiempoEnAire;
+        Desplazamiento.Y += jumpSpeed;
         if (CarSpeed >= 0)
         {
-          if (!onDescend && jumpRotation < jumpAngle) jumpRotation += 0.05f;
-          if (onDescend && jumpRotation > -jumpAngle) jumpRotation -= 0.05f;
+          if (jumpSpeed >= 0 && jumpRotation < jumpAngle) jumpRotation += 0.05f;
+          if (jumpSpeed < 0 && jumpRotation > -jumpAngle) jumpRotation -= 0.05f;
         }
         else if (CarSpeed < 0)
         {
-          if (!onDescend && jumpRotation > -jumpAngle) jumpRotation -= 0.05f;
-          if (onDescend && jumpRotation < jumpAngle) jumpRotation += 0.05f;
+          if (jumpSpeed >= 0 && jumpRotation > -jumpAngle) jumpRotation -= 0.05f;
+          if (jumpSpeed < 0 && jumpRotation < jumpAngle) jumpRotation += 0.05f;
         }
-        if (AutoPrincipalPos.Y <= jumpHeight && !onDescend)
-        {
-          Desplazamiento += Vector3.UnitY * jumpAcceleration;
+    }
 
-        }
-        else if (AutoPrincipalPos.Y >= jumpHeight && !onDescend) onDescend = true;
-        else if (AutoPrincipalPos.Y >= 5 && onDescend)
-        {
-          Desplazamiento -= Vector3.UnitY * gravity;
 
-        }
-        else if (AutoPrincipalPos.Y <= jumpHeight && onDescend) //debi usar <= en lugar de ==, ya que hay veces que el auto termina parte bajo el suelo, y no permitia otros movimientos del auto
-        {
-          jumpRotation = 0f;
-          onDescend = false;
-          onJump = false;
-        }
+      if(!enElPiso && !onJump) //para casos en los que no salte, y por ejemplo se caiga de la plataforma el auto
+      {
+        Desplazamiento.Y -= gravity* tiempoEnAire;
       }
+
+      if(enElPiso) //Analizar la posicion del auto con respecto al piso
+      {
+        onJump = false;
+        jumpSpeed = 5f;
+        jumpRotation = 0; 
+        tiempoEnAire = 0f;
+      }
+      else
+      {
+        tiempoEnAire += (float)gameTime.ElapsedGameTime.TotalSeconds;
+      }
+
     // collided = AutoPrincipalBox.Intersects(Auto1Box);
 
             PreviousSpeed = CarSpeed;
@@ -414,7 +421,15 @@ namespace TGC.MonoGame.TP
     public void FrenarAuto()
     {
       CarSpeed = 0;
-      onDescend = true;
+    }
+
+    public void autoEnElPiso()
+    {
+      enElPiso = true;
+    }
+    public void autoNoEnElPiso()
+    {
+      enElPiso = false;
     }
     public void inicializarBoundingBoxes()
     {

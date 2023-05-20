@@ -118,11 +118,12 @@ namespace TGC.MonoGame.TP
     private OrientedBoundingBox[] BrokenColumnBoxes;
     private BoundingBox[] PlatformBoxes;
     private BoundingBox[] RampBoxes;
+    private BoundingBox PisoBox;
 
     public void Initialize()
     {
       //Arena
-      PisoWorld = Matrix.CreateScale(30, 0, 30);
+      PisoWorld = Matrix.CreateScale(30, 1, 30);
       //ParedWorld = Matrix.CreateScale(30, 0, 30);
 
       var scale1 = new Vector3(800f, 1f, 200f);
@@ -197,6 +198,10 @@ namespace TGC.MonoGame.TP
       Platform = platform;
       Cube = cube;
 
+      PisoBox = BoundingVolumesExtensions.CreateAABBFrom(Piso);
+      PisoBox = BoundingVolumesExtensions.Scale(PisoBox, new Vector3(100,1,100));
+      PisoBox = new BoundingBox(PisoBox.Min,PisoBox.Max);
+
       var minVector = Vector3.One * 0.25f;
       ParedBoxes = new BoundingBox[]
       {
@@ -261,14 +266,25 @@ namespace TGC.MonoGame.TP
       };
     }
 
-    public Boolean DetectorDeColisionesDeEscenario(GameTime gameTime, OrientedBoundingBox autoCollider)
+    public Boolean Update(GameTime gameTime, Autos auto)
         {
+            OrientedBoundingBox autoCollider;
+            autoCollider = auto.GetAutoPrincipalBox();
+
+            if(autoCollider.Intersects(PisoBox))
+            {
+              auto.autoEnElPiso();
+            }
+            else
+            {
+              auto.autoNoEnElPiso();
+            }
 
             for(int index = 0; index < PlatformBoxes.Length; index++)
             {
                 if(autoCollider.Intersects(PlatformBoxes[index]))
                 {
-                    return true;
+                    auto.FrenarAuto();
                 }
             }
 
@@ -276,7 +292,7 @@ namespace TGC.MonoGame.TP
             {
                 if(autoCollider.Intersects(ColumnBoxes[index]))
                 {
-                    return true;
+                    auto.FrenarAuto();
                 }
             }
 
@@ -284,7 +300,7 @@ namespace TGC.MonoGame.TP
             {
                 if(autoCollider.Intersects(BrokenColumnBoxes[index]))
                 {
-                    return true;
+                    auto.FrenarAuto();
                 }
             }
 
@@ -292,7 +308,7 @@ namespace TGC.MonoGame.TP
             {
                 if(autoCollider.Intersects(ParedBoxes[index]))
                 {
-                    return true;
+                    auto.FrenarAuto();
                 }
             }
             
