@@ -1,10 +1,12 @@
 ﻿﻿using System;
+using Microsoft.Xna.Framework.Content;
 using System.Collections.Generic;
 using BepuPhysics.CollisionDetection.CollisionTasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-
+using TGC.MonoGame.TP.Viewer.Gizmos;
+using TGC.MonoGame.TP.Cameras;
 
 namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
 {
@@ -16,6 +18,7 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
     public const string ContentFolderSounds = "Sounds/";
     public const string ContentFolderSpriteFonts = "SpriteFonts/";
     public const string ContentFolderTextures = "Textures/";
+    
 
     public TGCGame()
     {
@@ -23,7 +26,8 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
       Content.RootDirectory = "Content";
       IsMouseVisible = true;
     }
-
+    private Camera Camera { get; set; }
+    private Gizmos gizmos;
     private GraphicsDeviceManager Graphics { get; }
     private SpriteBatch SpriteBatch { get; set; }
     private Effect Effect { get; set; }
@@ -67,6 +71,9 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
     private Boolean collided = false;
     protected override void Initialize()
     {
+      Camera = new SimpleCamera(GraphicsDevice.Viewport.AspectRatio, new Vector3(40, 60, 150), 55, 0.4f);
+      gizmos = new Gizmos();
+
       // Dimensiones de la pantalla
       Graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width - 100;
       Graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height - 100;
@@ -89,14 +96,15 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
       //Projection = Matrix.CreatePerspectiveFieldOfView(MathHelper.PiOver4, GraphicsDevice.Viewport.AspectRatio, 1, 1500);
 
       // Cámara con vista isométrica
-      View = Matrix.CreateLookAt(posicionCamara, autos.posAutoPrincipal(), Vector3.Up);
-      Projection = Matrix.CreateOrthographic(400, 300, -80, 1000);
+      //View = Matrix.CreateLookAt(posicionCamara, autos.posAutoPrincipal(), Vector3.Up);
+      //Projection = Matrix.CreateOrthographic(400, 300, -80, 1000);
 
       base.Initialize();
     }
 
     protected override void LoadContent()
     {
+      gizmos.LoadContent(GraphicsDevice,Content);
       SpriteBatch = new SpriteBatch(GraphicsDevice);
 
       Piso = Content.Load<Model>(ContentFolder3D + "Arena/Plano"); //No tiene textura incluida
@@ -144,21 +152,30 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
       if(detalles.DetectorDeColisionesDeDetalles(gameTime, autos.GetAutoPrincipalBox())) autos.FrenarAuto();
       escenario.Update(gameTime, autos);
 
-      View = Matrix.CreateLookAt(posicionCamara + autos.posAutoPrincipal(), autos.posAutoPrincipal(), Vector3.Up);
-
+      //View = Matrix.CreateLookAt(posicionCamara + autos.posAutoPrincipal(), autos.posAutoPrincipal(), Vector3.Up);
+      Camera.Update(gameTime);
+      gizmos.UpdateViewProjection(Camera.View,Camera.Projection);
       base.Update(gameTime);
     }
 
     protected override void Draw(GameTime gameTime)
     {
       GraphicsDevice.Clear(Color.Black);
-      escenario.dibujarEscenario(View, Projection, Effect);
-      detalles.dibujarDetalles(View, Projection, Effect);
-      powerUps.dibujarPowerUps(View, Projection, Effect);
-      autos.dibujarAutos(View, Projection, TextureShader);
+      escenario.dibujarEscenario(Camera.View,Camera.Projection, Effect);
+      detalles.dibujarDetalles(Camera.View,Camera.Projection, Effect);
+      powerUps.dibujarPowerUps(Camera.View,Camera.Projection, Effect);
+      autos.dibujarAutos(Camera.View,Camera.Projection, TextureShader);
+
+      autos.dibujarBoundingBoxes(gizmos); //OBB de autos deportivos bien ubicadas
+      detalles.dibujarBoundingBoxes(gizmos); //BB de arboles bien ubicadas
+      escenario.dibujarBoundingBoxes(gizmos); //BB de plataformas bien ubicadas
+      powerUps.dibujarBoundingBoxes(gizmos); //BB Bien ubicadas
+      
+      gizmos.Draw();
     }
     protected override void UnloadContent()
     {
+      gizmos.Dispose();
       Content.Unload();
       base.UnloadContent();
     }

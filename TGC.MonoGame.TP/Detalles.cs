@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using TGC.MonoGame.TP.Collisions;
+using TGC.MonoGame.TP.Viewer.Gizmos;
 
 namespace TGC.MonoGame.TP
 {
@@ -440,15 +441,15 @@ namespace TGC.MonoGame.TP
             Rock10 = rock10;
             Tire = tire;
 
-            Vector3 correctorPosicionBoxTree = new Vector3(3695f,228.1747f,5875f);//Sino la bounding box aparecia en posiciones lejanas al modelo, de esta forma la llevo al origen
+            Vector3 correctorPosicionBoxTree = new Vector3(3695f,350,5875f);//Sino la bounding box aparecia en posiciones lejanas al modelo, de esta forma la llevo al origen
         
 
             TreeBox = BoundingVolumesExtensions.CreateAABBFrom(Tree);
-            TreeBox = BoundingVolumesExtensions.Scale(TreeBox,new Vector3(0.01f,0.5f,0.01f));
+            TreeBox = BoundingVolumesExtensions.Scale(TreeBox,new Vector3(0.01f,0.2f,0.01f));
 
             TreeBoxes = new BoundingBox[]
             {
-                new BoundingBox(TreeBox.Min  , TreeBox.Max  ),
+                new BoundingBox(TreeBox.Min + Tree3Position - correctorPosicionBoxTree , TreeBox.Max + Tree3Position - correctorPosicionBoxTree),
                 new BoundingBox(TreeBox.Min + Tree8Position -correctorPosicionBoxTree, TreeBox.Max + Tree8Position - correctorPosicionBoxTree),
 
                 new BoundingBox(TreeBox.Min + Tree1Position -correctorPosicionBoxTree, TreeBox.Max + Tree1Position - correctorPosicionBoxTree),
@@ -686,6 +687,19 @@ namespace TGC.MonoGame.TP
                 dibujar(view,projection,effect,TiresWorld[index], Tire, Color.Gray);
             }
             
+        }
+
+
+        public void dibujarBoundingBoxes(Gizmos gizmos)
+        {
+            for(int index = 0; index < TreeBoxes.Length; index++)
+            {
+                gizmos.DrawCube((TreeBoxes[index].Max + TreeBoxes[index].Min) / 2f,TreeBoxes[index].Max - TreeBoxes[index].Min,Color.Red);
+            }
+    
+
+            //FALTARIAN LAS ROCKS Y LAS TIRES
+
         }
 
     }

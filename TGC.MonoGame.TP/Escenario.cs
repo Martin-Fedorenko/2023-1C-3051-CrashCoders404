@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using TGC.MonoGame.TP.Collisions;
+using TGC.MonoGame.TP.Viewer.Gizmos;
 
 namespace TGC.MonoGame.TP
 {
@@ -107,6 +108,7 @@ namespace TGC.MonoGame.TP
     private BoundingBox ColumnBox1;
     private BoundingBox ColumnBox2;
     private BoundingBox ColumnBox3;
+    private BoundingBox ColumnBox4;
     private BoundingBox BrokenColumnAABB1;
     private BoundingBox BrokenColumnAABB2;
     private BoundingBox PlatformBox;
@@ -200,40 +202,43 @@ namespace TGC.MonoGame.TP
 
       PisoBox = BoundingVolumesExtensions.CreateAABBFrom(Piso);
       PisoBox = BoundingVolumesExtensions.Scale(PisoBox, new Vector3(100,1,100));
-      PisoBox = new BoundingBox(PisoBox.Min,PisoBox.Max);
+      PisoBox = new BoundingBox(PisoBox.Min + new Vector3(0,-2,0),PisoBox.Max + new Vector3(0,2,0));
 
       var minVector = Vector3.One * 0.25f;
       ParedBoxes = new BoundingBox[]
       {
-        new BoundingBox(new Vector3(-800f, 0f, -800f) - minVector, new Vector3(800f, 0f, -800f) + minVector),
-        new BoundingBox(new Vector3(-800f, 0f, 800f) - minVector, new Vector3(800f, 0f, 800f) + minVector),
-        new BoundingBox(new Vector3(800f, 0f, -800f) - minVector, new Vector3(800f, 0f, 800f) + minVector),
-        new BoundingBox(new Vector3(-800f, 0f, -800f) - minVector, new Vector3(-800f, 0f, 800f) + minVector)
+        new BoundingBox(new Vector3(-800f, 200f, -800f) - minVector, new Vector3(800f, 0f, -800f) + minVector),
+        new BoundingBox(new Vector3(-800f, 200f, 800f) - minVector, new Vector3(800f, 0f, 800f) + minVector),
+        new BoundingBox(new Vector3(800f, 200f, -800f) - minVector, new Vector3(800f, 0f, 800f) + minVector),
+        new BoundingBox(new Vector3(-800f, 200f, -800f) - minVector, new Vector3(-800f, 0f, 800f) + minVector)
       };
 
-      Vector3 correctorPosicionBoxColumnas = new Vector3(0.1f,6f,97f);
-        
+      Vector3 correctorPosicionBoxColumnas = new Vector3(0,-50,98);
+      Vector3 correctorPosicionBoxColumnas2 = new Vector3(0,-15,98); //para evitar que la mitad de la BB este bajo el piso
+      Vector3 correctorPosicionBoxColumnas3 = new Vector3(0,-30,98);
+
       ColumnBox = BoundingVolumesExtensions.CreateAABBFrom(Column);
-      ColumnBox1 = BoundingVolumesExtensions.Scale(ColumnBox,new Vector3(0.1f,0.35f,0.1f));
-      ColumnBox2 = BoundingVolumesExtensions.Scale(ColumnBox,new Vector3(0.1f, 0.35f, 0.05f));
-      ColumnBox3 = BoundingVolumesExtensions.Scale(ColumnBox,new Vector3(0.4f,0.6f,0.1f));
+      ColumnBox1 = BoundingVolumesExtensions.Scale(ColumnBox,new Vector3(0.3f,1.5f,0.1f));
+      ColumnBox2 = BoundingVolumesExtensions.Scale(ColumnBox,new Vector3(0.5f, 0.7f, 0.1f));
+      ColumnBox3 = BoundingVolumesExtensions.Scale(ColumnBox,new Vector3(0.35f, 2f, 0.1f));
+      ColumnBox4 = BoundingVolumesExtensions.Scale(ColumnBox,new Vector3(0.4f,2.5f,0.1f));
 
 
 
       ColumnBoxes = new BoundingBox[]
       {
-        new BoundingBox(ColumnBox1.Min + Column1Position -correctorPosicionBoxColumnas, ColumnBox1.Max + Column1Position - correctorPosicionBoxColumnas),
-        new BoundingBox(ColumnBox1.Min + Column2Position -correctorPosicionBoxColumnas, ColumnBox1.Max + Column2Position - correctorPosicionBoxColumnas),
-        new BoundingBox(ColumnBox1.Min + Column3Position -correctorPosicionBoxColumnas, ColumnBox1.Max + Column3Position - correctorPosicionBoxColumnas),
-        new BoundingBox(ColumnBox1.Min + Column4Position -correctorPosicionBoxColumnas, ColumnBox1.Max + Column4Position - correctorPosicionBoxColumnas),
-        new BoundingBox(ColumnBox2.Min + Column5Position -correctorPosicionBoxColumnas, ColumnBox2.Max + Column5Position - correctorPosicionBoxColumnas),
-        new BoundingBox(ColumnBox2.Min + Column6Position -correctorPosicionBoxColumnas, ColumnBox2.Max + Column6Position - correctorPosicionBoxColumnas),
-        new BoundingBox(ColumnBox2.Min + Column7Position -correctorPosicionBoxColumnas, ColumnBox2.Max + Column7Position - correctorPosicionBoxColumnas),
-        new BoundingBox(ColumnBox2.Min + Column8Position -correctorPosicionBoxColumnas, ColumnBox2.Max + Column8Position - correctorPosicionBoxColumnas),
-        new BoundingBox(ColumnBox2.Min + Column9Position -correctorPosicionBoxColumnas, ColumnBox2.Max + Column9Position - correctorPosicionBoxColumnas),
-        new BoundingBox(ColumnBox2.Min + Column10Position -correctorPosicionBoxColumnas, ColumnBox2.Max + Column10Position - correctorPosicionBoxColumnas),
-        new BoundingBox(ColumnBox3.Min + Column11Position -correctorPosicionBoxColumnas, ColumnBox3.Max + Column11Position - correctorPosicionBoxColumnas),
-        new BoundingBox(ColumnBox3.Min + Column12Position -correctorPosicionBoxColumnas, ColumnBox3.Max + Column12Position - correctorPosicionBoxColumnas)
+        new BoundingBox(ColumnBox1.Min + Column1Position -correctorPosicionBoxColumnas3, ColumnBox1.Max + Column1Position - correctorPosicionBoxColumnas3),
+        new BoundingBox(ColumnBox1.Min + Column2Position -correctorPosicionBoxColumnas3, ColumnBox1.Max + Column2Position - correctorPosicionBoxColumnas3),
+        new BoundingBox(ColumnBox1.Min + Column3Position -correctorPosicionBoxColumnas3, ColumnBox1.Max + Column3Position - correctorPosicionBoxColumnas3),
+        new BoundingBox(ColumnBox1.Min + Column4Position -correctorPosicionBoxColumnas3, ColumnBox1.Max + Column4Position - correctorPosicionBoxColumnas3),
+        new BoundingBox(ColumnBox2.Min + Column5Position -correctorPosicionBoxColumnas2, ColumnBox2.Max + Column5Position - correctorPosicionBoxColumnas2),
+        new BoundingBox(ColumnBox2.Min + Column6Position -correctorPosicionBoxColumnas2, ColumnBox2.Max + Column6Position - correctorPosicionBoxColumnas2),
+        new BoundingBox(ColumnBox3.Min + Column7Position -correctorPosicionBoxColumnas, ColumnBox3.Max + Column7Position - correctorPosicionBoxColumnas),
+        new BoundingBox(ColumnBox3.Min + Column8Position -correctorPosicionBoxColumnas, ColumnBox3.Max + Column8Position - correctorPosicionBoxColumnas),
+        new BoundingBox(ColumnBox3.Min + Column9Position -correctorPosicionBoxColumnas, ColumnBox3.Max + Column9Position - correctorPosicionBoxColumnas),
+        new BoundingBox(ColumnBox3.Min + Column10Position -correctorPosicionBoxColumnas, ColumnBox3.Max + Column10Position - correctorPosicionBoxColumnas),
+        new BoundingBox(ColumnBox4.Min + Column11Position -correctorPosicionBoxColumnas, ColumnBox4.Max + Column11Position - correctorPosicionBoxColumnas),
+        new BoundingBox(ColumnBox4.Min + Column12Position -correctorPosicionBoxColumnas, ColumnBox4.Max + Column12Position - correctorPosicionBoxColumnas)
         };
 
 
@@ -374,6 +379,28 @@ namespace TGC.MonoGame.TP
       {
         dibujar(view,projection,effect,RampWorld[index], Ramp, Color.SandyBrown);
       }
+    }
+
+    public void dibujarBoundingBoxes(Gizmos gizmos)
+    {
+      for(int index = 0; index < ColumnBoxes.Length; index++)
+        {
+           gizmos.DrawCube((ColumnBoxes[index].Max + ColumnBoxes[index].Min) / 2f,ColumnBoxes[index].Max - ColumnBoxes[index].Min,Color.Red);
+        }
+
+      for(int index = 0; index < PlatformBoxes.Length; index++)
+        {
+           gizmos.DrawCube((PlatformBoxes[index].Max + PlatformBoxes[index].Min) / 2f,PlatformBoxes[index].Max - PlatformBoxes[index].Min,Color.Red);
+        }
+
+       for(int index = 0; index < ParedBoxes.Length; index++)
+        {
+           gizmos.DrawCube((ParedBoxes[index].Max + ParedBoxes[index].Min) / 2f,ParedBoxes[index].Max - ParedBoxes[index].Min,Color.Red);
+        }
+
+        gizmos.DrawCube((PisoBox.Max + PisoBox.Min) / 2f,PisoBox.Max - PisoBox.Min,Color.Red);
+
+        //faltarian las rampas y ver como hacer con las obb para las broken columns
     }
   }
 }

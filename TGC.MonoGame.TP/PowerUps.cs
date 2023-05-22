@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using TGC.MonoGame.TP.Collisions;
-using TGC.MonoGame.Samples.Geometries;
+using TGC.MonoGame.TP.Viewer.Gizmos;
 
 namespace TGC.MonoGame.TP
 {
@@ -106,36 +106,35 @@ namespace TGC.MonoGame.TP
 
       //Collisions
       PowerUpBox = BoundingVolumesExtensions.CreateAABBFrom(CajaAmetralladora);
-      PowerUpBox = BoundingVolumesExtensions.Scale(PowerUpBox,new Vector3(0.2f, 0.1f, 0.1f));
-      Vector3 correccionAltura = new Vector3(0,15,0);
+      PowerUpBox = BoundingVolumesExtensions.Scale(PowerUpBox,new Vector3(0.1f, 3.5f, 0.1f));
       collidersAmetralladoras = new BoundingBox[]
       {
-       new BoundingBox(PowerUpBox.Min + AmetralladoraPos - correccionAltura,PowerUpBox.Max + AmetralladoraPos - correccionAltura),
-       new BoundingBox(PowerUpBox.Min + Ametralladora1Pos - correccionAltura,PowerUpBox.Max + Ametralladora1Pos - correccionAltura),
-       new BoundingBox(PowerUpBox.Min + Ametralladora2Pos - correccionAltura,PowerUpBox.Max + Ametralladora2Pos - correccionAltura),
-       new BoundingBox(PowerUpBox.Min + Ametralladora3Pos - correccionAltura,PowerUpBox.Max + Ametralladora3Pos - correccionAltura),
-       new BoundingBox(PowerUpBox.Min + Ametralladora4Pos - correccionAltura,PowerUpBox.Max + Ametralladora4Pos - correccionAltura),
-       new BoundingBox(PowerUpBox.Min + Ametralladora5Pos - correccionAltura,PowerUpBox.Max + Ametralladora5Pos - correccionAltura)
+       new BoundingBox(PowerUpBox.Min + AmetralladoraPos,PowerUpBox.Max + AmetralladoraPos),
+       new BoundingBox(PowerUpBox.Min + Ametralladora1Pos,PowerUpBox.Max + Ametralladora1Pos ),
+       new BoundingBox(PowerUpBox.Min + Ametralladora2Pos,PowerUpBox.Max + Ametralladora2Pos),
+       new BoundingBox(PowerUpBox.Min + Ametralladora3Pos,PowerUpBox.Max + Ametralladora3Pos),
+       new BoundingBox(PowerUpBox.Min + Ametralladora4Pos,PowerUpBox.Max + Ametralladora4Pos),
+       new BoundingBox(PowerUpBox.Min + Ametralladora5Pos,PowerUpBox.Max + Ametralladora5Pos)
       };
       
       collidersMisiles = new BoundingBox[]
       {
-       new BoundingBox(PowerUpBox.Min + MisilPos - correccionAltura,PowerUpBox.Max + MisilPos - correccionAltura),
-       new BoundingBox(PowerUpBox.Min + Misil1Pos - correccionAltura,PowerUpBox.Max + Misil1Pos - correccionAltura),
-       new BoundingBox(PowerUpBox.Min + Misil2Pos - correccionAltura,PowerUpBox.Max + Misil2Pos - correccionAltura),
-       new BoundingBox(PowerUpBox.Min + Misil3Pos - correccionAltura,PowerUpBox.Max + Misil3Pos - correccionAltura),
-       new BoundingBox(PowerUpBox.Min + Misil4Pos - correccionAltura,PowerUpBox.Max + Misil4Pos - correccionAltura),
-       new BoundingBox(PowerUpBox.Min + Misil5Pos - correccionAltura,PowerUpBox.Max + Misil5Pos - correccionAltura)
+       new BoundingBox(PowerUpBox.Min + MisilPos,PowerUpBox.Max + MisilPos),
+       new BoundingBox(PowerUpBox.Min + Misil1Pos,PowerUpBox.Max + Misil1Pos),
+       new BoundingBox(PowerUpBox.Min + Misil2Pos,PowerUpBox.Max + Misil2Pos),
+       new BoundingBox(PowerUpBox.Min + Misil3Pos,PowerUpBox.Max + Misil3Pos),
+       new BoundingBox(PowerUpBox.Min + Misil4Pos,PowerUpBox.Max + Misil4Pos),
+       new BoundingBox(PowerUpBox.Min + Misil5Pos,PowerUpBox.Max + Misil5Pos)
       };
 
       collidersTurbos = new BoundingBox[]
       {
-       new BoundingBox(PowerUpBox.Min + TurboPos - correccionAltura,PowerUpBox.Max + TurboPos - correccionAltura),
-       new BoundingBox(PowerUpBox.Min + Turbo1Pos - correccionAltura,PowerUpBox.Max + Turbo1Pos - correccionAltura),
-       new BoundingBox(PowerUpBox.Min + Turbo2Pos - correccionAltura,PowerUpBox.Max + Turbo2Pos - correccionAltura),
-       new BoundingBox(PowerUpBox.Min + Turbo3Pos - correccionAltura,PowerUpBox.Max + Turbo3Pos - correccionAltura),
-       new BoundingBox(PowerUpBox.Min + Turbo4Pos - correccionAltura,PowerUpBox.Max + Turbo4Pos - correccionAltura),
-       new BoundingBox(PowerUpBox.Min + Turbo5Pos - correccionAltura,PowerUpBox.Max + Turbo5Pos - correccionAltura)
+       new BoundingBox(PowerUpBox.Min + TurboPos,PowerUpBox.Max + TurboPos),
+       new BoundingBox(PowerUpBox.Min + Turbo1Pos,PowerUpBox.Max + Turbo1Pos),
+       new BoundingBox(PowerUpBox.Min + Turbo2Pos,PowerUpBox.Max + Turbo2Pos),
+       new BoundingBox(PowerUpBox.Min + Turbo3Pos,PowerUpBox.Max + Turbo3Pos),
+       new BoundingBox(PowerUpBox.Min + Turbo4Pos,PowerUpBox.Max + Turbo4Pos),
+       new BoundingBox(PowerUpBox.Min + Turbo5Pos,PowerUpBox.Max + Turbo5Pos)
       };
 
     }
@@ -232,6 +231,24 @@ namespace TGC.MonoGame.TP
         }
       }
 
+    }
+
+    public void dibujarBoundingBoxes(Gizmos gizmos)
+    {
+      for(int index = 0; index < collidersAmetralladoras.Length; index++)
+        {
+          gizmos.DrawCube((collidersAmetralladoras[index].Max + collidersAmetralladoras[index].Min) / 2f,collidersAmetralladoras[index].Max - collidersAmetralladoras[index].Min,Color.Red);
+        }
+
+        for(int index = 0; index < collidersMisiles.Length; index++)
+        {
+          gizmos.DrawCube((collidersMisiles[index].Max + collidersMisiles[index].Min) / 2f,collidersMisiles[index].Max - collidersMisiles[index].Min,Color.Red);
+        }
+        
+        for(int index = 0; index < collidersTurbos.Length; index++)
+        {
+          gizmos.DrawCube((collidersTurbos[index].Max + collidersTurbos[index].Min) / 2f,collidersTurbos[index].Max - collidersTurbos[index].Min,Color.Red);
+        }
     }
   }
 }
