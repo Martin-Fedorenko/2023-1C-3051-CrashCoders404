@@ -201,8 +201,8 @@ namespace TGC.MonoGame.TP
       Cube = cube;
 
       PisoBox = BoundingVolumesExtensions.CreateAABBFrom(Piso);
-      PisoBox = BoundingVolumesExtensions.Scale(PisoBox, new Vector3(100,1,100));
-      PisoBox = new BoundingBox(PisoBox.Min + new Vector3(0,-2,0),PisoBox.Max + new Vector3(0,2,0));
+      PisoBox = BoundingVolumesExtensions.Scale(PisoBox, new Vector3(30,1,30));
+      PisoBox = new BoundingBox(PisoBox.Min ,PisoBox.Max );
 
       var minVector = Vector3.One * 0.25f;
       ParedBoxes = new BoundingBox[]
@@ -213,9 +213,9 @@ namespace TGC.MonoGame.TP
         new BoundingBox(new Vector3(-800f, 200f, -800f) - minVector, new Vector3(-800f, 0f, 800f) + minVector)
       };
 
-      Vector3 correctorPosicionBoxColumnas = new Vector3(0,-50,98);
-      Vector3 correctorPosicionBoxColumnas2 = new Vector3(0,-15,98); //para evitar que la mitad de la BB este bajo el piso
-      Vector3 correctorPosicionBoxColumnas3 = new Vector3(0,-30,98);
+      Vector3 correctorPosicionBoxColumnas = new Vector3(0,-45,98);
+      Vector3 correctorPosicionBoxColumnas2 = new Vector3(0,-10,98); //para evitar que la mitad de la BB este bajo el piso
+      Vector3 correctorPosicionBoxColumnas3 = new Vector3(0,-25,98);
 
       ColumnBox = BoundingVolumesExtensions.CreateAABBFrom(Column);
       ColumnBox1 = BoundingVolumesExtensions.Scale(ColumnBox,new Vector3(0.3f,1.5f,0.1f));
@@ -274,24 +274,30 @@ namespace TGC.MonoGame.TP
     public Boolean Update(GameTime gameTime, Autos auto)
         {
             OrientedBoundingBox autoCollider;
+            Boolean enPisoOPlataforma = false;
             autoCollider = auto.GetAutoPrincipalBox();
 
             if(autoCollider.Intersects(PisoBox))
             {
-              auto.autoEnElPiso();
-            }
-            else
-            {
-              auto.autoNoEnElPiso();
+              enPisoOPlataforma = true;;
             }
 
             for(int index = 0; index < PlatformBoxes.Length; index++)
             {
                 if(autoCollider.Intersects(PlatformBoxes[index]))
                 {
-                    auto.FrenarAuto();
+                    if(autoCollider.Center.Y > PlatformBoxes[index].Max.Y) //el auto esta encima de la plataforma
+                    {
+                     enPisoOPlataforma = true; //se para en la plataforma
+                    }
+                    else
+                    {
+                      auto.chocarTecho(); //deja de subir
+                    }
                 }
             }
+            if(enPisoOPlataforma) auto.autoEnElPiso();
+            else auto.autoNoEnElPiso();
 
             for(int index = 0; index < ColumnBoxes.Length; index++)
             {
@@ -301,13 +307,13 @@ namespace TGC.MonoGame.TP
                 }
             }
 
-            for(int index = 0; index < BrokenColumnBoxes.Length; index++)
+           /* for(int index = 0; index < BrokenColumnBoxes.Length; index++)
             {
                 if(autoCollider.Intersects(BrokenColumnBoxes[index]))
                 {
                     auto.FrenarAuto();
                 }
-            }
+            }*/
 
             for(int index = 0; index < ParedBoxes.Length; index++)
             {

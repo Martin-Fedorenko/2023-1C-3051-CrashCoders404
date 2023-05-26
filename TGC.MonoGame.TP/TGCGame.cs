@@ -1,7 +1,8 @@
-﻿﻿using System;
+﻿﻿﻿﻿using System;
 using Microsoft.Xna.Framework.Content;
 using System.Collections.Generic;
 using BepuPhysics.CollisionDetection.CollisionTasks;
+using Microsoft.Xna.Framework.Media;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -69,6 +70,21 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
 
     //Colisiones
     private Boolean collided = false;
+
+    //Pantalla de carga
+    public const int ST_PRESENTACION = 0;
+    public const int ST_JUEGO = 1;
+    public const int ST_CONTROLES = 2;
+    public const int ST_ENDGAME = -1;
+    public SpriteFont font;
+    public int status = ST_PRESENTACION;
+
+    //Sonidos
+    private Song Song { get; set; }
+    private string SongName { get; set; }
+
+    //HUD
+    private float totalGameTime;
     protected override void Initialize()
     {
       Camera = new SimpleCamera(GraphicsDevice.Viewport.AspectRatio, new Vector3(40, 60, 150), 55, 0.4f);
@@ -93,6 +109,14 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
       powerUps.Initialize(GraphicsDevice);
       autos.Initialize();
 
+
+      //Musica
+      SongName = "No music";
+
+
+
+      //CAMARA
+
       //Projection = Matrix.CreatePerspectiveFieldOfView(MathHelper.PiOver4, GraphicsDevice.Viewport.AspectRatio, 1, 1500);
 
       // Cámara con vista isométrica
@@ -106,6 +130,8 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
     {
       gizmos.LoadContent(GraphicsDevice,Content);
       SpriteBatch = new SpriteBatch(GraphicsDevice);
+      
+      font = Content.Load<SpriteFont>(ContentFolderSpriteFonts + "CascadiaCode/CascadiaCodePL");
 
       Piso = Content.Load<Model>(ContentFolder3D + "Arena/Plano"); //No tiene textura incluida
       Pared = Content.Load<Model>(ContentFolder3D + "Arena/Arena"); //No tiene textura incluida
@@ -134,44 +160,106 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
       powerUps.LoadContent(CajaAmetralladora, CajaMisil, CajaTurbo);
       autos.LoadContent(AutoDeportivo, AutoDeCombate, TextureShader);
 
+
+      //Musica
+      SongName = "retro-platforming";
+      Song = Content.Load<Song>(ContentFolderMusic + SongName);
+      MediaPlayer.Play(Song);
       base.LoadContent();
     }
 
     protected override void Update(GameTime gameTime)
     {
+      totalGameTime += (float)gameTime.ElapsedGameTime.TotalSeconds;
       var keyboardState = Keyboard.GetState();
-
-      if (Keyboard.GetState().IsKeyDown(Keys.Escape))
+       if (Keyboard.GetState().IsKeyDown(Keys.Escape))
+          {
+            status = ST_ENDGAME;
+          }
+      switch (status)
       {
-        Exit();
-      }
+        case ST_PRESENTACION:
+              if (Keyboard.GetState().IsKeyDown(Keys.Enter))
+              {
+                status = ST_JUEGO;
+              }
+              if (Keyboard.GetState().IsKeyDown(Keys.C))
+              {
+                status = ST_CONTROLES;
+              }
+              break;
+        case ST_CONTROLES:
+              if (Keyboard.GetState().IsKeyDown(Keys.B))
+              {
+                status = ST_PRESENTACION;
+              }
+              break;
+       
+        case ST_JUEGO:
+                autos.Update(gameTime);
+                powerUps.Update(gameTime, autos.GetAutoPrincipalBox());
 
-      autos.Update(gameTime);
-      powerUps.Update(gameTime, autos.GetAutoPrincipalBox());
+                if(detalles.DetectorDeColisionesDeDetalles(gameTime, autos.GetAutoPrincipalBox())) autos.FrenarAuto();
+                escenario.Update(gameTime, autos);
 
-      if(detalles.DetectorDeColisionesDeDetalles(gameTime, autos.GetAutoPrincipalBox())) autos.FrenarAuto();
-      escenario.Update(gameTime, autos);
+                //View = Matrix.CreateLookAt(posicionCamara + autos.posAutoPrincipal(), autos.posAutoPrincipal(), Vector3.Up);
+                Camera.Update(gameTime);
+                gizmos.UpdateViewProjection(Camera.View,Camera.Projection);
+                break;
+        case ST_ENDGAME:
+                Exit();
+                break;
+        }
 
-      //View = Matrix.CreateLookAt(posicionCamara + autos.posAutoPrincipal(), autos.posAutoPrincipal(), Vector3.Up);
-      Camera.Update(gameTime);
-      gizmos.UpdateViewProjection(Camera.View,Camera.Projection);
       base.Update(gameTime);
     }
 
     protected override void Draw(GameTime gameTime)
     {
       GraphicsDevice.Clear(Color.Black);
-      escenario.dibujarEscenario(Camera.View,Camera.Projection, Effect);
-      detalles.dibujarDetalles(Camera.View,Camera.Projection, Effect);
-      powerUps.dibujarPowerUps(Camera.View,Camera.Projection, Effect);
-      autos.dibujarAutos(Camera.View,Camera.Projection, TextureShader);
+      GraphicsDevice.DepthStencilState = DepthStencilState.Default; //sin esto los autos se ven translucidos y el piso tambien
 
-      autos.dibujarBoundingBoxes(gizmos); //OBB de autos deportivos bien ubicadas
-      detalles.dibujarBoundingBoxes(gizmos); //BB de arboles bien ubicadas
-      escenario.dibujarBoundingBoxes(gizmos); //BB de plataformas bien ubicadas
-      powerUps.dibujarBoundingBoxes(gizmos); //BB Bien ubicadas
-      
-      gizmos.Draw();
+
+      switch(status)
+      {
+        
+        case ST_PRESENTACION:
+              DrawCenterTextY("CRASH CODERS 404 ", 100, 4);
+              DrawCenterTextY("C -> CONTROLES", 400, 2);
+              DrawCenterTextY("G -> GOD MODE", 500, 2);
+              DrawCenterTextY("ENTER -> COMENZAR", 600, 2);
+              DrawRightText("ESC -> SALIR", 900,1);
+              break;
+
+        case ST_CONTROLES:
+              DrawCenterTextY("CONTROLES", 100, 4);
+              DrawCenterTextY("W -> AVANZAR", 300, 3);
+              DrawCenterTextY("S -> RETROCEDER", 400, 3);
+              DrawCenterTextY("D -> ROTAR DERECHA", 500, 3);
+              DrawCenterTextY("A -> ROTAR IZQUIERDA", 600, 3);
+              DrawCenterTextY("SPACE -> SALTAR", 700, 3);
+              DrawRightText("B -> VOLVER AL MENU", 900,1);
+
+              break;
+
+        case ST_JUEGO:
+              SpriteBatch.Begin();
+              SpriteBatch.DrawString(font, "Tiempo:" + ((int)totalGameTime).ToString(),new Vector2(10, 10), Color.White);
+                   
+              escenario.dibujarEscenario(Camera.View,Camera.Projection, Effect);
+              detalles.dibujarDetalles(Camera.View,Camera.Projection, Effect);
+              powerUps.dibujarPowerUps(Camera.View,Camera.Projection, Effect);
+              autos.dibujarAutos(Camera.View,Camera.Projection, TextureShader);
+
+              autos.dibujarBoundingBoxes(gizmos); //OBB de autos deportivos bien ubicadas
+              detalles.dibujarBoundingBoxes(gizmos); //BB de arboles bien ubicadas
+              escenario.dibujarBoundingBoxes(gizmos); //BB de plataformas bien ubicadas
+              powerUps.dibujarBoundingBoxes(gizmos); //BB Bien ubicadas
+
+              gizmos.Draw();
+              SpriteBatch.End(); //si lo ponemos antes de dibujar los mdoelos, los autos y el piso se dibujan translucidos 
+              break;
+      }
     }
     protected override void UnloadContent()
     {
@@ -179,5 +267,38 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
       Content.Unload();
       base.UnloadContent();
     }
+
+    public void DrawCenterText(string msg, float escala)
+    {
+      var W = GraphicsDevice.Viewport.Width;
+      var H = GraphicsDevice.Viewport.Height;
+      var size = font.MeasureString(msg) * escala;
+      SpriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, null,
+      Matrix.CreateScale(escala) * Matrix.CreateTranslation((W - size.X) / 2, (H - size.Y) / 2, 0));
+      SpriteBatch.DrawString(font, msg, new Vector2(0, 0), Color.YellowGreen);
+      SpriteBatch.End();
+    }
+
+    public void DrawCenterTextY(string msg, float Y, float escala)
+    {
+      var W = GraphicsDevice.Viewport.Width;
+      var H = GraphicsDevice.Viewport.Height;
+      var size = font.MeasureString(msg) * escala;
+      SpriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, null,
+      Matrix.CreateScale(escala) * Matrix.CreateTranslation((W - size.X) / 2, Y, 0));
+      SpriteBatch.DrawString(font, msg, new Vector2(0, 0), Color.YellowGreen);
+      SpriteBatch.End();
+    }
+
+    public void DrawRightText(string msg, float Y, float escala)
+    {
+            var W = GraphicsDevice.Viewport.Width;
+            var H = GraphicsDevice.Viewport.Height;
+            var size = font.MeasureString(msg) * escala;
+            SpriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, null,
+                Matrix.CreateScale(escala) * Matrix.CreateTranslation(W - size.X - 20, Y, 0));
+            SpriteBatch.DrawString(font, msg, new Vector2(0, 0), Color.YellowGreen);
+            SpriteBatch.End();
+   }
   }
 }
