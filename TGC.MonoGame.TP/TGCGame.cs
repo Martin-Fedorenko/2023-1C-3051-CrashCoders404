@@ -56,6 +56,8 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
     private Model CajaTurbo { get; set; }
     private Model CajaAmetralladora { get; set; }
     private Model CajaMisil { get; set; }
+    private Model Misil { get; set; }
+    private Model Bala { get; set; }
 
     // Matrices de Mundo
     private Matrix View { get; set; }
@@ -109,11 +111,8 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
       powerUps.Initialize(GraphicsDevice);
       autos.Initialize();
 
-
       //Musica
       SongName = "No music";
-
-
 
       //CAMARA
 
@@ -151,13 +150,15 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
       CajaAmetralladora = Content.Load<Model>(ContentFolder3D + "PowerUps/Ametralladora/Ametralladora");
       CajaMisil = Content.Load<Model>(ContentFolder3D + "PowerUps/Misil/Misil");
       CajaTurbo = Content.Load<Model>(ContentFolder3D + "PowerUps/PowerUpRayo/PowerUpRayo");
+      Misil = Content.Load<Model>(ContentFolder3D + "PowerUps/Misil/misilModel");
+      Bala = Content.Load<Model>(ContentFolder3D + "PowerUps/Ametralladora/balaModel");
 
       Effect = Content.Load<Effect>(ContentFolderEffects + "BasicShader");
       TextureShader = Content.Load<Effect>(ContentFolderEffects + "TextureShader");
 
       escenario.LoadContent(Piso, Pared, Column, Ramp, Platform, Cube);
       detalles.LoadContent(Tree, Rock1, Rock5, Rock10, Tire);
-      powerUps.LoadContent(CajaAmetralladora, CajaMisil, CajaTurbo);
+      powerUps.LoadContent(CajaAmetralladora, CajaMisil, CajaTurbo,Misil,Bala);
       autos.LoadContent(AutoDeportivo, AutoDeCombate, TextureShader);
 
 
@@ -197,7 +198,7 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
        
         case ST_JUEGO:
                 autos.Update(gameTime);
-                powerUps.Update(gameTime, autos.GetAutoPrincipalBox());
+                powerUps.Update(gameTime, autos);
 
                 if(detalles.DetectorDeColisionesDeDetalles(gameTime, autos.GetAutoPrincipalBox())) autos.FrenarAuto();
                 escenario.Update(gameTime, autos);

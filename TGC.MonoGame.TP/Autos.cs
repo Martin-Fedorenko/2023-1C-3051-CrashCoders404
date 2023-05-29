@@ -17,10 +17,10 @@ namespace TGC.MonoGame.TP
     //MovimientoAuto
     public Vector3 CarDirection;
     public float CarSpeed;
-    private float CarAcceleration;
+    public float CarAcceleration;
     private float CarBrakes;
     private float Rozamiento;
-    private float Rotation;
+    public float Rotation;
     private bool ActiveMovement;
     private Boolean onJump;
     private Boolean accelerating;
@@ -97,6 +97,7 @@ namespace TGC.MonoGame.TP
     private float PreviousSpeed;
     private float pesoAuto;
     private int collidedCars;
+    
     Vector3 coreccionAltura = new Vector3(0,66f,0); //el centro de la oriented bounding box esta quedando muy arriba
     Vector3 coreccionAlturaAutoCombate = new Vector3(199,4244f,-443); //(3,-20f,0);
     public void Initialize()

@@ -11,16 +11,19 @@ namespace TGC.MonoGame.TP
   public class PowerUps
   {
     public PowerUps() { }
-
     // Modelos
     private Model CajaTurbo { get; set; }
     private Model CajaAmetralladora { get; set; }
     private Model CajaMisil { get; set; }
+    private Model Misil {get; set;}
+    private Model Bala {get; set;}
 
     // Matrices
     private Matrix[] AmetralladorasWorld;
     private Matrix[] TurbosWorld;
     private Matrix[] MisilesWorld;
+    private Matrix MisilWorld;
+    private Matrix[] BalasWorld;
 
     //Posiciones
     private Vector3 AmetralladoraPos = new Vector3(70, 90, -390);
@@ -35,7 +38,7 @@ namespace TGC.MonoGame.TP
     private Vector3 Misil2Pos = new Vector3(-510, 20, 570);
     private Vector3 Misil3Pos = new Vector3(210, 35, 280); 
     private Vector3 Misil4Pos = new Vector3(-435, 35, -175); 
-     private Vector3 Misil5Pos = new Vector3(490, 20, -350);  
+    private Vector3 Misil5Pos = new Vector3(490, 20, -350);  
 
     private Vector3 TurboPos = new Vector3(70, 90, -410);
     private Vector3 Turbo1Pos = new Vector3(-230, 27, -40);
@@ -48,6 +51,10 @@ namespace TGC.MonoGame.TP
     private BoundingBox[] collidersAmetralladoras;
     private BoundingBox[] collidersTurbos;
     private BoundingBox[] collidersMisiles;
+    private BoundingBox MisilPowerUP;   
+    private BoundingBox colliderMisil;
+    private BoundingBox BalasPowerUp;
+    private BoundingBox[] collidersBalas;
     private BoundingBox PowerUpBox;
     private List<int> collidedindexAmetralladora;
     private List<int> collidedindexMisil;
@@ -56,14 +63,32 @@ namespace TGC.MonoGame.TP
     private Matrix[] relativeMatrices;
 
     // Variables
+    enum PowerUp
+    {
+      Turbo,
+      Ametralladora,
+      Misil,
+      None
+    }
+
+    private PowerUp currentPowerUp = PowerUp.Turbo;
+    private float powerUpTimer = 20f;
+    private int ametralladoraCounter = 0;
+    private float ametralladoraCooldown = 0f;
+    private float recorridoMisil = 0f;
+    private float[] recorridoBalas = {0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f};
+    private Vector3 misilPos = new Vector3(0, 0, 0);
+    private Vector3[] balasPos;
+    private float misilRot = 0f;
+    private float[] balasRot = {0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f,0f};
     private float mediaVuelta = MathF.PI;
     private float cuartoDeVuelta = MathF.PI / 2;
 
     public void Initialize(GraphicsDevice graphicsDevice)
     { 
-        collidedindexAmetralladora = new List<int>();
-        collidedindexMisil = new List<int>();
-        collidedindexTurbo = new List<int>();
+      collidedindexAmetralladora = new List<int>();
+      collidedindexMisil = new List<int>();
+      collidedindexTurbo = new List<int>();
         
       // PowerAmetralladora
       AmetralladorasWorld = new Matrix[]
@@ -84,25 +109,77 @@ namespace TGC.MonoGame.TP
       Matrix.CreateScale(0.2f, 0.1f, 0.1f) * Matrix.CreateRotationZ(-cuartoDeVuelta) * Matrix.CreateTranslation(Misil3Pos),
       Matrix.CreateScale(0.2f, 0.1f, 0.1f) * Matrix.CreateRotationZ(-cuartoDeVuelta) * Matrix.CreateTranslation(Misil4Pos),
       Matrix.CreateScale(0.2f, 0.1f, 0.1f) * Matrix.CreateRotationZ(-cuartoDeVuelta) * Matrix.CreateRotationY(cuartoDeVuelta) * Matrix.CreateTranslation(Misil5Pos)
-
       };
 
       TurbosWorld = new Matrix[]
       {
-      Matrix.CreateScale(0.2f, 0.1f, 0.1f) * Matrix.CreateRotationZ(-mediaVuelta / 2) * Matrix.CreateTranslation(TurboPos),
-      Matrix.CreateScale(0.2f, 0.1f, 0.1f) * Matrix.CreateRotationZ(-mediaVuelta / 2) * Matrix.CreateRotationY(cuartoDeVuelta) * Matrix.CreateTranslation(Turbo1Pos),
-      Matrix.CreateScale(0.2f, 0.1f, 0.1f) * Matrix.CreateRotationZ(-mediaVuelta / 2) * Matrix.CreateRotationY(cuartoDeVuelta) * Matrix.CreateTranslation(Turbo2Pos),
-      Matrix.CreateScale(0.2f, 0.1f, 0.1f) * Matrix.CreateRotationZ(-mediaVuelta / 2) * Matrix.CreateTranslation(Turbo3Pos),
-      Matrix.CreateScale(0.2f, 0.1f, 0.1f) * Matrix.CreateRotationZ(-mediaVuelta / 2) * Matrix.CreateTranslation(Turbo4Pos),
-      Matrix.CreateScale(0.2f, 0.1f, 0.1f) * Matrix.CreateRotationZ(-mediaVuelta / 2) * Matrix.CreateTranslation(Turbo5Pos)
+      Matrix.CreateScale(0.2f, 0.1f, 0.1f) * Matrix.CreateRotationZ(-cuartoDeVuelta) * Matrix.CreateTranslation(TurboPos),
+      Matrix.CreateScale(0.2f, 0.1f, 0.1f) * Matrix.CreateRotationZ(-cuartoDeVuelta) * Matrix.CreateRotationY(cuartoDeVuelta) * Matrix.CreateTranslation(Turbo1Pos),
+      Matrix.CreateScale(0.2f, 0.1f, 0.1f) * Matrix.CreateRotationZ(-cuartoDeVuelta) * Matrix.CreateRotationY(cuartoDeVuelta) * Matrix.CreateTranslation(Turbo2Pos),
+      Matrix.CreateScale(0.2f, 0.1f, 0.1f) * Matrix.CreateRotationZ(-cuartoDeVuelta) * Matrix.CreateTranslation(Turbo3Pos),
+      Matrix.CreateScale(0.2f, 0.1f, 0.1f) * Matrix.CreateRotationZ(-cuartoDeVuelta) * Matrix.CreateTranslation(Turbo4Pos),
+      Matrix.CreateScale(0.2f, 0.1f, 0.1f) * Matrix.CreateRotationZ(-cuartoDeVuelta) * Matrix.CreateTranslation(Turbo5Pos)
+      };
+
+      MisilWorld = new Matrix();
+      MisilWorld = Matrix.CreateScale(0f, 0f, 0f) * Matrix.CreateRotationZ(-cuartoDeVuelta) * Matrix.CreateTranslation(-10f,-10f,-10f);
+      
+      BalasWorld = new Matrix[] 
+      {
+        Matrix.CreateScale(0f, 0f, 0f) * Matrix.CreateRotationZ(-cuartoDeVuelta) * Matrix.CreateTranslation(-10f,-10f,-10f),
+        Matrix.CreateScale(0f, 0f, 0f) * Matrix.CreateRotationZ(-cuartoDeVuelta) * Matrix.CreateTranslation(-10f,-10f,-10f),
+        Matrix.CreateScale(0f, 0f, 0f) * Matrix.CreateRotationZ(-cuartoDeVuelta) * Matrix.CreateTranslation(-10f,-10f,-10f),
+        Matrix.CreateScale(0f, 0f, 0f) * Matrix.CreateRotationZ(-cuartoDeVuelta) * Matrix.CreateTranslation(-10f,-10f,-10f),
+        Matrix.CreateScale(0f, 0f, 0f) * Matrix.CreateRotationZ(-cuartoDeVuelta) * Matrix.CreateTranslation(-10f,-10f,-10f),
+        Matrix.CreateScale(0f, 0f, 0f) * Matrix.CreateRotationZ(-cuartoDeVuelta) * Matrix.CreateTranslation(-10f,-10f,-10f),
+        Matrix.CreateScale(0f, 0f, 0f) * Matrix.CreateRotationZ(-cuartoDeVuelta) * Matrix.CreateTranslation(-10f,-10f,-10f),
+        Matrix.CreateScale(0f, 0f, 0f) * Matrix.CreateRotationZ(-cuartoDeVuelta) * Matrix.CreateTranslation(-10f,-10f,-10f),
+        Matrix.CreateScale(0f, 0f, 0f) * Matrix.CreateRotationZ(-cuartoDeVuelta) * Matrix.CreateTranslation(-10f,-10f,-10f),
+        Matrix.CreateScale(0f, 0f, 0f) * Matrix.CreateRotationZ(-cuartoDeVuelta) * Matrix.CreateTranslation(-10f,-10f,-10f),
+        Matrix.CreateScale(0f, 0f, 0f) * Matrix.CreateRotationZ(-cuartoDeVuelta) * Matrix.CreateTranslation(-10f,-10f,-10f),
+        Matrix.CreateScale(0f, 0f, 0f) * Matrix.CreateRotationZ(-cuartoDeVuelta) * Matrix.CreateTranslation(-10f,-10f,-10f),
+        Matrix.CreateScale(0f, 0f, 0f) * Matrix.CreateRotationZ(-cuartoDeVuelta) * Matrix.CreateTranslation(-10f,-10f,-10f),
+        Matrix.CreateScale(0f, 0f, 0f) * Matrix.CreateRotationZ(-cuartoDeVuelta) * Matrix.CreateTranslation(-10f,-10f,-10f),
+        Matrix.CreateScale(0f, 0f, 0f) * Matrix.CreateRotationZ(-cuartoDeVuelta) * Matrix.CreateTranslation(-10f,-10f,-10f),
+        Matrix.CreateScale(0f, 0f, 0f) * Matrix.CreateRotationZ(-cuartoDeVuelta) * Matrix.CreateTranslation(-10f,-10f,-10f),
+        Matrix.CreateScale(0f, 0f, 0f) * Matrix.CreateRotationZ(-cuartoDeVuelta) * Matrix.CreateTranslation(-10f,-10f,-10f),
+        Matrix.CreateScale(0f, 0f, 0f) * Matrix.CreateRotationZ(-cuartoDeVuelta) * Matrix.CreateTranslation(-10f,-10f,-10f),
+        Matrix.CreateScale(0f, 0f, 0f) * Matrix.CreateRotationZ(-cuartoDeVuelta) * Matrix.CreateTranslation(-10f,-10f,-10f),
+        Matrix.CreateScale(0f, 0f, 0f) * Matrix.CreateRotationZ(-cuartoDeVuelta) * Matrix.CreateTranslation(-10f,-10f,-10f)
+      };
+
+      balasPos = new Vector3[] {
+        new Vector3(0, 0, 0),
+        new Vector3(0, 0, 0),
+        new Vector3(0, 0, 0),
+        new Vector3(0, 0, 0),
+        new Vector3(0, 0, 0),
+        new Vector3(0, 0, 0),
+        new Vector3(0, 0, 0),
+        new Vector3(0, 0, 0),
+        new Vector3(0, 0, 0),
+        new Vector3(0, 0, 0),
+        new Vector3(0, 0, 0),
+        new Vector3(0, 0, 0),
+        new Vector3(0, 0, 0),
+        new Vector3(0, 0, 0),
+        new Vector3(0, 0, 0),
+        new Vector3(0, 0, 0),
+        new Vector3(0, 0, 0),
+        new Vector3(0, 0, 0),
+        new Vector3(0, 0, 0),
+        new Vector3(0, 0, 0)
       };
     }
 
-    public void LoadContent(Model cajaAmetralladora, Model cajaMisil, Model cajaTurbo)
+
+    public void LoadContent(Model cajaAmetralladora, Model cajaMisil, Model cajaTurbo, Model misil, Model bala)
     {
       CajaAmetralladora = cajaAmetralladora;
       CajaMisil = cajaMisil;
       CajaTurbo = cajaTurbo;
+      Misil = misil;
+      Bala = bala;
 
       //Collisions
       PowerUpBox = BoundingVolumesExtensions.CreateAABBFrom(CajaAmetralladora);
@@ -137,11 +214,42 @@ namespace TGC.MonoGame.TP
        new BoundingBox(PowerUpBox.Min + Turbo5Pos,PowerUpBox.Max + Turbo5Pos)
       };
 
+      MisilPowerUP =  BoundingVolumesExtensions.CreateAABBFrom(Misil);
+      MisilPowerUP =  BoundingVolumesExtensions.Scale(BalasPowerUp,new Vector3(0.1f, 0.1f, 0.1f));
+      colliderMisil = new BoundingBox(MisilPowerUP.Min ,MisilPowerUP.Max);
+
+      BalasPowerUp =  BoundingVolumesExtensions.CreateAABBFrom(bala);
+      BalasPowerUp =  BoundingVolumesExtensions.Scale(BalasPowerUp,new Vector3(0.2f, 0.1f, 0.1f));
+      collidersBalas = new BoundingBox[]{
+        new BoundingBox(BalasPowerUp.Min ,BalasPowerUp.Max),
+        new BoundingBox(BalasPowerUp.Min ,BalasPowerUp.Max),
+        new BoundingBox(BalasPowerUp.Min ,BalasPowerUp.Max),
+        new BoundingBox(BalasPowerUp.Min ,BalasPowerUp.Max),
+        new BoundingBox(BalasPowerUp.Min ,BalasPowerUp.Max),
+        new BoundingBox(BalasPowerUp.Min ,BalasPowerUp.Max),
+        new BoundingBox(BalasPowerUp.Min ,BalasPowerUp.Max),
+        new BoundingBox(BalasPowerUp.Min ,BalasPowerUp.Max),
+        new BoundingBox(BalasPowerUp.Min ,BalasPowerUp.Max),
+        new BoundingBox(BalasPowerUp.Min ,BalasPowerUp.Max),
+        new BoundingBox(BalasPowerUp.Min ,BalasPowerUp.Max),
+        new BoundingBox(BalasPowerUp.Min ,BalasPowerUp.Max),
+        new BoundingBox(BalasPowerUp.Min ,BalasPowerUp.Max),
+        new BoundingBox(BalasPowerUp.Min ,BalasPowerUp.Max),
+        new BoundingBox(BalasPowerUp.Min ,BalasPowerUp.Max),
+        new BoundingBox(BalasPowerUp.Min ,BalasPowerUp.Max),
+        new BoundingBox(BalasPowerUp.Min ,BalasPowerUp.Max),
+        new BoundingBox(BalasPowerUp.Min ,BalasPowerUp.Max),
+        new BoundingBox(BalasPowerUp.Min ,BalasPowerUp.Max),
+        new BoundingBox(BalasPowerUp.Min ,BalasPowerUp.Max)
+      };
     }
 
-    public void Update(GameTime gameTime, OrientedBoundingBox autoCollider)
+    public void Update(GameTime gameTime, Autos autos)
     {
+      var keyboardState = Keyboard.GetState();
+      var elapsedTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
       var Rotation = (float)gameTime.ElapsedGameTime.TotalSeconds;
+      OrientedBoundingBox autoCollider = autos.GetAutoPrincipalBox();
 
       for(int index = 0 ; index < AmetralladorasWorld.Length; index++)
       {
@@ -156,11 +264,81 @@ namespace TGC.MonoGame.TP
           TurbosWorld[index] = Matrix.CreateRotationX(Rotation*1.2f) * TurbosWorld[index];
       }
 
+      if(currentPowerUp != PowerUp.None) {
+        powerUpTimer -= elapsedTime;
+        if(currentPowerUp == PowerUp.Ametralladora) {
+          ametralladoraCooldown -= elapsedTime;
+        }
+      }
+
+      if (currentPowerUp == PowerUp.Turbo)
+      {
+        if (powerUpTimer <= 0f)
+        {
+          currentPowerUp = PowerUp.None;
+          autos.CarAcceleration = autos.CarAcceleration / 3;
+        }
+      }
+      if (Keyboard.GetState().IsKeyDown(Keys.F))
+      {
+        if (currentPowerUp == PowerUp.Ametralladora)
+        {
+          if(powerUpTimer > 0f) {
+            if (ametralladoraCounter > 0)
+            {
+              if(ametralladoraCooldown <= 0f){
+                ametralladoraCounter--;
+                dispararBala(autos.AutoPrincipalPos, autos.Rotation, ametralladoraCounter);
+                ametralladoraCooldown = 0.25f;
+              }
+            } 
+            else
+            {
+              currentPowerUp = PowerUp.None;
+            }
+          } else {
+            currentPowerUp = PowerUp.None;
+          }
+        }
+        else if (currentPowerUp == PowerUp.Misil)
+        {
+          dispararMisil(autos.AutoPrincipalPos, autos.Rotation);
+          currentPowerUp = PowerUp.None;
+        }
+      }
+
+      if(recorridoMisil > 0f)
+      {
+        recorridoMisil -= elapsedTime;
+        misilPos += MisilWorld.Up * 750f * elapsedTime;
+        MisilWorld = Matrix.CreateScale(0.1f, 0.1f, 0.1f) * Matrix.CreateRotationZ(-cuartoDeVuelta) * Matrix.CreateRotationY(misilRot) * Matrix.CreateTranslation(misilPos);
+      }else{
+        MisilWorld = Matrix.CreateScale(0.1f, 0.1f, 0.1f) * Matrix.CreateRotationZ(-cuartoDeVuelta) * Matrix.CreateTranslation(-10f,-10f,-10f);
+      }
+
+      for(int i = 0; i < BalasWorld.Length; i++)
+      {
+        if(recorridoBalas[i] > 0f)
+        { 
+          recorridoBalas[i] -= elapsedTime;
+          balasPos[i] += BalasWorld[i].Up * 750f * elapsedTime;
+          BalasWorld[i] = Matrix.CreateScale(0.1f, 0.1f, 0.1f) * Matrix.CreateRotationZ(-cuartoDeVuelta) * Matrix.CreateRotationY(balasRot[i]) * Matrix.CreateTranslation(balasPos[i]) * Matrix.CreateTranslation(0f,10f,0f);
+        } else{
+          BalasWorld[i] = Matrix.CreateScale(0.1f, 0.1f, 0.1f) * Matrix.CreateRotationZ(-cuartoDeVuelta) * Matrix.CreateTranslation(-10f,-10f,-10f);
+        }
+      }
+
       for (var index = 0; index < collidersAmetralladoras.Length; index++)
       {
         if (autoCollider.Intersects(collidersAmetralladoras[index]))
         {
-          collidedindexAmetralladora.Add(index);
+          if(currentPowerUp != PowerUp.None)
+          {
+            collidedindexAmetralladora.Add(index);
+            currentPowerUp = PowerUp.Ametralladora;
+            powerUpTimer = 20f;
+            ametralladoraCounter = 20;
+          }
         }
       }
       
@@ -168,7 +346,11 @@ namespace TGC.MonoGame.TP
       {
         if (autoCollider.Intersects(collidersMisiles[index]))
         {
-          collidedindexMisil.Add(index);
+          if (currentPowerUp != PowerUp.None)
+          {
+            collidedindexMisil.Add(index);
+            currentPowerUp = PowerUp.Misil;
+          }
         }
       }
 
@@ -176,7 +358,13 @@ namespace TGC.MonoGame.TP
       {
         if (autoCollider.Intersects(collidersTurbos[index]))
         {
-          collidedindexTurbo.Add(index);
+          if (currentPowerUp != PowerUp.None)
+          {
+            collidedindexTurbo.Add(index);
+            currentPowerUp = PowerUp.Turbo;
+            powerUpTimer = 20f;
+            autos.CarAcceleration = autos.CarAcceleration * 3;
+          }
         }
       }
     }
@@ -216,6 +404,7 @@ namespace TGC.MonoGame.TP
           dibujar(view, projection, effect, AmetralladorasWorld[index], CajaAmetralladora, Color.Red);
         }
       }
+
       for(int index = 0; index < MisilesWorld.Length; index++)
       {
         if(!collidedindexMisil.Contains(index))
@@ -223,12 +412,24 @@ namespace TGC.MonoGame.TP
           dibujar(view, projection, effect, MisilesWorld[index], CajaMisil, Color.Yellow);
         }
       }
+
       for(int index = 0; index < TurbosWorld.Length; index++)
       {
         if(!collidedindexTurbo.Contains(index))
         {
           dibujar(view, projection, effect, TurbosWorld[index], CajaTurbo, Color.Blue);
         }
+      }
+      
+      if(recorridoMisil > 0f)
+      dibujar(view, projection, effect, MisilWorld, Misil, Color.Blue); 
+
+      for(int index = 0; index < BalasWorld.Length; index++)
+      {
+        if(recorridoBalas[index] > 0f)
+        {
+          dibujar(view, projection, effect, BalasWorld[index], Bala, Color.Blue);
+        }  
       }
 
     }
@@ -249,6 +450,28 @@ namespace TGC.MonoGame.TP
         {
           gizmos.DrawCube((collidersTurbos[index].Max + collidersTurbos[index].Min) / 2f,collidersTurbos[index].Max - collidersTurbos[index].Min,Color.Red);
         }
+
+        gizmos.DrawCube((colliderMisil.Max + colliderMisil.Min) / 2f,colliderMisil.Max - colliderMisil.Min,Color.Red);
+
+        for(int index = 0; index < collidersBalas.Length; index++)
+        {
+          gizmos.DrawCube((collidersBalas[index].Max + collidersBalas[index].Min) / 2f,collidersBalas[index].Max - collidersBalas[index].Min,Color.Red);
+        }
+    }
+
+    public void dispararMisil(Vector3 autoPrincipalPos, float rotation)
+    {
+      MisilWorld = Matrix.CreateScale(0.1f, 0.1f, 0.1f) * Matrix.CreateRotationZ(-cuartoDeVuelta) * Matrix.CreateRotationY(rotation*2f - cuartoDeVuelta) * Matrix.CreateTranslation(autoPrincipalPos);
+      misilPos = autoPrincipalPos;
+      misilRot = rotation * 2f - cuartoDeVuelta;
+      recorridoMisil = 5f;
+    }
+
+    public void dispararBala(Vector3 autoPrincipalPos, float rotation, int indexBala){
+      BalasWorld[indexBala] = Matrix.CreateScale(0.1f, 0.1f, 0.1f) * Matrix.CreateRotationZ(-cuartoDeVuelta) * Matrix.CreateRotationY(rotation*2f - cuartoDeVuelta) * Matrix.CreateTranslation(autoPrincipalPos) * Matrix.CreateTranslation(0f,10f,0f);
+      balasPos[indexBala] = autoPrincipalPos;
+      balasRot[indexBala] = rotation * 2f - cuartoDeVuelta;
+      recorridoBalas[indexBala] = 5f;
     }
   }
 }
