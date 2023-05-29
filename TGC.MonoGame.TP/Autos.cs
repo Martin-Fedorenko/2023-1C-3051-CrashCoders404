@@ -97,9 +97,9 @@ namespace TGC.MonoGame.TP
     private float PreviousSpeed;
     private float pesoAuto;
     private int collidedCars;
-    
-    Vector3 coreccionAltura = new Vector3(0,66f,0); //el centro de la oriented bounding box esta quedando muy arriba
-    Vector3 coreccionAlturaAutoCombate = new Vector3(199,4244f,-443); //(3,-20f,0);
+
+    Vector3 coreccionAltura = new Vector3(0, 66f, 0); //el centro de la oriented bounding box esta quedando muy arriba
+    Vector3 coreccionAlturaAutoCombate = new Vector3(199, 4244f, -443); //(3,-20f,0);
     public void Initialize()
     {
       //MovimientoAuto
@@ -219,7 +219,7 @@ namespace TGC.MonoGame.TP
           CarSpeed += CarBrakes * elapsedTime;
         }
         else if (CarSpeed < maxSpeed) CarSpeed += CarAcceleration * elapsedTime;
-        Desplazamiento += CarDirection * CarSpeed * elapsedTime + CarAcceleration * elapsedTime * elapsedTime * CarDirection / 2f;
+        Desplazamiento += CarDirection * CarSpeed * elapsedTime + CarAcceleration * elapsedTime * CarDirection / 2f;
         ActiveMovement = true;
         accelerating = true;
 
@@ -231,7 +231,7 @@ namespace TGC.MonoGame.TP
           CarSpeed -= CarBrakes * elapsedTime;
         }
         else if (CarSpeed > -maxSpeed) CarSpeed -= CarAcceleration * elapsedTime;
-        Desplazamiento += CarDirection * CarSpeed * elapsedTime + CarAcceleration * elapsedTime * elapsedTime * CarDirection / 2f;
+        Desplazamiento += CarDirection * CarSpeed * elapsedTime + CarAcceleration * elapsedTime * CarDirection / 2f;
         ActiveMovement = true;
         accelerating = true;
       }
@@ -249,7 +249,7 @@ namespace TGC.MonoGame.TP
           CarSpeed -= Rozamiento * elapsedTime;
           ActiveMovement = true;
         }
-        else 
+        else
           ActiveMovement = false;
         Desplazamiento += CarDirection * CarSpeed * elapsedTime;
 
@@ -273,109 +273,109 @@ namespace TGC.MonoGame.TP
       }
 
       //saltar
-      if (Keyboard.GetState().IsKeyDown(Keys.Space)  && !accelerating)
+      if (Keyboard.GetState().IsKeyDown(Keys.Space) && !accelerating)
       {
         onJump = true;
         enElPiso = false;
       }
 
-      if(!enElPiso)
+      if (!enElPiso)
       {
         tiempoEnAire += (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-        if(onJump)
+        if (onJump)
         {
           jumpSpeed -= gravity * tiempoEnAire;
           Desplazamiento.Y += jumpSpeed;
 
-              if (CarSpeed >= 0)
-              {
-                if (jumpSpeed >= 0 && jumpRotation < jumpAngle) jumpRotation += 0.05f;
-                if (jumpSpeed < 0 && jumpRotation > -jumpAngle) jumpRotation -= 0.05f;
-              }
-              else if (CarSpeed < 0)
-              {
-                if (jumpSpeed >= 0 && jumpRotation > -jumpAngle) jumpRotation -= 0.05f;
-                if (jumpSpeed < 0 && jumpRotation < jumpAngle) jumpRotation += 0.05f;
-              }
+          if (CarSpeed >= 0)
+          {
+            if (jumpSpeed >= 0 && jumpRotation < jumpAngle) jumpRotation += 0.05f;
+            if (jumpSpeed < 0 && jumpRotation > -jumpAngle) jumpRotation -= 0.05f;
+          }
+          else if (CarSpeed < 0)
+          {
+            if (jumpSpeed >= 0 && jumpRotation > -jumpAngle) jumpRotation -= 0.05f;
+            if (jumpSpeed < 0 && jumpRotation < jumpAngle) jumpRotation += 0.05f;
+          }
         }
         else
         {
-           Desplazamiento.Y -= gravity* tiempoEnAire;
-           if(CarSpeed >= 0 && jumpRotation > -jumpAngle) jumpRotation -= 0.05f;
-           if(CarSpeed < 0 && jumpRotation < jumpAngle) jumpRotation += 0.05f;
+          Desplazamiento.Y -= gravity * tiempoEnAire;
+          if (CarSpeed >= 0 && jumpRotation > -jumpAngle) jumpRotation -= 0.05f;
+          if (CarSpeed < 0 && jumpRotation < jumpAngle) jumpRotation += 0.05f;
         }
 
-    }
+      }
 
-    if(enElPiso) //por alguna cuando cae al piso no queda recto de una sino que "vibra" un poco
-    {
-      onJump = false;
-      jumpSpeed = 10f;
-      jumpRotation = 0; 
-      tiempoEnAire = 0f;
-    }
+      if (enElPiso) //por alguna cuando cae al piso no queda recto de una sino que "vibra" un poco
+      {
+        onJump = false;
+        jumpSpeed = 10f;
+        jumpRotation = 0;
+        tiempoEnAire = 0f;
+      }
 
-    // collided = AutoPrincipalBox.Intersects(Auto1Box);
+      // collided = AutoPrincipalBox.Intersects(Auto1Box);
 
-            PreviousSpeed = CarSpeed;
-            for(var index = 0; index < CollideCars.Length; index++)
+      PreviousSpeed = CarSpeed;
+      for (var index = 0; index < CollideCars.Length; index++)
+      {
+        if (index < 5) pesoAuto = 250;
+        else pesoAuto = 450;
+        if (AutoPrincipalBox.Intersects(CollideCars[index]))
+        {
+          collidedCars++;
+          if (PreviousSpeed > 0)
+          {
+            if (CarSpeed > 0)
             {
-                if(index < 5) pesoAuto = 250;
-                else pesoAuto = 450;
-                if(AutoPrincipalBox.Intersects(CollideCars[index]))
-                {
-                collidedCars ++;
-                if(PreviousSpeed > 0)
-                {
-                    if(CarSpeed > 0)
-                    {
-                        CarSpeed -= pesoAuto * collidedCars * elapsedTime ;
-                        AutosPosiciones[index] += Desplazamiento;
-                    }
-                }
-                else
-                    if(CarSpeed < 0)
-                    {
-                        CarSpeed += pesoAuto * collidedCars * elapsedTime ;
-                        AutosPosiciones[index] += Desplazamiento;
-                    }
-                }
+              CarSpeed -= pesoAuto * collidedCars * elapsedTime;
+              AutosPosiciones[index] += Desplazamiento;
             }
-            //PROBLEMA: EL AUTO QUEDA TRABADO CON LOS OTROS AUTOS SI LO FRENAN CHEQUEAR QUE A VECES SE ATRAVIESAN UNAS PARTES
+          }
+          else
+              if (CarSpeed < 0)
+          {
+            CarSpeed += pesoAuto * collidedCars * elapsedTime;
+            AutosPosiciones[index] += Desplazamiento;
+          }
+        }
+      }
+      //PROBLEMA: EL AUTO QUEDA TRABADO CON LOS OTROS AUTOS SI LO FRENAN CHEQUEAR QUE A VECES SE ATRAVIESAN UNAS PARTES
 
-            AutoPrincipalPos += Desplazamiento;
+      AutoPrincipalPos += Desplazamiento;
 
-            AutoPrincipalWorld =  Matrix.CreateScale(0.1f) *
-                                  Matrix.CreateRotationX(-jumpRotation) *
-                                  Matrix.CreateRotationY(Rotation*2) *
-                                  Matrix.CreateTranslation(AutoPrincipalPos);
+      AutoPrincipalWorld = Matrix.CreateScale(0.1f) *
+                            Matrix.CreateRotationX(-jumpRotation) *
+                            Matrix.CreateRotationY(Rotation * 2) *
+                            Matrix.CreateTranslation(AutoPrincipalPos);
 
-            for(var index = 0; index < CollideCars.Length; index++)
-            {
-                if(index < 5)
-                {
-                AutosWorld[index] = Matrix.CreateScale(0.1f) *
-                                    Matrix.CreateRotationY(mediaVuelta) *
-                                    Matrix.CreateTranslation(AutosPosiciones[index]);
+      for (var index = 0; index < CollideCars.Length; index++)
+      {
+        if (index < 5)
+        {
+          AutosWorld[index] = Matrix.CreateScale(0.1f) *
+                              Matrix.CreateRotationY(mediaVuelta) *
+                              Matrix.CreateTranslation(AutosPosiciones[index]);
 
-                CollideCars[index] = OrientedBoundingBox.FromAABB(new BoundingBox(AutoDeportivoBoxAABB.Min +  AutosPosiciones[index] - coreccionAltura, AutoDeportivoBoxAABB.Max +  AutosPosiciones[index] - coreccionAltura));
-                }
-                else
-                {
-                AutosWorld[index] = Matrix.CreateScale(0.007f) *
-                                    Matrix.CreateRotationY(cuartoDeVuelta) *
-                                    Matrix.CreateTranslation(AutosPosiciones[index]);
-                
-                CollideCars[index] = OrientedBoundingBox.FromAABB(new BoundingBox(AutoDeCombateBoxAABB.Min +  AutosPosiciones[index] - coreccionAlturaAutoCombate, AutoDeCombateBoxAABB.Max +  AutosPosiciones[index] - coreccionAlturaAutoCombate));
-                }
-            }
+          CollideCars[index] = OrientedBoundingBox.FromAABB(new BoundingBox(AutoDeportivoBoxAABB.Min + AutosPosiciones[index] - coreccionAltura, AutoDeportivoBoxAABB.Max + AutosPosiciones[index] - coreccionAltura));
+        }
+        else
+        {
+          AutosWorld[index] = Matrix.CreateScale(0.007f) *
+                              Matrix.CreateRotationY(cuartoDeVuelta) *
+                              Matrix.CreateTranslation(AutosPosiciones[index]);
 
-           
-            AutoPrincipalBox = OrientedBoundingBox.FromAABB(new BoundingBox(AutoDeportivoBoxAABB.Min + AutoPrincipalPos - coreccionAltura, AutoDeportivoBoxAABB.Max + AutoPrincipalPos - coreccionAltura));
-            AutoPrincipalBox.Rotate(Matrix.CreateRotationX(-jumpRotation)*Matrix.CreateRotationY(Rotation*2));
+          CollideCars[index] = OrientedBoundingBox.FromAABB(new BoundingBox(AutoDeCombateBoxAABB.Min + AutosPosiciones[index] - coreccionAlturaAutoCombate, AutoDeCombateBoxAABB.Max + AutosPosiciones[index] - coreccionAlturaAutoCombate));
+        }
+      }
 
-            
+
+      AutoPrincipalBox = OrientedBoundingBox.FromAABB(new BoundingBox(AutoDeportivoBoxAABB.Min + AutoPrincipalPos - coreccionAltura, AutoDeportivoBoxAABB.Max + AutoPrincipalPos - coreccionAltura));
+      AutoPrincipalBox.Rotate(Matrix.CreateRotationX(-jumpRotation) * Matrix.CreateRotationY(Rotation * 2));
+
+
 
 
     }
@@ -448,14 +448,14 @@ namespace TGC.MonoGame.TP
     }
     public void chocarTecho()
     {
-      jumpSpeed = 0f; 
+      jumpSpeed = 0f;
     }
     public void inicializarBoundingBoxes()
     {
       AutoDeportivoBoxAABB = BoundingVolumesExtensions.CreateAABBFrom(AutoDeportivo);
       AutoDeportivoBoxAABB = BoundingVolumesExtensions.Scale(AutoDeportivoBoxAABB, 0.1f);
       AutoDeCombateBoxAABB = BoundingVolumesExtensions.CreateAABBFrom(AutoDeCombate);
-      AutoDeCombateBoxAABB = BoundingVolumesExtensions.Scale(AutoDeCombateBoxAABB, new Vector3(0.0042f,0.004f,0.011f));
+      AutoDeCombateBoxAABB = BoundingVolumesExtensions.Scale(AutoDeCombateBoxAABB, new Vector3(0.0042f, 0.004f, 0.011f));
 
       AutoPrincipalBox = OrientedBoundingBox.FromAABB(new BoundingBox(AutoDeportivoBoxAABB.Min - coreccionAltura, AutoDeportivoBoxAABB.Max - coreccionAltura));
 
@@ -474,13 +474,13 @@ namespace TGC.MonoGame.TP
 
     public void dibujarBoundingBoxes(Gizmos gizmos)
     {
-      AutoPrincipalOBBWorld = Matrix.CreateScale(AutoPrincipalBox.Extents * 2f) * AutoPrincipalBox.Orientation * Matrix.CreateTranslation( AutoPrincipalBox.Center);
+      AutoPrincipalOBBWorld = Matrix.CreateScale(AutoPrincipalBox.Extents * 2f) * AutoPrincipalBox.Orientation * Matrix.CreateTranslation(AutoPrincipalBox.Center);
       gizmos.DrawCube(AutoPrincipalOBBWorld, Color.Red);
 
-      for(int index = 0; index < CollideCars.Length; index++)
+      for (int index = 0; index < CollideCars.Length; index++)
       {
-            Matrix OBBWorld = Matrix.CreateScale(CollideCars[index].Extents * 2f) * CollideCars[index].Orientation * Matrix.CreateTranslation(CollideCars[index].Center);
-            gizmos.DrawCube(OBBWorld,Color.Red);
+        Matrix OBBWorld = Matrix.CreateScale(CollideCars[index].Extents * 2f) * CollideCars[index].Orientation * Matrix.CreateTranslation(CollideCars[index].Center);
+        gizmos.DrawCube(OBBWorld, Color.Red);
       }
     }
   }
