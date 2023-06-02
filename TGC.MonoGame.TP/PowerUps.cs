@@ -52,9 +52,11 @@ namespace TGC.MonoGame.TP
     private BoundingBox[] collidersTurbos;
     private BoundingBox[] collidersMisiles;
     private BoundingBox MisilPowerUP;
-    private BoundingBox colliderMisil;
+    private Matrix MisilBBPower;
+    private OrientedBoundingBox colliderMisil;
     private BoundingBox BalasPowerUp;
-    private BoundingBox[] collidersBalas;
+    private OrientedBoundingBox[] collidersBalas;
+    private Matrix BalasBBPower;
     private BoundingBox PowerUpBox;
     private List<int> collidedindexAmetralladora;
     private List<int> collidedindexMisil;
@@ -215,32 +217,33 @@ namespace TGC.MonoGame.TP
       };
 
       MisilPowerUP = BoundingVolumesExtensions.CreateAABBFrom(Misil);
-      MisilPowerUP = BoundingVolumesExtensions.Scale(BalasPowerUp, new Vector3(0.1f, 0.1f, 0.1f));
-      colliderMisil = new BoundingBox(MisilPowerUP.Min, MisilPowerUP.Max);
+      MisilPowerUP = BoundingVolumesExtensions.Scale(MisilPowerUP, new Vector3(.1f, .1f, .1f));
+      colliderMisil = OrientedBoundingBox.FromAABB(new BoundingBox(MisilPowerUP.Min - new Vector3(0f,190f,0f), MisilPowerUP.Max - new Vector3(0f,190f,0f)));
 
       BalasPowerUp = BoundingVolumesExtensions.CreateAABBFrom(bala);
-      BalasPowerUp = BoundingVolumesExtensions.Scale(BalasPowerUp, new Vector3(0.1f, 0.1f, 0.1f));
-      collidersBalas = new BoundingBox[]{
-        new BoundingBox(BalasPowerUp.Min ,BalasPowerUp.Max),
-        new BoundingBox(BalasPowerUp.Min ,BalasPowerUp.Max),
-        new BoundingBox(BalasPowerUp.Min ,BalasPowerUp.Max),
-        new BoundingBox(BalasPowerUp.Min ,BalasPowerUp.Max),
-        new BoundingBox(BalasPowerUp.Min ,BalasPowerUp.Max),
-        new BoundingBox(BalasPowerUp.Min ,BalasPowerUp.Max),
-        new BoundingBox(BalasPowerUp.Min ,BalasPowerUp.Max),
-        new BoundingBox(BalasPowerUp.Min ,BalasPowerUp.Max),
-        new BoundingBox(BalasPowerUp.Min ,BalasPowerUp.Max),
-        new BoundingBox(BalasPowerUp.Min ,BalasPowerUp.Max),
-        new BoundingBox(BalasPowerUp.Min ,BalasPowerUp.Max),
-        new BoundingBox(BalasPowerUp.Min ,BalasPowerUp.Max),
-        new BoundingBox(BalasPowerUp.Min ,BalasPowerUp.Max),
-        new BoundingBox(BalasPowerUp.Min ,BalasPowerUp.Max),
-        new BoundingBox(BalasPowerUp.Min ,BalasPowerUp.Max),
-        new BoundingBox(BalasPowerUp.Min ,BalasPowerUp.Max),
-        new BoundingBox(BalasPowerUp.Min ,BalasPowerUp.Max),
-        new BoundingBox(BalasPowerUp.Min ,BalasPowerUp.Max),
-        new BoundingBox(BalasPowerUp.Min ,BalasPowerUp.Max),
-        new BoundingBox(BalasPowerUp.Min ,BalasPowerUp.Max)
+      BalasPowerUp = BoundingVolumesExtensions.Scale(BalasPowerUp, new Vector3(0.15f, 0.05f, 0.15f));
+      collidersBalas = new OrientedBoundingBox[]
+      {
+        OrientedBoundingBox.FromAABB(new BoundingBox(BalasPowerUp.Min - new Vector3(0f,190f,0f), BalasPowerUp.Max - new Vector3(0f,190f,0f))),
+        OrientedBoundingBox.FromAABB(new BoundingBox(BalasPowerUp.Min - new Vector3(0f,190f,0f), BalasPowerUp.Max - new Vector3(0f,190f,0f))),
+        OrientedBoundingBox.FromAABB(new BoundingBox(BalasPowerUp.Min - new Vector3(0f,190f,0f), BalasPowerUp.Max - new Vector3(0f,190f,0f))),
+        OrientedBoundingBox.FromAABB(new BoundingBox(BalasPowerUp.Min - new Vector3(0f,190f,0f), BalasPowerUp.Max - new Vector3(0f,190f,0f))),
+        OrientedBoundingBox.FromAABB(new BoundingBox(BalasPowerUp.Min - new Vector3(0f,190f,0f), BalasPowerUp.Max - new Vector3(0f,190f,0f))),
+        OrientedBoundingBox.FromAABB(new BoundingBox(BalasPowerUp.Min - new Vector3(0f,190f,0f), BalasPowerUp.Max - new Vector3(0f,190f,0f))),
+        OrientedBoundingBox.FromAABB(new BoundingBox(BalasPowerUp.Min - new Vector3(0f,190f,0f), BalasPowerUp.Max - new Vector3(0f,190f,0f))),
+        OrientedBoundingBox.FromAABB(new BoundingBox(BalasPowerUp.Min - new Vector3(0f,190f,0f), BalasPowerUp.Max - new Vector3(0f,190f,0f))),
+        OrientedBoundingBox.FromAABB(new BoundingBox(BalasPowerUp.Min - new Vector3(0f,190f,0f), BalasPowerUp.Max - new Vector3(0f,190f,0f))),
+        OrientedBoundingBox.FromAABB(new BoundingBox(BalasPowerUp.Min - new Vector3(0f,190f,0f), BalasPowerUp.Max - new Vector3(0f,190f,0f))),
+        OrientedBoundingBox.FromAABB(new BoundingBox(BalasPowerUp.Min - new Vector3(0f,190f,0f), BalasPowerUp.Max - new Vector3(0f,190f,0f))),
+        OrientedBoundingBox.FromAABB(new BoundingBox(BalasPowerUp.Min - new Vector3(0f,190f,0f), BalasPowerUp.Max - new Vector3(0f,190f,0f))),
+        OrientedBoundingBox.FromAABB(new BoundingBox(BalasPowerUp.Min - new Vector3(0f,190f,0f), BalasPowerUp.Max - new Vector3(0f,190f,0f))),
+        OrientedBoundingBox.FromAABB(new BoundingBox(BalasPowerUp.Min - new Vector3(0f,190f,0f), BalasPowerUp.Max - new Vector3(0f,190f,0f))),
+        OrientedBoundingBox.FromAABB(new BoundingBox(BalasPowerUp.Min - new Vector3(0f,190f,0f), BalasPowerUp.Max - new Vector3(0f,190f,0f))),
+        OrientedBoundingBox.FromAABB(new BoundingBox(BalasPowerUp.Min - new Vector3(0f,190f,0f), BalasPowerUp.Max - new Vector3(0f,190f,0f))),
+        OrientedBoundingBox.FromAABB(new BoundingBox(BalasPowerUp.Min - new Vector3(0f,190f,0f), BalasPowerUp.Max - new Vector3(0f,190f,0f))),
+        OrientedBoundingBox.FromAABB(new BoundingBox(BalasPowerUp.Min - new Vector3(0f,190f,0f), BalasPowerUp.Max - new Vector3(0f,190f,0f))),
+        OrientedBoundingBox.FromAABB(new BoundingBox(BalasPowerUp.Min - new Vector3(0f,190f,0f), BalasPowerUp.Max - new Vector3(0f,190f,0f))),
+        OrientedBoundingBox.FromAABB(new BoundingBox(BalasPowerUp.Min - new Vector3(0f,190f,0f), BalasPowerUp.Max - new Vector3(0f,190f,0f)))
       };
     }
 
@@ -316,11 +319,14 @@ namespace TGC.MonoGame.TP
       {
         recorridoMisil -= elapsedTime;
         misilPos += MisilWorld.Up * 750f * elapsedTime;
-        MisilWorld = Matrix.CreateScale(0.1f, 0.1f, 0.1f) * Matrix.CreateRotationZ(-cuartoDeVuelta) * Matrix.CreateRotationY(misilRot) * Matrix.CreateTranslation(misilPos) * Matrix.CreateTranslation(0f, 10f, 0f);
+        MisilWorld = Matrix.CreateScale(0.05f, 0.05f, 0.05f) * Matrix.CreateRotationZ(-cuartoDeVuelta) * Matrix.CreateRotationY(misilRot) * Matrix.CreateTranslation(misilPos) * Matrix.CreateTranslation(0f, 10f, 0f);
+        colliderMisil = OrientedBoundingBox.FromAABB(new BoundingBox(MisilPowerUP.Min + misilPos + (MisilWorld.Up * 150)  - new Vector3(0f,190f,0f), MisilPowerUP.Max + misilPos + (MisilWorld.Up * 150) - new Vector3(0f,190f,0f)));
+        colliderMisil.Rotate(Matrix.CreateRotationY(misilRot));
       }
       else
       {
-        MisilWorld = Matrix.CreateScale(0.1f, 0.1f, 0.1f) * Matrix.CreateRotationZ(-cuartoDeVuelta) * Matrix.CreateTranslation(-10f, -10f, -10f);
+        MisilWorld = Matrix.CreateScale(0.05f, 0.05f, 0.05f) * Matrix.CreateRotationZ(-cuartoDeVuelta) * Matrix.CreateTranslation(-10f, -10f, -10f);
+        colliderMisil = OrientedBoundingBox.FromAABB(new BoundingBox(MisilPowerUP.Min - new Vector3(0f,300f,0f), MisilPowerUP.Max - new Vector3(0f,300f,0f)));
       }
 
       for (int i = 0; i < BalasWorld.Length; i++)
@@ -329,11 +335,15 @@ namespace TGC.MonoGame.TP
         {
           recorridoBalas[i] -= elapsedTime;
           balasPos[i] += BalasWorld[i].Up * 750f * elapsedTime;
-          BalasWorld[i] = Matrix.CreateScale(0.1f, 0.1f, 0.1f) * Matrix.CreateRotationZ(-cuartoDeVuelta) * Matrix.CreateRotationY(balasRot[i]) * Matrix.CreateTranslation(balasPos[i]) * Matrix.CreateTranslation(0f, 10f, 0f);
+          BalasWorld[i] = Matrix.CreateScale(0.07f, 0.07f, 0.07f) * Matrix.CreateRotationZ(-cuartoDeVuelta) * Matrix.CreateRotationY(balasRot[i]) * Matrix.CreateTranslation(balasPos[i]) * Matrix.CreateTranslation(0f, 10f, 0f);
+          collidersBalas[i] = OrientedBoundingBox.FromAABB(new BoundingBox(BalasPowerUp.Min + balasPos[i] + (BalasWorld[i].Up * 40) - new Vector3(0f,30f,0f), BalasPowerUp.Max + balasPos[i] + (BalasWorld[i].Up * 40) - new Vector3(0f,50f,0f)));
+          collidersBalas[i].Rotate(Matrix.CreateRotationZ(-cuartoDeVuelta));
+          collidersBalas[i].Rotate(Matrix.CreateRotationY(balasRot[i]));
         }
         else
         {
           BalasWorld[i] = Matrix.CreateScale(0.1f, 0.1f, 0.1f) * Matrix.CreateRotationZ(-cuartoDeVuelta) * Matrix.CreateTranslation(-10f, -10f, -10f);
+          collidersBalas[i] = OrientedBoundingBox.FromAABB(new BoundingBox(BalasPowerUp.Min + balasPos[i] - new Vector3(0f,300f,0f), BalasPowerUp.Max + balasPos[i] - new Vector3(0f,300f,0f)));
         }
       }
 
@@ -460,12 +470,16 @@ namespace TGC.MonoGame.TP
         gizmos.DrawCube((collidersTurbos[index].Max + collidersTurbos[index].Min) / 2f, collidersTurbos[index].Max - collidersTurbos[index].Min, Color.Red);
       }
 
-      gizmos.DrawCube((colliderMisil.Max + colliderMisil.Min) / 2f, colliderMisil.Max - colliderMisil.Min, Color.Red);
+      MisilBBPower = Matrix.CreateScale(colliderMisil.Extents ) * colliderMisil.Orientation * Matrix.CreateTranslation(colliderMisil.Center );
+      gizmos.DrawCube(MisilBBPower , Color.Red);
 
+      
       for (int index = 0; index < collidersBalas.Length; index++)
       {
-        gizmos.DrawCube((collidersBalas[index].Max + collidersBalas[index].Min) / 2f, collidersBalas[index].Max - collidersBalas[index].Min, Color.Red);
+        BalasBBPower = Matrix.CreateScale(collidersBalas[index].Extents ) * collidersBalas[index].Orientation * Matrix.CreateTranslation(collidersBalas[index].Center );
+        gizmos.DrawCube(BalasBBPower , Color.Red);
       }
+      
     }
 
     public void dispararMisil(Vector3 autoPrincipalPos, float rotation)
