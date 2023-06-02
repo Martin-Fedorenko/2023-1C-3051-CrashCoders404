@@ -550,6 +550,48 @@
 /processorParam:Quality=Best
 /build:Music/retro-platforming.mp3
 
+#begin Sonido/bullet-ametralladora.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sonido/bullet-ametralladora.wav
+
+#begin Sonido/pickup-ametralladora.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sonido/pickup-ametralladora.wav
+
+#begin Sounds/boost-effect.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/boost-effect.wav
+
+#begin Sounds/bullet-ametralladora.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/bullet-ametralladora.wav
+
+#begin Sounds/bullet-rocket.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/bullet-rocket.wav
+
+#begin Sounds/pickup-ametralladora.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/pickup-ametralladora.wav
+
+#begin Sounds/pickup-rocket.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/pickup-rocket.wav
+
 #begin SpriteFonts/CascadiaCode/CascadiaCodePL.spritefont
 /importer:FontDescriptionImporter
 /processor:FontDescriptionProcessor

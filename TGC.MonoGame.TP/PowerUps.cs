@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Audio;
 using TGC.MonoGame.TP.Collisions;
 using TGC.MonoGame.TP.Viewer.Gizmos;
 
@@ -24,6 +25,20 @@ namespace TGC.MonoGame.TP
     private Matrix[] MisilesWorld;
     private Matrix MisilWorld;
     private Matrix[] BalasWorld;
+
+    //Sonido  
+    private SoundEffectInstance Instance { get; set; }
+    private SoundEffect BulletSound { get; set; }
+    private SoundEffect PickUpGunSound { get; set; }
+    private SoundEffect RocketSound { get; set; }
+    private SoundEffect PickUpRocketSound { get; set; }
+    private SoundEffect BoostSound { get; set; }
+
+    private int agarrarAmetralladora = 0;
+    private bool tieneAmetalladora;
+    private int agarrarLanzaCohetes = 0;
+    private bool tieneLanzaCohetes;
+
 
     //Posiciones
     private Vector3 AmetralladoraPos = new Vector3(70, 90, -390);
@@ -175,13 +190,22 @@ namespace TGC.MonoGame.TP
     }
 
 
-    public void LoadContent(Model cajaAmetralladora, Model cajaMisil, Model cajaTurbo, Model misil, Model bala)
+    public void LoadContent(Model cajaAmetralladora, Model cajaMisil, Model cajaTurbo, Model misil, Model bala, 
+                            SoundEffect bulletSound, SoundEffect pickUpGunSound, SoundEffect pickUpRocketSound, SoundEffect rocketSound, 
+                            SoundEffect boostSound)
     {
       CajaAmetralladora = cajaAmetralladora;
       CajaMisil = cajaMisil;
       CajaTurbo = cajaTurbo;
       Misil = misil;
       Bala = bala;
+      BulletSound = bulletSound;
+      PickUpGunSound = pickUpGunSound;
+      PickUpRocketSound = pickUpRocketSound;
+      RocketSound = rocketSound;
+      BoostSound = boostSound;
+
+
 
       //Collisions
       PowerUpBox = BoundingVolumesExtensions.CreateAABBFrom(CajaAmetralladora);
@@ -254,6 +278,9 @@ namespace TGC.MonoGame.TP
       var Rotation = (float)gameTime.ElapsedGameTime.TotalSeconds;
       OrientedBoundingBox autoCollider = autos.GetAutoPrincipalBox();
 
+      tieneAmetalladora = false;
+      tieneLanzaCohetes = false;
+
       for (int index = 0; index < AmetralladorasWorld.Length; index++)
       {
         AmetralladorasWorld[index] = Matrix.CreateRotationX(Rotation * 1.2f) * AmetralladorasWorld[index];
@@ -274,6 +301,13 @@ namespace TGC.MonoGame.TP
       if (currentPowerUp == PowerUp.Ametralladora)
       {
         ametralladoraCooldown -= elapsedTime;
+        if(agarrarAmetralladora == 0)
+        {
+          Instance = PickUpGunSound.CreateInstance();
+          Instance.Play();
+          agarrarAmetralladora = 1;
+        }
+        tieneAmetalladora = true;
       }
       if (currentPowerUp == PowerUp.Turbo)
       {
@@ -281,7 +315,21 @@ namespace TGC.MonoGame.TP
         {
           currentPowerUp = PowerUp.None;
           autos.CarAcceleration = autos.CarAcceleration / 10;
+
         }
+        //CAMBIAR EL SONIDO
+       // Instance = BoostSound.CreateInstance();
+       // Instance.Play();
+      }
+      if(currentPowerUp == PowerUp.Misil)
+      {
+        if(agarrarLanzaCohetes == 0)
+          {
+            Instance = RocketSound.CreateInstance();
+            Instance.Play();
+            agarrarLanzaCohetes = 1;
+          }
+          tieneLanzaCohetes = true;
       }
       if (Keyboard.GetState().IsKeyDown(Keys.F))
       {
@@ -296,6 +344,8 @@ namespace TGC.MonoGame.TP
                 ametralladoraCounter--;
                 dispararBala(autos.AutoPrincipalPos, autos.Rotation, ametralladoraCounter);
                 ametralladoraCooldown = 0.25f;
+                Instance = BulletSound.CreateInstance();
+                Instance.Play();
               }
             }
             else
@@ -311,6 +361,8 @@ namespace TGC.MonoGame.TP
         else if (currentPowerUp == PowerUp.Misil)
         {
           dispararMisil(autos.AutoPrincipalPos, autos.Rotation);
+          Instance = PickUpRocketSound.CreateInstance();
+          Instance.Play();
           currentPowerUp = PowerUp.None;
         }
       }
@@ -385,6 +437,10 @@ namespace TGC.MonoGame.TP
             autos.CarAcceleration = autos.CarAcceleration * 10;
           }
         }
+
+        if (!tieneAmetalladora) {agarrarAmetralladora = 0;}
+        if (!tieneLanzaCohetes) {agarrarLanzaCohetes = 0;}
+
       }
     }
 

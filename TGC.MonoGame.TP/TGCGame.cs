@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework.Media;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Audio;
 using TGC.MonoGame.TP.Viewer.Gizmos;
 using TGC.MonoGame.TP.Cameras;
 
@@ -77,6 +78,7 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
     public const int ST_PRESENTACION = 0;
     public const int ST_JUEGO = 1;
     public const int ST_CONTROLES = 2;
+     public const int ST_CONTDOWN = 3;
     public const int ST_ENDGAME = -1;
     public SpriteFont font;
     public int status = ST_PRESENTACION;
@@ -84,6 +86,14 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
     //Sonidos
     private Song Song { get; set; }
     private string SongName { get; set; }
+
+    private SoundEffectInstance Instance { get; set; }
+    private SoundEffect BulletSound { get; set; }
+    private SoundEffect PickUpGunSound { get; set; }
+    private SoundEffect RocketSound { get; set; }
+    private SoundEffect PickUpRocketSound { get; set; }
+    private SoundEffect BoostSound { get; set; }
+
 
     //HUD
     private float totalGameTime;
@@ -153,9 +163,17 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
       Effect = Content.Load<Effect>(ContentFolderEffects + "BasicShader");
       TextureShader = Content.Load<Effect>(ContentFolderEffects + "TextureShader");
 
+      BulletSound = Content.Load<SoundEffect>(ContentFolderSounds + "bullet-ametralladora");
+      PickUpGunSound = Content.Load<SoundEffect>(ContentFolderSounds + "pickup-ametralladora");
+      RocketSound = Content.Load<SoundEffect>(ContentFolderSounds + "bullet-rocket");
+      PickUpRocketSound = Content.Load<SoundEffect>(ContentFolderSounds + "pickup-rocket");
+      BoostSound = Content.Load<SoundEffect>(ContentFolderSounds + "boost-effect");
+      
+
       escenario.LoadContent(Piso, Pared, Column, Ramp, Platform, Cube);
       detalles.LoadContent(Tree, Rock1, Rock5, Rock10, Tire);
-      powerUps.LoadContent(CajaAmetralladora, CajaMisil, CajaTurbo, Misil, Bala);
+      powerUps.LoadContent(CajaAmetralladora, CajaMisil, CajaTurbo, Misil, Bala, BulletSound, PickUpGunSound, RocketSound, PickUpRocketSound,
+                           BoostSound);
       autos.LoadContent(AutoDeportivo, AutoDeCombate, TextureShader);
 
 
@@ -180,6 +198,7 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
           if (Keyboard.GetState().IsKeyDown(Keys.Enter))
           {
             status = ST_JUEGO;
+            
           }
           if (Keyboard.GetState().IsKeyDown(Keys.C))
           {
