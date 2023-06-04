@@ -573,34 +573,35 @@ namespace TGC.MonoGame.TP
 
         }
         
-        public Boolean DetectorDeColisionesDeDetalles(GameTime gameTime, OrientedBoundingBox autoCollider)
+        public void Update(GameTime gameTime, Autos auto)
         {
+            OrientedBoundingBox autoCollider = auto.GetAutoPrincipalBox();
+            Vector3 vectorChoque = Vector3.Zero;
+            float penetration = 0f;
+
             for(int index = 0; index < TreeBoxes.Length; index++)
             {
-                if(autoCollider.Intersects(TreeBoxes[index]))
+                if(autoCollider.Intersects(TreeBoxes[index],out vectorChoque,out penetration))
                 {
-                    return true;
+                   auto.rebotar(vectorChoque,penetration);
                 }
             }
             
             for(int index = 0; index < Rock1Boxes.Length; index++)
             {
-                if(autoCollider.Intersects(Rock1Boxes[index]))
+                if(autoCollider.Intersects(Rock1Boxes[index],out vectorChoque,out penetration))
                 {
-                    return true;
+                    auto.rebotar(vectorChoque,penetration);
                 }
             }
             
             for(int index = 0; index < TireBoxes.Length; index++)
             {
-                if(autoCollider.Intersects(TireBoxes[index]))
+                if(autoCollider.Intersects(TireBoxes[index],out vectorChoque,out penetration))
                 {
-                    return true;
+                    auto.rebotar(vectorChoque,penetration);
                 }
             }
-
-            return false;
-
         }
 
       public void dibujar(Matrix view,Matrix projection,Effect effect,Matrix matrizMundo,Model modelo,Color color)

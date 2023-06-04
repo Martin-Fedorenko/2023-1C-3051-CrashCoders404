@@ -101,7 +101,9 @@ namespace TGC.MonoGame.TP
     private int collidedCars;
     private Boolean turbo;
     private float turboTime;
-    Vector3 direccionPostChoque;
+    private Vector3 direccionPostChoque;
+    private Vector3 direccionChoqueBB = Vector3.Zero;
+    private float penetration;
 
     Vector3 coreccionAltura = new Vector3(0, 66f, 0); //el centro de la oriented bounding box esta quedando muy arriba
     Vector3 coreccionAlturaAutoCombate = new Vector3(199, 4244f, -443); //(3,-20f,0);
@@ -130,6 +132,7 @@ namespace TGC.MonoGame.TP
       tiempoEnAire = 0f;
       turbo = false;
       turboTime = 0;
+      penetration = 0f;
 
       //Rotaciones de Ruedas
       WheelRotationWorld = new float[]
@@ -528,6 +531,10 @@ namespace TGC.MonoGame.TP
     public void rebotarAuto()
     {
       CarSpeed *= -1;
+    }
+    public void rebotar(Vector3 vectorChoque, float penetration){
+      AutoPrincipalPos += vectorChoque *penetration;
+      this.FrenarAuto();
     }
     public void aplicarTurbo(){
 

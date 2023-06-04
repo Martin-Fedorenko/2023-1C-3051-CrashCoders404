@@ -94,7 +94,8 @@ namespace TGC.MonoGame.TP
      public Vector3  Ramp11Position = new Vector3(-495, 0, -169);
      public Vector3  Ramp12Position = new Vector3(-376, 0, -221);
 
-
+            Vector3 vectorChoque = Vector3.Zero;
+            float penetration = 0f;
 
     // Variables
     private float mediaVuelta = MathF.PI;
@@ -201,8 +202,8 @@ namespace TGC.MonoGame.TP
       Cube = cube;
 
       PisoBox = BoundingVolumesExtensions.CreateAABBFrom(Piso);
-      PisoBox = BoundingVolumesExtensions.Scale(PisoBox, new Vector3(30,1,30));
-      PisoBox = new BoundingBox(PisoBox.Min ,PisoBox.Max );
+      PisoBox = BoundingVolumesExtensions.Scale(PisoBox, new Vector3(20,1,20));
+      PisoBox = new BoundingBox(PisoBox.Min-Vector3.UnitY*3,PisoBox.Max -Vector3.UnitY*3); //sin restarle 3 te empuja hacia los bordes
 
       var minVector = Vector3.One * 0.25f;
       ParedBoxes = new BoundingBox[]
@@ -277,9 +278,10 @@ namespace TGC.MonoGame.TP
             Boolean enPisoOPlataforma = false;
             autoCollider = auto.GetAutoPrincipalBox();
 
+
             if(autoCollider.Intersects(PisoBox))
             {
-              enPisoOPlataforma = true;;
+              enPisoOPlataforma = true;
             }
 
             for(int index = 0; index < PlatformBoxes.Length; index++)
@@ -301,9 +303,10 @@ namespace TGC.MonoGame.TP
 
             for(int index = 0; index < ColumnBoxes.Length; index++)
             {
-                if(autoCollider.Intersects(ColumnBoxes[index]))
+                if(autoCollider.Intersects(ColumnBoxes[index],out vectorChoque,out penetration))
                 {
-                    auto.FrenarAuto();
+                   // auto.FrenarAuto();
+                   auto.rebotar(vectorChoque,penetration);
                 }
             }
 
@@ -317,9 +320,9 @@ namespace TGC.MonoGame.TP
 
             for(int index = 0; index < ParedBoxes.Length; index++)
             {
-                if(autoCollider.Intersects(ParedBoxes[index]))
+                if(autoCollider.Intersects(ParedBoxes[index],out vectorChoque,out penetration))
                 {
-                    auto.FrenarAuto();
+                   auto.rebotar(vectorChoque,penetration);
                 }
             }
             

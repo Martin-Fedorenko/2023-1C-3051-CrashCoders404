@@ -216,7 +216,7 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
           autos.Update(gameTime,totalGameTime);
           powerUps.Update(gameTime, autos);
 
-          if (detalles.DetectorDeColisionesDeDetalles(gameTime, autos.GetAutoPrincipalBox())) autos.FrenarAuto();
+          detalles.Update(gameTime,autos);
           escenario.Update(gameTime, autos);
 
           View = Matrix.CreateLookAt(posicionCamara + autos.posAutoPrincipal(), autos.posAutoPrincipal(), Vector3.Up);
