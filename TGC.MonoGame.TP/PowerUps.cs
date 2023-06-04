@@ -311,12 +311,8 @@ namespace TGC.MonoGame.TP
       }
       if (currentPowerUp == PowerUp.Turbo)
       {
-        if (powerUpTimer <= 0f)
-        {
+          autos.aplicarTurbo();
           currentPowerUp = PowerUp.None;
-          autos.CarAcceleration = autos.CarAcceleration / 10;
-
-        }
         //CAMBIAR EL SONIDO
        // Instance = BoostSound.CreateInstance();
        // Instance.Play();
@@ -433,8 +429,6 @@ namespace TGC.MonoGame.TP
           {
             collidedindexTurbo.Add(index);
             currentPowerUp = PowerUp.Turbo;
-            powerUpTimer = 20f;
-            autos.CarAcceleration = autos.CarAcceleration * 10;
           }
         }
 

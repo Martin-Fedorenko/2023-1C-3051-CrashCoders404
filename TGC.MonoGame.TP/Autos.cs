@@ -66,6 +66,7 @@ namespace TGC.MonoGame.TP
     private Matrix[] AutosWorld;
     private Vector3[] AutosPosiciones;
 
+    private float[] CarsSpeeds;
     // Variables
     private float mediaVuelta = MathF.PI;
     private float cuartoDeVuelta = MathF.PI / 2;
@@ -79,6 +80,7 @@ namespace TGC.MonoGame.TP
     private Vector3 Auto7Pos = new Vector3(80, 0, 180);
     private Vector3 Auto8Pos = new Vector3(-80, 0, 180);
     private Vector3 Desplazamiento;
+    private Vector3[] DesplazamientoAutos;
     private Boolean enElPiso;
     float tiempoEnAire;
 
@@ -97,9 +99,18 @@ namespace TGC.MonoGame.TP
     private float PreviousSpeed;
     private float pesoAuto;
     private int collidedCars;
+    private Boolean turbo;
+    private float turboTime;
+    Vector3 direccionPostChoque;
 
     Vector3 coreccionAltura = new Vector3(0, 66f, 0); //el centro de la oriented bounding box esta quedando muy arriba
     Vector3 coreccionAlturaAutoCombate = new Vector3(199, 4244f, -443); //(3,-20f,0);
+
+    //Menu
+    private Vector3 autoMenuPos = new Vector3(0,0,-130);
+    private Matrix autoMenu;
+    private Matrix autoMenu2;
+    private Matrix autoMenu3;
     public void Initialize()
     {
       //MovimientoAuto
@@ -117,6 +128,8 @@ namespace TGC.MonoGame.TP
       maxSpeed = 2800f;
       enElPiso = true;
       tiempoEnAire = 0f;
+      turbo = false;
+      turboTime = 0;
 
       //Rotaciones de Ruedas
       WheelRotationWorld = new float[]
@@ -132,9 +145,34 @@ namespace TGC.MonoGame.TP
       };
       WheelRotationPrincipal = 0f;
 
+      CarsSpeeds = new float[]
+      {
+                0f,
+                0f,
+                0f,
+                0f,
+                0f,
+                0f,
+                0f,
+                0f,
+      };
 
+      DesplazamientoAutos = new Vector3[]{
+        Vector3.Zero,
+        Vector3.Zero,
+        Vector3.Zero,
+        Vector3.Zero,
+        Vector3.Zero,
+        Vector3.Zero,
+        Vector3.Zero,
+        Vector3.Zero
+      };
       //Listas
       ColorTextures = new List<Texture2D>();
+
+      autoMenu = Matrix.CreateScale(0.3f) * Matrix.CreateRotationY(-MathF.PI/2) *  Matrix.CreateTranslation(autoMenuPos);
+      autoMenu2 = Matrix.CreateScale(0.01f) * Matrix.CreateRotationY(cuartoDeVuelta) * Matrix.CreateTranslation(0,0,130);
+      autoMenu3 = Matrix.CreateScale(0.3f) * Matrix.CreateRotationY(mediaVuelta) *  Matrix.CreateTranslation(0,-100,130);
 
       AutoPrincipalWorld = Matrix.CreateScale(0.1f) * Matrix.CreateTranslation(AutoPrincipalPos);
 
@@ -203,7 +241,7 @@ namespace TGC.MonoGame.TP
 
     }
 
-    public void Update(GameTime gameTime)
+    public void Update(GameTime gameTime,float totalGameTime)
     {
       var keyboardState = Keyboard.GetState();
       var elapsedTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
@@ -211,6 +249,24 @@ namespace TGC.MonoGame.TP
       Desplazamiento = Vector3.Zero;
       collided = false;
       collidedCars = 0;
+      for(int index = 0 ; index < DesplazamientoAutos.Length; index++)
+      {
+        DesplazamientoAutos[index] = Vector3.Zero;
+      }
+
+
+      for(int index = 0; index < CarsSpeeds.Length; index++)
+      {
+        if (CarsSpeeds[index] > 3)
+        {
+          CarsSpeeds[index] += Rozamiento * elapsedTime;
+        }
+        else if (CarsSpeeds[index] < -3) //La velocidad nunca acaba siendo menor al |3|, de esta forma podemos saber si el auto se queda "quieto" y podemos evitar que gire sin avanzar/retroceder
+        {
+          CarsSpeeds[index] -= Rozamiento * elapsedTime;
+        }
+
+      }
 
       if (Keyboard.GetState().IsKeyDown(Keys.W) && !onJump)
       {
@@ -315,36 +371,46 @@ namespace TGC.MonoGame.TP
         jumpRotation = 0;
         tiempoEnAire = 0f;
       }
+      
+      if(turbo){
+        turboTime += (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+        if(turboTime < 1)
+        {
+          CarSpeed += 50;
+        }
+        else{
+          CarSpeed = PreviousSpeed;
+          turbo = false;
+          turboTime = 0f;
+        }
+      }
+
 
       // collided = AutoPrincipalBox.Intersects(Auto1Box);
-
-      PreviousSpeed = CarSpeed;
       for (var index = 0; index < CollideCars.Length; index++)
       {
         if (index < 5) pesoAuto = 250;
         else pesoAuto = 450;
         if (AutoPrincipalBox.Intersects(CollideCars[index]))
         {
-          collidedCars++;
-          if (PreviousSpeed > 0)
-          {
-            if (CarSpeed > 0)
-            {
-              CarSpeed -= pesoAuto * collidedCars * elapsedTime;
-              AutosPosiciones[index] += Desplazamiento;
-            }
-          }
-          else
-              if (CarSpeed < 0)
-          {
-            CarSpeed += pesoAuto * collidedCars * elapsedTime;
-            AutosPosiciones[index] += Desplazamiento;
-          }
+            CollisionIndex = index;
+            direccionPostChoque = CarDirection;
+            Desplazamiento*=-1;
+            CarsSpeeds[CollisionIndex] = CarSpeed;
+            CarSpeed*=-1;
         }
       }
-      //PROBLEMA: EL AUTO QUEDA TRABADO CON LOS OTROS AUTOS SI LO FRENAN CHEQUEAR QUE A VECES SE ATRAVIESAN UNAS PARTES
 
       AutoPrincipalPos += Desplazamiento;
+      if(CarsSpeeds[CollisionIndex] > 3 || CarsSpeeds[CollisionIndex] < -3){
+          DesplazamientoAutos[CollisionIndex] += direccionPostChoque * CarsSpeeds[CollisionIndex] * elapsedTime;
+      }
+
+      for(int index = 0; index < DesplazamientoAutos.Length; index++)
+        {
+          AutosPosiciones[index] += DesplazamientoAutos[index];
+        }
 
       AutoPrincipalWorld = Matrix.CreateScale(0.1f) *
                             Matrix.CreateRotationX(-jumpRotation) *
@@ -408,6 +474,12 @@ namespace TGC.MonoGame.TP
       }
     }
 
+    public void dibujarAutosMenu(Matrix view, Matrix projection, Effect effect)
+    {
+       dibujarAuto(view, projection, effect, AutoDeportivo, 0, autoMenu);
+       dibujarAuto(view, projection, effect, AutoDeCombate, 0, autoMenu2);
+       dibujarAuto(view, projection, effect, AutoDeportivo, 0, autoMenu3);
+    }
     public void dibujarAutos(Matrix view, Matrix projection, Effect effect)
     {
       Model modeloAuto;
@@ -449,6 +521,18 @@ namespace TGC.MonoGame.TP
     public void chocarTecho()
     {
       jumpSpeed = 0f;
+    }
+    public Vector3 posAutoMenu(){
+      return autoMenuPos;
+    }
+    public void rebotarAuto()
+    {
+      CarSpeed *= -1;
+    }
+    public void aplicarTurbo(){
+
+      PreviousSpeed = CarSpeed;
+      turbo = true;
     }
     public void inicializarBoundingBoxes()
     {

@@ -186,7 +186,6 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
 
     protected override void Update(GameTime gameTime)
     {
-      totalGameTime += (float)gameTime.ElapsedGameTime.TotalSeconds;
       var keyboardState = Keyboard.GetState();
       if (Keyboard.GetState().IsKeyDown(Keys.Escape))
       {
@@ -213,7 +212,8 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
           break;
 
         case ST_JUEGO:
-          autos.Update(gameTime);
+          totalGameTime += (float)gameTime.ElapsedGameTime.TotalSeconds;
+          autos.Update(gameTime,totalGameTime);
           powerUps.Update(gameTime, autos);
 
           if (detalles.DetectorDeColisionesDeDetalles(gameTime, autos.GetAutoPrincipalBox())) autos.FrenarAuto();
@@ -233,7 +233,7 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
 
     protected override void Draw(GameTime gameTime)
     {
-      GraphicsDevice.Clear(Color.Black);
+      GraphicsDevice.Clear(Color.LightYellow);
       GraphicsDevice.DepthStencilState = DepthStencilState.Default; //sin esto los autos se ven translucidos y el piso tambien
 
 
@@ -241,6 +241,7 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
       {
 
         case ST_PRESENTACION:
+          autos.dibujarAutosMenu(View,Projection,TextureShader);
           DrawCenterTextY("CRASH CODERS 404 ", 100, 4);
           DrawCenterTextY("C -> CONTROLES", 400, 2);
           DrawCenterTextY("G -> GOD MODE", 500, 2);
