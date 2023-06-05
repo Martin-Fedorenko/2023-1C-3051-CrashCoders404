@@ -78,15 +78,21 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
     public const int ST_PRESENTACION = 0;
     public const int ST_JUEGO = 1;
     public const int ST_CONTROLES = 2;
-     public const int ST_CONTDOWN = 3;
+    public const int ST_COUNTDOWN_3 = 6;
+    public const int ST_COUNTDOWN_2 = 7;
+    public const int ST_COUNTDOWN_1 = 8;
+    public const int ST_COUNTDOWN_GO = 9;
     public const int ST_ENDGAME = -1;
     public SpriteFont font;
     public int status = ST_PRESENTACION;
 
-    //Sonidos
-    private Song Song { get; set; }
-    private string SongName { get; set; }
 
+    //Musica
+    private Song SongGame { get; set; }
+    private Song SongMenu { get; set; }
+    private Song SongCountdown { get; set; }
+  
+    //Sonidos
     private SoundEffectInstance Instance { get; set; }
     private SoundEffect BulletSound { get; set; }
     private SoundEffect PickUpGunSound { get; set; }
@@ -97,6 +103,7 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
 
     //HUD
     private float totalGameTime;
+    private float countdownStart;
     protected override void Initialize()
     {
       gizmos = new Gizmos();
@@ -119,9 +126,6 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
       detalles.Initialize();
       powerUps.Initialize(GraphicsDevice);
       autos.Initialize();
-
-      //Musica
-      SongName = "No music";
 
       //CAMARA
       //Camera = new SimpleCamera(GraphicsDevice.Viewport.AspectRatio, new Vector3(40, 60, 150), 55, 0.4f);
@@ -178,15 +182,16 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
 
 
       //Musica
-      SongName = "retro-platforming";
-      Song = Content.Load<Song>(ContentFolderMusic + SongName);
-      MediaPlayer.Play(Song);
+      SongGame = Content.Load<Song>(ContentFolderMusic + "trap-movement");
+      SongMenu = Content.Load<Song>(ContentFolderMusic + "retro-platforming");
+      SongCountdown = Content.Load<Song>(ContentFolderMusic + "countdown-start");
+
+      MediaPlayer.Play(SongMenu);
       base.LoadContent();
     }
 
     protected override void Update(GameTime gameTime)
     {
-      var keyboardState = Keyboard.GetState();
       if (Keyboard.GetState().IsKeyDown(Keys.Escape))
       {
         status = ST_ENDGAME;
@@ -196,14 +201,17 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
         case ST_PRESENTACION:
           if (Keyboard.GetState().IsKeyDown(Keys.Enter))
           {
-            status = ST_JUEGO;
-            
+            status = ST_COUNTDOWN_3;
+            MediaPlayer.Stop();
+            MediaPlayer.Play(SongCountdown);
+            countdownStart += (float)gameTime.ElapsedGameTime.TotalSeconds;
           }
           if (Keyboard.GetState().IsKeyDown(Keys.C))
           {
             status = ST_CONTROLES;
           }
           break;
+
         case ST_CONTROLES:
           if (Keyboard.GetState().IsKeyDown(Keys.B))
           {
@@ -211,10 +219,48 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
           }
           break;
 
+        case ST_COUNTDOWN_3:
+        countdownStart += (float)gameTime.ElapsedGameTime.TotalSeconds;
+        if (countdownStart > 1)
+        {
+          status = ST_COUNTDOWN_2;
+          break;
+        }
+        break;
+
+        case ST_COUNTDOWN_2:
+        countdownStart += (float)gameTime.ElapsedGameTime.TotalSeconds;
+        if(countdownStart > 2)
+        {
+          status = ST_COUNTDOWN_1;
+          break;
+        }
+        break;
+
+        case ST_COUNTDOWN_1:
+        countdownStart += (float)gameTime.ElapsedGameTime.TotalSeconds;
+        if(countdownStart > 3)
+        {
+          status = ST_COUNTDOWN_GO;
+          MediaPlayer.Play(SongGame);
+          break;
+        }
+        break;
+
+        case ST_COUNTDOWN_GO:
+        countdownStart += (float)gameTime.ElapsedGameTime.TotalSeconds;
+        if(countdownStart > 4)
+        {
+          status = ST_JUEGO;
+          //MediaPlayer.Play(SongGame); No se por qué acá no anda, se corta la música
+          break;
+        }
+        break;
+
         case ST_JUEGO:
           totalGameTime += (float)gameTime.ElapsedGameTime.TotalSeconds;
           autos.Update(gameTime,totalGameTime);
-          powerUps.Update(gameTime, autos);
+          powerUps.Update(gameTime, autos, detalles, escenario);
 
           detalles.Update(gameTime,autos);
           escenario.Update(gameTime, autos);
@@ -222,7 +268,9 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
           View = Matrix.CreateLookAt(posicionCamara + autos.posAutoPrincipal(), autos.posAutoPrincipal(), Vector3.Up);
           //Camera.Update(gameTime);
           gizmos.UpdateViewProjection(View, Projection);
+
           break;
+
         case ST_ENDGAME:
           Exit();
           break;
@@ -239,6 +287,25 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
 
       switch (status)
       {
+        case ST_COUNTDOWN_3:          
+          GraphicsDevice.Clear(Color.Black);
+          DrawCenterTextY("3", 100, 10);
+          break;
+
+        case ST_COUNTDOWN_2:
+          GraphicsDevice.Clear(Color.Black);
+          DrawCenterTextY("2", 100, 10);
+          break;
+
+        case ST_COUNTDOWN_1:
+          GraphicsDevice.Clear(Color.Black);
+          DrawCenterTextY("1", 100, 10);
+          break;
+
+        case ST_COUNTDOWN_GO:
+          GraphicsDevice.Clear(Color.Black);
+          DrawCenterTextY("GO!", 100, 10);
+          break;
 
         case ST_PRESENTACION:
           autos.dibujarAutosMenu(View,Projection,TextureShader);

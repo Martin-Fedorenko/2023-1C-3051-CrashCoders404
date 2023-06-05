@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Audio;
 using TGC.MonoGame.TP.Collisions;
 using TGC.MonoGame.TP.Viewer.Gizmos;
+using TGC.MonoGame.TP.Collisions;
 
 namespace TGC.MonoGame.TP
 {
@@ -38,7 +39,8 @@ namespace TGC.MonoGame.TP
     private bool tieneAmetalladora;
     private int agarrarLanzaCohetes = 0;
     private bool tieneLanzaCohetes;
-
+    private int agarrarTurbo = 0;
+    private bool tieneTurbo;
 
     //Posiciones
     private Vector3 AmetralladoraPos = new Vector3(70, 90, -390);
@@ -271,7 +273,7 @@ namespace TGC.MonoGame.TP
       };
     }
 
-    public void Update(GameTime gameTime, Autos autos)
+    public void Update(GameTime gameTime, Autos autos, Detalles detalles, Escenario escenario)
     {
       var keyboardState = Keyboard.GetState();
       var elapsedTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
@@ -280,6 +282,7 @@ namespace TGC.MonoGame.TP
 
       tieneAmetalladora = false;
       tieneLanzaCohetes = false;
+      tieneTurbo = false;
 
       for (int index = 0; index < AmetralladorasWorld.Length; index++)
       {
@@ -313,9 +316,14 @@ namespace TGC.MonoGame.TP
       {
           autos.aplicarTurbo();
           currentPowerUp = PowerUp.None;
-        //CAMBIAR EL SONIDO
-       // Instance = BoostSound.CreateInstance();
-       // Instance.Play();
+
+          if(agarrarTurbo == 0)
+          {
+            Instance = BoostSound.CreateInstance();
+            Instance.Play();
+            agarrarTurbo = 1;
+          }
+          tieneTurbo = true;
       }
       if(currentPowerUp == PowerUp.Misil)
       {
@@ -370,6 +378,77 @@ namespace TGC.MonoGame.TP
         MisilWorld = Matrix.CreateScale(0.05f, 0.05f, 0.05f) * Matrix.CreateRotationZ(-cuartoDeVuelta) * Matrix.CreateRotationY(misilRot) * Matrix.CreateTranslation(misilPos) * Matrix.CreateTranslation(0f, 10f, 0f);
         colliderMisil = OrientedBoundingBox.FromAABB(new BoundingBox(MisilPowerUP.Min + misilPos + (MisilWorld.Up * 150)  - new Vector3(0f,190f,0f), MisilPowerUP.Max + misilPos + (MisilWorld.Up * 150) - new Vector3(0f,190f,0f)));
         colliderMisil.Rotate(Matrix.CreateRotationY(misilRot));
+
+        //Colisiones con otros auto
+        for (var index = 0; index < autos.getPosAutos().Length; index++)
+          {
+            if(colliderMisil.Intersects(autos.getPosAutos()[index]))
+            {
+              recorridoMisil = 0f;
+              autos.getVidaAutos()[index] -= 50;
+            }
+          }
+
+          //Colisiones con detalles
+          for (var index = 0; index < detalles.getTreeBoxes().Length; index++)
+          {
+            if(colliderMisil.Intersects(detalles.getTreeBoxes()[index]))
+            {
+              recorridoMisil = 0f;
+            }
+          }
+          for (var index = 0; index < detalles.getTireBoxes().Length; index++)
+          {
+            if(colliderMisil.Intersects(detalles.getTireBoxes()[index]))
+            {
+              recorridoMisil = 0f;
+            }
+          }
+          for (var index = 0; index < detalles.getRock1Boxes().Length; index++)
+          {
+            if(colliderMisil.Intersects(detalles.getRock1Boxes()[index]))
+            {
+              recorridoMisil = 0f;
+            }
+          }
+          for (var index = 0; index < detalles.getRock5Boxes().Length; index++)
+          {
+            if(colliderMisil.Intersects(detalles.getRock5Boxes()[index]))
+            {
+              recorridoMisil = 0f;
+            }
+          }
+          for (var index = 0; index < detalles.getRock10Boxes().Length; index++)
+          {
+            if(colliderMisil.Intersects(detalles.getRock10Boxes()[index]))
+            {
+              recorridoMisil = 0f;
+            }
+          }
+          
+          //Colisiones con escenario
+          for (var index = 0; index < escenario.getColumnBoxes().Length; index++)
+          {
+            if(colliderMisil.Intersects(escenario.getColumnBoxes()[index]))
+            {
+              recorridoMisil = 0f;
+            }
+          }
+          for (var index = 0; index < escenario.getParedBoxes().Length; index++)
+          {
+            if(colliderMisil.Intersects(escenario.getParedBoxes()[index]))
+            {
+              recorridoMisil = 0f;
+            }
+          }
+          for (var index = 0; index < escenario.getRampBoxes().Length; index++)
+          {
+            if(colliderMisil.Intersects(escenario.getRampBoxes()[index]))
+            {
+              recorridoMisil = 0f;
+            }
+          }
+          
       }
       else
       {
@@ -387,6 +466,77 @@ namespace TGC.MonoGame.TP
           collidersBalas[i] = OrientedBoundingBox.FromAABB(new BoundingBox(BalasPowerUp.Min + balasPos[i] + (BalasWorld[i].Up * 40) - new Vector3(0f,30f,0f), BalasPowerUp.Max + balasPos[i] + (BalasWorld[i].Up * 40) - new Vector3(0f,50f,0f)));
           collidersBalas[i].Rotate(Matrix.CreateRotationZ(-cuartoDeVuelta));
           collidersBalas[i].Rotate(Matrix.CreateRotationY(balasRot[i]));
+
+          //Colisiones con otros auto
+          for (var index = 0; index < autos.getPosAutos().Length; index++)
+          {
+            if(collidersBalas[i].Intersects(autos.getPosAutos()[index]))
+            {
+              recorridoBalas[i] = 0f;
+              autos.getVidaAutos()[index] -= 10;
+            }
+          }
+
+          //Colisiones con detalles
+          for (var index = 0; index < detalles.getTreeBoxes().Length; index++)
+          {
+            if(collidersBalas[i].Intersects(detalles.getTreeBoxes()[index]))
+            {
+              recorridoBalas[i] = 0f;
+            }
+          }
+          for (var index = 0; index < detalles.getTireBoxes().Length; index++)
+          {
+            if(collidersBalas[i].Intersects(detalles.getTireBoxes()[index]))
+            {
+              recorridoBalas[i] = 0f;
+            }
+          }
+          for (var index = 0; index < detalles.getRock1Boxes().Length; index++)
+          {
+            if(collidersBalas[i].Intersects(detalles.getRock1Boxes()[index]))
+            {
+              recorridoBalas[i] = 0f;
+            }
+          }
+          for (var index = 0; index < detalles.getRock5Boxes().Length; index++)
+          {
+            if(collidersBalas[i].Intersects(detalles.getRock5Boxes()[index]))
+            {
+              recorridoBalas[i] = 0f;
+            }
+          }
+          for (var index = 0; index < detalles.getRock10Boxes().Length; index++)
+          {
+            if(collidersBalas[i].Intersects(detalles.getRock10Boxes()[index]))
+            {
+              recorridoBalas[i] = 0f;
+            }
+          }
+          
+          //Colisiones con escenario
+          for (var index = 0; index < escenario.getColumnBoxes().Length; index++)
+          {
+            if(collidersBalas[i].Intersects(escenario.getColumnBoxes()[index]))
+            {
+              recorridoBalas[i] = 0f;
+            }
+          }
+          for (var index = 0; index < escenario.getParedBoxes().Length; index++)
+          {
+            if(collidersBalas[i].Intersects(escenario.getParedBoxes()[index]))
+            {
+              recorridoBalas[i] = 0f;
+            }
+          }
+          for (var index = 0; index < escenario.getRampBoxes().Length; index++)
+          {
+            if(collidersBalas[i].Intersects(escenario.getRampBoxes()[index]))
+            {
+              recorridoBalas[i] = 0f;
+            }
+          }
+
         }
         else
         {
@@ -434,6 +584,7 @@ namespace TGC.MonoGame.TP
 
         if (!tieneAmetalladora) {agarrarAmetralladora = 0;}
         if (!tieneLanzaCohetes) {agarrarLanzaCohetes = 0;}
+        if (!tieneTurbo) {agarrarTurbo = 0;}
 
       }
     }

@@ -544,11 +544,23 @@
 /processorParam:TextureFormat=Compressed
 /build:Models/PowerUps/PowerUpRayo/PowerUpRayo.fbx
 
+#begin Music/countdown-start.mp3
+/importer:Mp3Importer
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:Music/countdown-start.mp3
+
 #begin Music/retro-platforming.mp3
 /importer:Mp3Importer
 /processor:SongProcessor
 /processorParam:Quality=Best
 /build:Music/retro-platforming.mp3
+
+#begin Music/trap-movement.mp3
+/importer:Mp3Importer
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:Music/trap-movement.mp3
 
 #begin Sonido/bullet-ametralladora.wav
 /importer:WavImporter

@@ -63,8 +63,12 @@ namespace TGC.MonoGame.TP
     private Matrix AutoCombate2World { get; set; }
     private Matrix AutoCombate3World { get; set; }
 
+    private int cantidadEnemigos = 7;
     private Matrix[] AutosWorld;
     private Vector3[] AutosPosiciones;
+
+    private int[] vidaAutos; //Para el sistema de vida
+    private int vidaProtagonista = 100;
 
     private float[] CarsSpeeds;
     // Variables
@@ -203,6 +207,12 @@ namespace TGC.MonoGame.TP
             Matrix.CreateScale(0.007f) * Matrix.CreateRotationY(cuartoDeVuelta) * Matrix.CreateTranslation(Auto7Pos),
             Matrix.CreateScale(0.007f) * Matrix.CreateRotationY(cuartoDeVuelta) * Matrix.CreateTranslation(Auto8Pos),
       };
+      
+      vidaAutos = new int[cantidadEnemigos];
+      for(int index = 0; index < cantidadEnemigos; index++)
+      {
+        vidaAutos[index] = 100;
+      }
 
     }
 
@@ -285,7 +295,7 @@ namespace TGC.MonoGame.TP
       }
       else if (Keyboard.GetState().IsKeyDown(Keys.S) && !onJump)
       {
-        if (CarSpeed > 0) //De esta manera si estaba yendo hacia delante, frena y luego acelera hacia atras
+        if (CarSpeed >= 0) //De esta manera si estaba yendo hacia delante, frena y luego acelera hacia atras
         {
           CarSpeed -= CarBrakes * elapsedTime;
         }
@@ -382,6 +392,7 @@ namespace TGC.MonoGame.TP
         {
           CarSpeed += 50;
         }
+
         else{
           CarSpeed = PreviousSpeed;
           turbo = false;
@@ -443,11 +454,8 @@ namespace TGC.MonoGame.TP
 
       AutoPrincipalBox = OrientedBoundingBox.FromAABB(new BoundingBox(AutoDeportivoBoxAABB.Min + AutoPrincipalPos - coreccionAltura, AutoDeportivoBoxAABB.Max + AutoPrincipalPos - coreccionAltura));
       AutoPrincipalBox.Rotate(Matrix.CreateRotationX(-jumpRotation) * Matrix.CreateRotationY(Rotation * 2));
-
-
-
-
     }
+
     public void dibujarAuto(Matrix view, Matrix projection, Effect effect, Model modelo, float WheelRot, Matrix matrizMundo)
     {
       effect.Parameters["View"].SetValue(view);
@@ -541,6 +549,22 @@ namespace TGC.MonoGame.TP
       PreviousSpeed = CarSpeed;
       turbo = true;
     }
+
+    public int cantEnemigos()
+    {
+      return cantidadEnemigos;
+    }
+
+    public OrientedBoundingBox[] getPosAutos()
+    {
+      return CollideCars;
+    }
+
+    public int[] getVidaAutos()
+    {
+      return vidaAutos;
+    }
+
     public void inicializarBoundingBoxes()
     {
       AutoDeportivoBoxAABB = BoundingVolumesExtensions.CreateAABBFrom(AutoDeportivo);
@@ -574,5 +598,6 @@ namespace TGC.MonoGame.TP
         gizmos.DrawCube(OBBWorld, Color.Red);
       }
     }
+
   }
 }

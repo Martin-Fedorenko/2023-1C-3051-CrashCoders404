@@ -58,44 +58,41 @@ namespace TGC.MonoGame.TP
     private Matrix Ramp10World { get; set; }
     private Matrix Ramp11World { get; set; }
     private Matrix Ramp12World { get; set; }
-
-     public Vector3  PisoPosition = new Vector3(30, 0, 30);
-     public Vector3  ParedPosition = new Vector3(30, 50, 30);
-     public Vector3  Platform1Position = new Vector3(70, 64, -390);
-     public Vector3  Platform2Position = new Vector3(-250, 30, 100);
-     public Vector3  Platform3Position = new Vector3(-250, 93, 235);
-     public Vector3  Platform4Position = new Vector3(210, 0, 300);
-     public Vector3  Platform5Position = new Vector3(-435, 0, -195);
-     public Vector3  Column1Position = new Vector3(0, 0, -450);
-     public Vector3  Column2Position = new Vector3(0, 0, -350);
-     public Vector3  Column3Position = new Vector3(140, 0, -450);
-     public Vector3  Column4Position = new Vector3(140, 0, -350);
-     public Vector3  Column5Position = new Vector3(-170, 0, 50);
-     public Vector3  Column6Position = new Vector3(-330, 0, 50);
-     public Vector3  Column7Position = new Vector3(-170, 0, 175);
-     public Vector3  Column8Position = new Vector3(-330, 0, 175);
-     public Vector3  Column9Position = new Vector3(-170, 0, 290);
-     public Vector3  Column10Position = new Vector3(-330, 0, 290);
-     public Vector3  Column11Position = new Vector3(-500, 0, 0);
-     public Vector3  Column12Position = new Vector3(436, 0, -80);
-     public Vector3  BrokenColumn1Position = new Vector3(450, 0, 250);
-     public Vector3  BrokenColumn2Position = new Vector3(-230, 0, -290);
-
-     public Vector3  Ramp1Position = new Vector3(-80, 0, -380);
-     public Vector3  Ramp2Position = new Vector3(230, 0, -395);
-     public Vector3  Ramp3Position = new Vector3(-250, 0, -10);
-     public Vector3  Ramp4Position = new Vector3(-300, 35, 130);
-     public Vector3  Ramp5Position = new Vector3(185, 0, 243);     
-     public Vector3  Ramp6Position = new Vector3(235, 0, 359);
-     public Vector3  Ramp7Position = new Vector3(155, 0, 325);
-     public Vector3  Ramp8Position = new Vector3(265, 0, 274);
-     public Vector3  Ramp9Position = new Vector3(-461, 0, -254);
-     public Vector3  Ramp10Position = new Vector3(-410, 0, -136);
-     public Vector3  Ramp11Position = new Vector3(-495, 0, -169);
-     public Vector3  Ramp12Position = new Vector3(-376, 0, -221);
-
-            Vector3 vectorChoque = Vector3.Zero;
-            float penetration = 0f;
+    public Vector3  PisoPosition = new Vector3(30, 0, 30);
+    public Vector3  ParedPosition = new Vector3(30, 50, 30);
+    public Vector3  Platform1Position = new Vector3(70, 64, -390);
+    public Vector3  Platform2Position = new Vector3(-250, 30, 100);
+    public Vector3  Platform3Position = new Vector3(-250, 93, 235);
+    public Vector3  Platform4Position = new Vector3(210, 0, 300);
+    public Vector3  Platform5Position = new Vector3(-435, 0, -195);
+    public Vector3  Column1Position = new Vector3(0, 0, -450);
+    public Vector3  Column2Position = new Vector3(0, 0, -350);
+    public Vector3  Column3Position = new Vector3(140, 0, -450);
+    public Vector3  Column4Position = new Vector3(140, 0, -350);
+    public Vector3  Column5Position = new Vector3(-170, 0, 50);
+    public Vector3  Column6Position = new Vector3(-330, 0, 50);
+    public Vector3  Column7Position = new Vector3(-170, 0, 175);
+    public Vector3  Column8Position = new Vector3(-330, 0, 175);
+    public Vector3  Column9Position = new Vector3(-170, 0, 290);
+    public Vector3  Column10Position = new Vector3(-330, 0, 290);
+    public Vector3  Column11Position = new Vector3(-500, 0, 0);
+    public Vector3  Column12Position = new Vector3(436, 0, -80);
+    public Vector3  BrokenColumn1Position = new Vector3(450, 0, 250);
+    public Vector3  BrokenColumn2Position = new Vector3(-230, 0, -290);
+    public Vector3  Ramp1Position = new Vector3(-80, 0, -380);
+    public Vector3  Ramp2Position = new Vector3(230, 0, -395);
+    public Vector3  Ramp3Position = new Vector3(-250, 0, -10);
+    public Vector3  Ramp4Position = new Vector3(-300, 35, 130);
+    public Vector3  Ramp5Position = new Vector3(185, 0, 243);     
+    public Vector3  Ramp6Position = new Vector3(235, 0, 359);
+    public Vector3  Ramp7Position = new Vector3(155, 0, 325);
+    public Vector3  Ramp8Position = new Vector3(265, 0, 274);
+    public Vector3  Ramp9Position = new Vector3(-461, 0, -254);
+    public Vector3  Ramp10Position = new Vector3(-410, 0, -136);
+    public Vector3  Ramp11Position = new Vector3(-495, 0, -169);
+    public Vector3  Ramp12Position = new Vector3(-376, 0, -221);
+    Vector3 vectorChoque = Vector3.Zero;
+    float penetration = 0f;
 
     // Variables
     private float mediaVuelta = MathF.PI;
@@ -411,5 +408,20 @@ namespace TGC.MonoGame.TP
 
         //faltarian las rampas y ver como hacer con las obb para las broken columns
     }
+
+  public BoundingBox[] getParedBoxes()
+  {
+    return ParedBoxes;
+  }
+  public BoundingBox[] getRampBoxes()
+  {
+    return ParedBoxes;
+  }
+  public BoundingBox[] getColumnBoxes()
+  {
+    return ColumnBoxes;
+  }
+
+
   }
 }
