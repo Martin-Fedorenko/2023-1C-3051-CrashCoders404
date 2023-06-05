@@ -348,36 +348,33 @@ namespace TGC.MonoGame.TP
         enElPiso = false;
       }
 
-      if (!enElPiso)
+      if(!enElPiso)
       {
         tiempoEnAire += (float)gameTime.ElapsedGameTime.TotalSeconds;
-
-        if (onJump)
+        if(onJump)
         {
-          jumpSpeed -= gravity * tiempoEnAire;
-          Desplazamiento.Y += jumpSpeed;
+            jumpSpeed -= gravity * tiempoEnAire;
+            Desplazamiento.Y += jumpSpeed;
 
-          if (CarSpeed >= 0)
-          {
-            if (jumpSpeed >= 0 && jumpRotation < jumpAngle) jumpRotation += 0.05f;
-            if (jumpSpeed < 0 && jumpRotation > -jumpAngle) jumpRotation -= 0.05f;
-          }
-          else if (CarSpeed < 0)
-          {
-            if (jumpSpeed >= 0 && jumpRotation > -jumpAngle) jumpRotation -= 0.05f;
-            if (jumpSpeed < 0 && jumpRotation < jumpAngle) jumpRotation += 0.05f;
-          }
+            if (CarSpeed >= 0)
+            {
+              if (jumpSpeed >= 0 && jumpRotation < jumpAngle) jumpRotation += 0.05f;
+              if (jumpSpeed < 0 && jumpRotation > -jumpAngle) jumpRotation -= 0.05f;
+            }
+            else if (CarSpeed < 0)
+            {
+              if (jumpSpeed >= 0 && jumpRotation > -jumpAngle) jumpRotation -= 0.05f;
+              if (jumpSpeed < 0 && jumpRotation < jumpAngle) jumpRotation += 0.05f;
+            }
         }
-        else
-        {
+        else 
+        {  
           Desplazamiento.Y -= gravity * tiempoEnAire;
           if (CarSpeed >= 0 && jumpRotation > -jumpAngle) jumpRotation -= 0.05f;
           if (CarSpeed < 0 && jumpRotation < jumpAngle) jumpRotation += 0.05f;
         }
-
       }
-
-      if (enElPiso) //por alguna cuando cae al piso no queda recto de una sino que "vibra" un poco
+       if (enElPiso) //por alguna cuando cae al piso no queda recto de una sino que "vibra" un poco
       {
         onJump = false;
         jumpSpeed = 10f;
@@ -385,16 +382,21 @@ namespace TGC.MonoGame.TP
         tiempoEnAire = 0f;
       }
       
+
       if(turbo){
         turboTime += (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-        if(turboTime < 1)
+        if(turboTime < 1f)
         {
-          CarSpeed += 50;
+          if(CarSpeed < 2800)
+             CarSpeed *= 1.1f;
         }
 
         else{
-          CarSpeed = PreviousSpeed;
+          if(PreviousSpeed < 2800)
+              CarSpeed = PreviousSpeed;
+          else
+              CarSpeed = 2800;
           turbo = false;
           turboTime = 0f;
         }
@@ -411,8 +413,8 @@ namespace TGC.MonoGame.TP
             CollisionIndex = index;
             direccionPostChoque = CarDirection;
             Desplazamiento*=-1;
-            CarsSpeeds[CollisionIndex] = CarSpeed;
-            CarSpeed*=-1;
+            CarsSpeeds[CollisionIndex] = CarSpeed * 0.5f;
+            CarSpeed*=-0.5f;
         }
       }
 
@@ -520,12 +522,17 @@ namespace TGC.MonoGame.TP
     {
       CarSpeed = 0;
     }
-
-    public void autoEnElPiso()
+    public float autoSpeed(){
+      return CarSpeed;
+    }
+    public float prevSpeed(){
+      return PreviousSpeed;
+    }
+    public void autoEnPiso()
     {
       enElPiso = true;
     }
-    public void autoNoEnElPiso()
+    public void autoNoEnPiso()
     {
       enElPiso = false;
     }
@@ -542,7 +549,6 @@ namespace TGC.MonoGame.TP
     }
     public void rebotar(Vector3 vectorChoque, float penetration){
       AutoPrincipalPos += vectorChoque *penetration;
-      this.FrenarAuto();
     }
     public void aplicarTurbo(){
 

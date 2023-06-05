@@ -610,6 +610,7 @@ namespace TGC.MonoGame.TP
                 if(autoCollider.Intersects(TreeBoxes[index],out vectorChoque,out penetration))
                 {
                    auto.rebotar(vectorChoque,penetration);
+                   auto.FrenarAuto();
                 }
             }
             
@@ -618,6 +619,7 @@ namespace TGC.MonoGame.TP
                 if(autoCollider.Intersects(Rock1Boxes[index],out vectorChoque,out penetration))
                 {
                     auto.rebotar(vectorChoque,penetration);
+                    auto.FrenarAuto();
                 }
             }
 
@@ -642,6 +644,7 @@ namespace TGC.MonoGame.TP
                 if(autoCollider.Intersects(TireBoxes[index],out vectorChoque,out penetration))
                 {
                     auto.rebotar(vectorChoque,penetration);
+                    auto.FrenarAuto();
                 }
             }
         }

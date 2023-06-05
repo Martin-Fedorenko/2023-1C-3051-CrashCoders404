@@ -547,7 +547,7 @@ namespace TGC.MonoGame.TP
 
       for (var index = 0; index < collidersAmetralladoras.Length; index++)
       {
-        if (autoCollider.Intersects(collidersAmetralladoras[index]))
+        if (autoCollider.Intersects(collidersAmetralladoras[index]) && !collidedindexAmetralladora.Contains(index))
         {
           if (currentPowerUp == PowerUp.None)
           {
@@ -561,7 +561,7 @@ namespace TGC.MonoGame.TP
 
       for (var index = 0; index < collidersMisiles.Length; index++)
       {
-        if (autoCollider.Intersects(collidersMisiles[index]))
+        if (autoCollider.Intersects(collidersMisiles[index]) && !collidedindexMisil.Contains(index))
         {
           if (currentPowerUp == PowerUp.None)
           {
@@ -573,7 +573,7 @@ namespace TGC.MonoGame.TP
 
       for (var index = 0; index < collidersTurbos.Length; index++)
       {
-        if (autoCollider.Intersects(collidersTurbos[index]))
+        if (autoCollider.Intersects(collidersTurbos[index]) && !collidedindexTurbo.Contains(index))
         {
           if (currentPowerUp == PowerUp.None)
           {
@@ -697,6 +697,10 @@ namespace TGC.MonoGame.TP
       balasPos[indexBala] = autoPrincipalPos;
       balasRot[indexBala] = rotation * 2f - cuartoDeVuelta;
       recorridoBalas[indexBala] = 5f;
+    }
+
+    public String powerUpActual(){
+      return currentPowerUp.ToString();
     }
   }
 }

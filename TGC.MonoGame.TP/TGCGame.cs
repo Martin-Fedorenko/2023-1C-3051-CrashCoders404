@@ -329,7 +329,9 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
 
         case ST_JUEGO:
           SpriteBatch.Begin();
-          SpriteBatch.DrawString(font, "Tiempo:" + ((int)totalGameTime).ToString(), new Vector2(10, 10), Color.White);
+          SpriteBatch.DrawString(font, "Tiempo:" + ((int)totalGameTime).ToString(), new Vector2(10, 10), Color.Black);
+          SpriteBatch.DrawString(font, "Velocidad:" + (autos.autoSpeed().ToString()), new Vector2(700, 10), Color.Black);
+          SpriteBatch.DrawString(font, "PowerUp:" + (powerUps.powerUpActual()), new Vector2(1250, 900), Color.Black);
 
           escenario.dibujarEscenario(View, Projection, Effect);
           detalles.dibujarDetalles(View, Projection, Effect);
