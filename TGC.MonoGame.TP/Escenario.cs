@@ -94,8 +94,6 @@ namespace TGC.MonoGame.TP
      public Vector3  Ramp11Position = new Vector3(-495, 0, -169);
      public Vector3  Ramp12Position = new Vector3(-376, 0, -221);
 
-            Vector3 vectorChoque = Vector3.Zero;
-            float penetration = 0f;
 
     // Variables
     private float mediaVuelta = MathF.PI;
@@ -203,7 +201,7 @@ namespace TGC.MonoGame.TP
 
       PisoBox = BoundingVolumesExtensions.CreateAABBFrom(Piso);
       PisoBox = BoundingVolumesExtensions.Scale(PisoBox, new Vector3(20,1,20));
-      PisoBox = new BoundingBox(PisoBox.Min-Vector3.UnitY*3,PisoBox.Max -Vector3.UnitY*3); //sin restarle 3 te empuja hacia los bordes
+      PisoBox = new BoundingBox(PisoBox.Min,PisoBox.Max);
 
       var minVector = Vector3.One * 0.25f;
       ParedBoxes = new BoundingBox[]
@@ -275,6 +273,8 @@ namespace TGC.MonoGame.TP
     public Boolean Update(GameTime gameTime, Autos auto)
         {
             OrientedBoundingBox autoCollider;
+            Vector3 vectorChoque = Vector3.Zero;
+            float penetration = 0f;
             Boolean enPisoOPlataforma = false;
             autoCollider = auto.GetAutoPrincipalBox();
 
@@ -284,13 +284,15 @@ namespace TGC.MonoGame.TP
               enPisoOPlataforma = true;
             }
 
-            for(int index = 0; index < PlatformBoxes.Length; index++)
+
+
+          for(int index = 0; index < PlatformBoxes.Length; index++)
             {
                 if(autoCollider.Intersects(PlatformBoxes[index]))
                 {
                     if(autoCollider.Center.Y > PlatformBoxes[index].Max.Y) //el auto esta encima de la plataforma
                     {
-                     enPisoOPlataforma = true; //se para en la plataforma
+                     enPisoOPlataforma = true;
                     }
                     else
                     {
@@ -298,15 +300,16 @@ namespace TGC.MonoGame.TP
                     }
                 }
             }
-            if(enPisoOPlataforma) auto.autoEnElPiso();
-            else auto.autoNoEnElPiso();
+            if(enPisoOPlataforma) auto.autoEnPiso();
+            else auto.autoNoEnPiso();
+
 
             for(int index = 0; index < ColumnBoxes.Length; index++)
             {
                 if(autoCollider.Intersects(ColumnBoxes[index],out vectorChoque,out penetration))
                 {
-                   // auto.FrenarAuto();
                    auto.rebotar(vectorChoque,penetration);
+                   auto.FrenarAuto();
                 }
             }
 
@@ -323,6 +326,7 @@ namespace TGC.MonoGame.TP
                 if(autoCollider.Intersects(ParedBoxes[index],out vectorChoque,out penetration))
                 {
                    auto.rebotar(vectorChoque,penetration);
+                   auto.FrenarAuto();
                 }
             }
             

@@ -547,5 +547,9 @@ namespace TGC.MonoGame.TP
       balasRot[indexBala] = rotation * 2f - cuartoDeVuelta;
       recorridoBalas[indexBala] = 5f;
     }
+
+    public String powerUpActual(){
+      return currentPowerUp.ToString();
+    }
   }
 }
