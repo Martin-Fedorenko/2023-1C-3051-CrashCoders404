@@ -15,7 +15,6 @@ namespace TGC.MonoGame.TP
     private Model Column { get; set; }
     private Model Ramp { get; set; }
     private Model Platform { get; set; }
-    private Model Cube { get; set; }
 
 
     private Matrix PisoWorld { get; set; }
@@ -58,76 +57,43 @@ namespace TGC.MonoGame.TP
     private Matrix Ramp10World { get; set; }
     private Matrix Ramp11World { get; set; }
     private Matrix Ramp12World { get; set; }
-    public Vector3  PisoPosition = new Vector3(30, 0, 30);
-    public Vector3  ParedPosition = new Vector3(30, 50, 30);
-    public Vector3  Platform1Position = new Vector3(70, 64, -390);
-    public Vector3  Platform2Position = new Vector3(-250, 30, 100);
-    public Vector3  Platform3Position = new Vector3(-250, 93, 235);
-    public Vector3  Platform4Position = new Vector3(210, 0, 300);
-    public Vector3  Platform5Position = new Vector3(-435, 0, -195);
-    public Vector3  Column1Position = new Vector3(0, 0, -450);
-    public Vector3  Column2Position = new Vector3(0, 0, -350);
-    public Vector3  Column3Position = new Vector3(140, 0, -450);
-    public Vector3  Column4Position = new Vector3(140, 0, -350);
-    public Vector3  Column5Position = new Vector3(-170, 0, 50);
-    public Vector3  Column6Position = new Vector3(-330, 0, 50);
-    public Vector3  Column7Position = new Vector3(-170, 0, 175);
-    public Vector3  Column8Position = new Vector3(-330, 0, 175);
-    public Vector3  Column9Position = new Vector3(-170, 0, 290);
-    public Vector3  Column10Position = new Vector3(-330, 0, 290);
-    public Vector3  Column11Position = new Vector3(-500, 0, 0);
-    public Vector3  Column12Position = new Vector3(436, 0, -80);
-    public Vector3  BrokenColumn1Position = new Vector3(450, 0, 250);
-    public Vector3  BrokenColumn2Position = new Vector3(-230, 0, -290);
-    public Vector3  Ramp1Position = new Vector3(-80, 0, -380);
-    public Vector3  Ramp2Position = new Vector3(230, 0, -395);
-    public Vector3  Ramp3Position = new Vector3(-250, 0, -10);
-    public Vector3  Ramp4Position = new Vector3(-300, 35, 130);
-    public Vector3  Ramp5Position = new Vector3(185, 0, 243);     
-    public Vector3  Ramp6Position = new Vector3(235, 0, 359);
-    public Vector3  Ramp7Position = new Vector3(155, 0, 325);
-    public Vector3  Ramp8Position = new Vector3(265, 0, 274);
-    public Vector3  Ramp9Position = new Vector3(-461, 0, -254);
-    public Vector3  Ramp10Position = new Vector3(-410, 0, -136);
-    public Vector3  Ramp11Position = new Vector3(-495, 0, -169);
-    public Vector3  Ramp12Position = new Vector3(-376, 0, -221);
+
+    private Vector3  PisoPosition = new Vector3(30, 0, 30);
+    private Vector3  ParedPosition = new Vector3(30, 50, 30);
+    private Vector3  Platform1Position = new Vector3(70, 64, -390);
+    private Vector3  Platform2Position = new Vector3(-250, 30, 100);
+    private Vector3  Platform3Position = new Vector3(-250, 93, 235);
+    private Vector3  Platform4Position = new Vector3(210, 0, 300);
+    private Vector3  Platform5Position = new Vector3(-435, 0, -195);
+    private Vector3  Column1Position = new Vector3(0, 0, -450);
+    private Vector3  Column2Position = new Vector3(0, 0, -350);
+    private Vector3  Column3Position = new Vector3(140, 0, -450);
+    private Vector3  Column4Position = new Vector3(140, 0, -350);
+    private Vector3  Column5Position = new Vector3(-170, 0, 50);
+    private Vector3  Column6Position = new Vector3(-330, 0, 50);
+    private Vector3  Column7Position = new Vector3(-170, 0, 175);
+    private Vector3  Column8Position = new Vector3(-330, 0, 175);
+    private Vector3  Column9Position = new Vector3(-170, 0, 290);
+    private Vector3  Column10Position = new Vector3(-330, 0, 290);
+    private Vector3  Column11Position = new Vector3(-500, 0, 0);
+    private Vector3  Column12Position = new Vector3(436, 0, -80);
+    private Vector3  BrokenColumn1Position = new Vector3(450, 0, 250);
+    private Vector3  BrokenColumn2Position = new Vector3(-230, 0, -290);
+    private Vector3  Ramp1Position = new Vector3(-80, 0, -380);
+    private Vector3  Ramp2Position = new Vector3(230, 0, -395);
+    private Vector3  Ramp3Position = new Vector3(-250, 0, -10);
+    private Vector3  Ramp4Position = new Vector3(-300, 35, 130);
+    private Vector3  Ramp5Position = new Vector3(185, 0, 243);     
+    private Vector3  Ramp6Position = new Vector3(235, 0, 359);
+    private Vector3  Ramp7Position = new Vector3(155, 0, 325);
+    private Vector3  Ramp8Position = new Vector3(265, 0, 274);
+    private Vector3  Ramp9Position = new Vector3(-461, 0, -254);
+    private Vector3  Ramp10Position = new Vector3(-410, 0, -136);
+    private Vector3  Ramp11Position = new Vector3(-495, 0, -169);
+    private Vector3  Ramp12Position = new Vector3(-376, 0, -221);
+
     Vector3 vectorChoque = Vector3.Zero;
     float penetration = 0f;
-
-     public Vector3  PisoPosition = new Vector3(30, 0, 30);
-     public Vector3  ParedPosition = new Vector3(30, 50, 30);
-     public Vector3  Platform1Position = new Vector3(70, 64, -390);
-     public Vector3  Platform2Position = new Vector3(-250, 30, 100);
-     public Vector3  Platform3Position = new Vector3(-250, 93, 235);
-     public Vector3  Platform4Position = new Vector3(210, 0, 300);
-     public Vector3  Platform5Position = new Vector3(-435, 0, -195);
-     public Vector3  Column1Position = new Vector3(0, 0, -450);
-     public Vector3  Column2Position = new Vector3(0, 0, -350);
-     public Vector3  Column3Position = new Vector3(140, 0, -450);
-     public Vector3  Column4Position = new Vector3(140, 0, -350);
-     public Vector3  Column5Position = new Vector3(-170, 0, 50);
-     public Vector3  Column6Position = new Vector3(-330, 0, 50);
-     public Vector3  Column7Position = new Vector3(-170, 0, 175);
-     public Vector3  Column8Position = new Vector3(-330, 0, 175);
-     public Vector3  Column9Position = new Vector3(-170, 0, 290);
-     public Vector3  Column10Position = new Vector3(-330, 0, 290);
-     public Vector3  Column11Position = new Vector3(-500, 0, 0);
-     public Vector3  Column12Position = new Vector3(436, 0, -80);
-     public Vector3  BrokenColumn1Position = new Vector3(450, 0, 250);
-     public Vector3  BrokenColumn2Position = new Vector3(-230, 0, -290);
-
-     public Vector3  Ramp1Position = new Vector3(-80, 0, -380);
-     public Vector3  Ramp2Position = new Vector3(230, 0, -395);
-     public Vector3  Ramp3Position = new Vector3(-250, 0, -10);
-     public Vector3  Ramp4Position = new Vector3(-300, 35, 130);
-     public Vector3  Ramp5Position = new Vector3(185, 0, 243);     
-     public Vector3  Ramp6Position = new Vector3(235, 0, 359);
-     public Vector3  Ramp7Position = new Vector3(155, 0, 325);
-     public Vector3  Ramp8Position = new Vector3(265, 0, 274);
-     public Vector3  Ramp9Position = new Vector3(-461, 0, -254);
-     public Vector3  Ramp10Position = new Vector3(-410, 0, -136);
-     public Vector3  Ramp11Position = new Vector3(-495, 0, -169);
-     public Vector3  Ramp12Position = new Vector3(-376, 0, -221);
 
 
     // Variables
@@ -155,6 +121,14 @@ namespace TGC.MonoGame.TP
     private BoundingBox[] PlatformBoxes;
     private BoundingBox[] RampBoxes;
     private BoundingBox PisoBox;
+
+    //Texturas
+
+    private Texture2D TexturaPiso;
+    private Texture2D TexturaPared;
+    private Texture2D TexturaColumna;
+    private Texture2D TexturaRampa;
+    private Texture2D TexturaPlataforma;
 
     public void Initialize()
     {
@@ -225,14 +199,20 @@ namespace TGC.MonoGame.TP
     }
 
 
-    public void LoadContent(Model piso, Model pared, Model column, Model ramp, Model platform, Model cube)
+    public void LoadContent(Model piso, Model pared, Model column, Model ramp, Model platform, Texture2D texturaPiso, Texture2D texturaPared,
+                            Texture2D texturaColumna, Texture2D texturaRampa, Texture2D texturaPlataforma)
     {
       Piso = piso;
       Pared = pared;
       Column = column;
       Ramp = ramp;
       Platform = platform;
-      Cube = cube;
+
+      TexturaPiso = texturaPiso;
+      TexturaPared = texturaPared;
+      TexturaColumna = texturaColumna;
+      TexturaRampa = texturaRampa;
+      TexturaPlataforma = texturaPlataforma;
 
       PisoBox = BoundingVolumesExtensions.CreateAABBFrom(Piso);
       PisoBox = BoundingVolumesExtensions.Scale(PisoBox, new Vector3(20,1,20));
@@ -368,7 +348,7 @@ namespace TGC.MonoGame.TP
             return false;
 
         }
-    public void dibujar(Matrix view, Matrix projection, Effect effect, Matrix matrizMundo, Model modelo, Color color)
+    public void dibujar(Matrix view, Matrix projection, Effect effect, Matrix matrizMundo, Model modelo, Texture2D textura)
     {
       foreach (var mesh in modelo.Meshes)
       {
@@ -380,7 +360,7 @@ namespace TGC.MonoGame.TP
 
       effect.Parameters["View"].SetValue(view);
       effect.Parameters["Projection"].SetValue(projection);
-      effect.Parameters["DiffuseColor"].SetValue(color.ToVector3());
+      effect.Parameters["ModelTexture"].SetValue(textura);
 
       relativeMatrices = new Matrix[modelo.Bones.Count];
       modelo.CopyAbsoluteBoneTransformsTo(relativeMatrices);
@@ -397,36 +377,38 @@ namespace TGC.MonoGame.TP
     public void dibujarEscenario(Matrix view, Matrix projection, Effect effect)
     {
       //Arena
-      dibujar(view, projection, effect, PisoWorld, Piso, Color.LightGoldenrodYellow);
+      dibujar(view, projection, effect, PisoWorld, Piso, TexturaPiso);
       
+      //Paredes
       for(int index = 0; index < ParedWorld.Length; index++)
       {
-        dibujar(view,projection,effect,ParedWorld[index], Platform, Color.LightSalmon);
+        dibujar(view,projection,effect,ParedWorld[index], Platform, TexturaPared);
       }
 
       //Plataformas
       for(int index = 0; index < PlatformWorld.Length; index++)
       {
-        dibujar(view,projection,effect,PlatformWorld[index], Platform, Color.Black);
+        dibujar(view,projection,effect,PlatformWorld[index], Platform, TexturaPlataforma);
       }
 
       //Columnas
       for(int index = 0; index < ColumnWorld.Length; index++)
       {
-        dibujar(view,projection,effect,ColumnWorld[index], Column, Color.Orange);
+        dibujar(view,projection,effect,ColumnWorld[index], Column, TexturaColumna);
       }
       
       //ColumnasRotas
       for(int index = 0; index < BrokenColumnWorld.Length; index++)
       {
-        dibujar(view,projection,effect,BrokenColumnWorld[index], Column, Color.Orange);
+        dibujar(view,projection,effect,BrokenColumnWorld[index], Column, TexturaColumna);
       }
 
       //Rampas
       for(int index = 0; index < RampWorld.Length; index++)
       {
-        dibujar(view,projection,effect,RampWorld[index], Ramp, Color.SandyBrown);
+        dibujar(view,projection,effect,RampWorld[index], Ramp, TexturaRampa);
       }
+      
     }
 
     public void dibujarBoundingBoxes(Gizmos gizmos)

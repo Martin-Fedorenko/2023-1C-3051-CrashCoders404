@@ -388,12 +388,12 @@ namespace TGC.MonoGame.TP
 
         if(turboTime < 1f)
         {
-          if(CarSpeed < 2800)
+          if(CarSpeed < 2800 && CarSpeed > -2800)
              CarSpeed *= 1.1f;
         }
 
         else{
-          if(PreviousSpeed < 2800)
+          if(PreviousSpeed < 2800 && PreviousSpeed > -2800)
               CarSpeed = PreviousSpeed;
           else
               CarSpeed = 2800;

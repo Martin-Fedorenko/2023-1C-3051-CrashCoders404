@@ -33,7 +33,8 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
     private GraphicsDeviceManager Graphics { get; }
     private SpriteBatch SpriteBatch { get; set; }
     private Effect Effect { get; set; }
-    private Effect TextureShader { get; set; }
+    private Effect EscenarioShader { get; set; }
+    private Effect AutoShader { get; set; }
 
     private Autos autos;
     private Detalles detalles;
@@ -46,7 +47,6 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
     private Model Column { get; set; }
     private Model Ramp { get; set; }
     private Model Platform { get; set; }
-    private Model Cube { get; set; }
     private Model AutoDeportivo { get; set; }
     private Model AutoDeCombate { get; set; }
     private Model Tree { get; set; }
@@ -101,9 +101,18 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
     private SoundEffect BoostSound { get; set; }
 
 
+    //Texturas
+    private Texture2D TexturaPiso;
+    private Texture2D TexturaRampa;
+    private Texture2D TexturaPared;
+    private Texture2D TexturaPlataforma;
+    private Texture2D TexturaColumna;
+
+
     //HUD
     private float totalGameTime;
     private float countdownStart;
+
     protected override void Initialize()
     {
       gizmos = new Gizmos();
@@ -143,42 +152,56 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
 
       font = Content.Load<SpriteFont>(ContentFolderSpriteFonts + "CascadiaCode/CascadiaCodePL");
 
+      //Escenario
       Piso = Content.Load<Model>(ContentFolder3D + "Arena/Plano"); //No tiene textura incluida
       Pared = Content.Load<Model>(ContentFolder3D + "Arena/Arena"); //No tiene textura incluida
       Column = Content.Load<Model>(ContentFolder3D + "Platforms/Column/Column"); //Tiene textura incluida pero HAY QUE ARREGLAR O CAMBIAR EL MODELO
       Ramp = Content.Load<Model>(ContentFolder3D + "Platforms/Ramps/Ramp"); //No tiene textura incluida
       Platform = Content.Load<Model>(ContentFolder3D + "Platforms/Cubo/Cube"); //No tiene textura incluida
 
+      //Autos
       AutoDeportivo = Content.Load<Model>(ContentFolder3D + "Derby/RacingCar/RacingCar"); //Tiene textura incluida
       AutoDeCombate = Content.Load<Model>(ContentFolder3D + "Derby/CombatVehicle/Vehicle"); //Tiene textura incluida
 
+      //Detalles
       Tree = Content.Load<Model>(ContentFolder3D + "Decoration/ArbolSinHojas/TreeWinter"); //No tiene textura incluida
       Rock1 = Content.Load<Model>(ContentFolder3D + "Decoration/Rocks/Rock1"); //No tiene textura incluida
       Rock5 = Content.Load<Model>(ContentFolder3D + "Decoration/Rocks/Rock5"); //No tiene textura incluida
       Rock10 = Content.Load<Model>(ContentFolder3D + "Decoration/Rocks/Rock10"); //No tiene textura incluida
       Tire = Content.Load<Model>(ContentFolder3D + "Decoration/Tire/Tire"); //No tiene textura incluida
 
+      //PowerUps
       CajaAmetralladora = Content.Load<Model>(ContentFolder3D + "PowerUps/Ametralladora/Ametralladora");
       CajaMisil = Content.Load<Model>(ContentFolder3D + "PowerUps/Misil/Misil");
       CajaTurbo = Content.Load<Model>(ContentFolder3D + "PowerUps/PowerUpRayo/PowerUpRayo");
       Misil = Content.Load<Model>(ContentFolder3D + "PowerUps/Misil/misilModel");
       Bala = Content.Load<Model>(ContentFolder3D + "PowerUps/Ametralladora/balaModel");
 
+      //Efectos
       Effect = Content.Load<Effect>(ContentFolderEffects + "BasicShader");
-      TextureShader = Content.Load<Effect>(ContentFolderEffects + "TextureShader");
+      EscenarioShader = Content.Load<Effect>(ContentFolderEffects + "EscenarioShader");
+      AutoShader = Content.Load<Effect>(ContentFolderEffects + "AutoShader");
 
+      //Música y sonido
       BulletSound = Content.Load<SoundEffect>(ContentFolderSounds + "bullet-ametralladora");
       PickUpGunSound = Content.Load<SoundEffect>(ContentFolderSounds + "pickup-ametralladora");
       RocketSound = Content.Load<SoundEffect>(ContentFolderSounds + "bullet-rocket");
       PickUpRocketSound = Content.Load<SoundEffect>(ContentFolderSounds + "pickup-rocket");
       BoostSound = Content.Load<SoundEffect>(ContentFolderSounds + "boost-effect");
+
+      //Textura
+      TexturaPiso = Content.Load<Texture2D>(ContentFolderTextures + "ground");
+      TexturaPared = Content.Load<Texture2D>(ContentFolderTextures + "stones");
+      TexturaColumna = Content.Load<Texture2D>(ContentFolderTextures + "displacement");
+      TexturaRampa = Content.Load<Texture2D>(ContentFolderTextures + "color");
+      TexturaPlataforma = Content.Load<Texture2D>(ContentFolderTextures + "colorPlatform");
       
 
-      escenario.LoadContent(Piso, Pared, Column, Ramp, Platform, Cube);
+      escenario.LoadContent(Piso, Pared, Column, Ramp, Platform, TexturaPiso, TexturaPared, TexturaColumna, TexturaRampa, TexturaPlataforma);
       detalles.LoadContent(Tree, Rock1, Rock5, Rock10, Tire);
       powerUps.LoadContent(CajaAmetralladora, CajaMisil, CajaTurbo, Misil, Bala, BulletSound, PickUpGunSound, RocketSound, PickUpRocketSound,
                            BoostSound);
-      autos.LoadContent(AutoDeportivo, AutoDeCombate, TextureShader);
+      autos.LoadContent(AutoDeportivo, AutoDeCombate, AutoShader);
 
 
       //Musica
@@ -308,7 +331,7 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
           break;
 
         case ST_PRESENTACION:
-          autos.dibujarAutosMenu(View,Projection,TextureShader);
+          autos.dibujarAutosMenu(View,Projection,AutoShader);
           DrawCenterTextY("CRASH CODERS 404 ", 100, 4);
           DrawCenterTextY("C -> CONTROLES", 400, 2);
           DrawCenterTextY("G -> GOD MODE", 500, 2);
@@ -333,10 +356,10 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
           SpriteBatch.DrawString(font, "Velocidad:" + (autos.autoSpeed().ToString()), new Vector2(700, 10), Color.Black);
           SpriteBatch.DrawString(font, "PowerUp:" + (powerUps.powerUpActual()), new Vector2(1250, 900), Color.Black);
 
-          escenario.dibujarEscenario(View, Projection, Effect);
+          escenario.dibujarEscenario(View, Projection, EscenarioShader);
           detalles.dibujarDetalles(View, Projection, Effect);
           powerUps.dibujarPowerUps(View, Projection, Effect);
-          autos.dibujarAutos(View, Projection, TextureShader);
+          autos.dibujarAutos(View, Projection, AutoShader);
 
           autos.dibujarBoundingBoxes(gizmos); //OBB de autos deportivos bien ubicadas
           detalles.dibujarBoundingBoxes(gizmos); //BB de arboles bien ubicadas
