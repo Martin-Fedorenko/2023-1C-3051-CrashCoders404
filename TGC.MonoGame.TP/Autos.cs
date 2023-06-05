@@ -375,7 +375,7 @@ namespace TGC.MonoGame.TP
       if(turbo){
         turboTime += (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-        if(turboTime < 0.3f)
+        if(turboTime < 1f)
         {
           if(CarSpeed < 2800)
              CarSpeed *= 1.1f;
@@ -401,8 +401,8 @@ namespace TGC.MonoGame.TP
             CollisionIndex = index;
             direccionPostChoque = CarDirection;
             Desplazamiento*=-1;
-            CarsSpeeds[CollisionIndex] = CarSpeed;
-            CarSpeed*=-1;
+            CarsSpeeds[CollisionIndex] = CarSpeed * 0.5f;
+            CarSpeed*=-0.5f;
         }
       }
 
