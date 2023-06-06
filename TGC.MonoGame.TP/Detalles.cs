@@ -273,6 +273,8 @@ namespace TGC.MonoGame.TP
         private BoundingBox TireBox;
         private BoundingBox Rock1Box;
         private BoundingBox Rock5Box;
+        private BoundingBox Rock5Box1;
+        private BoundingBox Rock5Box2;
         private BoundingBox Rock10Box;
         private BoundingBox[] TreeBoxes;
         private BoundingBox[] Rock1Boxes;
@@ -305,7 +307,7 @@ namespace TGC.MonoGame.TP
 
 
             //Piedras
-            RocksWorld = new Matrix[]
+            RocksWorld = new Matrix[] //rock 8 no existe
             {
                 //Rock1 Model = [0,6]
                 //Roc5 Model = [7,12], 15, 16, 19, 20, [23,31]
@@ -469,18 +471,20 @@ namespace TGC.MonoGame.TP
                 new BoundingBox(TreeBox.Min + Tree11Position -correctorPosicionBoxTree, TreeBox.Max + Tree11Position - correctorPosicionBoxTree)
             };
 
-            Vector3 correctorPosicionBoxRock1 = new Vector3(136f, 42f, -7f);
-            Vector3 correctorPosicionBoxRock5 = new Vector3(12f, -56f, 41f);
-            Vector3 correctorPosicionBoxRock10 = new Vector3(-43f, 75f, -57f);
+            Vector3 correctorPosicionBoxRock1 = new Vector3(145f, 142f,8f);
+            Vector3 correctorPosicionBoxRock12 = new Vector3(135f, 142f,8f);
+            Vector3 correctorPosicionBoxRock5 = new Vector3(15f, 43f, 40f);
+            Vector3 correctorPosicionBoxRock10 = new Vector3(-43f, 175f, -53f);
 
             Rock1Box = BoundingVolumesExtensions.CreateAABBFrom(Rock1);
-            Rock1Box = BoundingVolumesExtensions.Scale(Rock1Box,new Vector3(0.01f,0.5f,0.01f));
+            Rock1Box = BoundingVolumesExtensions.Scale(Rock1Box,new Vector3(0.03f,0.04f,0.05f));
 
             Rock5Box = BoundingVolumesExtensions.CreateAABBFrom(Rock5);
-            Rock5Box = BoundingVolumesExtensions.Scale(Rock5Box, new Vector3(0.01f, 0.5f, 0.01f));
+            Rock5Box1 = BoundingVolumesExtensions.Scale(Rock5Box, new Vector3(0.075f,0.05f,0.07f));
+            Rock5Box2 = BoundingVolumesExtensions.Scale(Rock5Box, new Vector3(0.04f,0.03f,0.05f));
 
             Rock10Box = BoundingVolumesExtensions.CreateAABBFrom(Rock10);
-            Rock10Box = BoundingVolumesExtensions.Scale(Rock10Box, new Vector3(0.01f, 0.5f, 0.01f));
+            Rock10Box = BoundingVolumesExtensions.Scale(Rock10Box, new Vector3(0.05f));
 
             //Rock1 Model = [0,6]
             //Roc5 Model = [7,12], 15, 16, 19, 20, [23,31]
@@ -488,46 +492,40 @@ namespace TGC.MonoGame.TP
 
             Rock1Boxes = new BoundingBox[] 
             {
-                new BoundingBox(Rock1Box.Min, Rock1Box.Max),
-
                 new BoundingBox(Rock1Box.Min + Rock1Position -correctorPosicionBoxRock1, Rock1Box.Max + Rock1Position - correctorPosicionBoxRock1),
                 new BoundingBox(Rock1Box.Min + Rock2Position -correctorPosicionBoxRock1, Rock1Box.Max + Rock2Position - correctorPosicionBoxRock1),
                 new BoundingBox(Rock1Box.Min + Rock3Position -correctorPosicionBoxRock1, Rock1Box.Max + Rock3Position - correctorPosicionBoxRock1),
                 new BoundingBox(Rock1Box.Min + Rock4Position -correctorPosicionBoxRock1, Rock1Box.Max + Rock4Position - correctorPosicionBoxRock1),
-                new BoundingBox(Rock1Box.Min + Rock5Position -correctorPosicionBoxRock1, Rock1Box.Max + Rock5Position - correctorPosicionBoxRock1),
-                new BoundingBox(Rock1Box.Min + Rock6Position -correctorPosicionBoxRock1, Rock1Box.Max + Rock6Position - correctorPosicionBoxRock1),
-                new BoundingBox(Rock1Box.Min + Rock7Position -correctorPosicionBoxRock1, Rock1Box.Max + Rock7Position - correctorPosicionBoxRock1),  
+                new BoundingBox(Rock1Box.Min + Rock5Position -correctorPosicionBoxRock12, Rock1Box.Max + Rock5Position - correctorPosicionBoxRock12),
+                new BoundingBox(Rock1Box.Min + Rock6Position -correctorPosicionBoxRock12, Rock1Box.Max + Rock6Position - correctorPosicionBoxRock12),
+                new BoundingBox(Rock1Box.Min + Rock7Position -correctorPosicionBoxRock12, Rock1Box.Max + Rock7Position - correctorPosicionBoxRock12),  
             };
 
             Rock5Boxes = new BoundingBox[] 
             {
-                new BoundingBox(Rock5Box.Min, Rock5Box.Max),
-
-                new BoundingBox(Rock5Box.Min + Rock8Position - correctorPosicionBoxRock5, Rock5Box.Max + Rock8Position - correctorPosicionBoxRock5),
-                new BoundingBox(Rock5Box.Min + Rock9Position - correctorPosicionBoxRock5, Rock5Box.Max + Rock9Position - correctorPosicionBoxRock5),
-                new BoundingBox(Rock5Box.Min + Rock10Position - correctorPosicionBoxRock5, Rock5Box.Max + Rock10Position - correctorPosicionBoxRock5),
-                new BoundingBox(Rock5Box.Min + Rock11Position - correctorPosicionBoxRock5, Rock5Box.Max + Rock11Position - correctorPosicionBoxRock5),
-                new BoundingBox(Rock5Box.Min + Rock12Position - correctorPosicionBoxRock5, Rock5Box.Max + Rock12Position - correctorPosicionBoxRock5),
-                new BoundingBox(Rock5Box.Min + Rock13Position -correctorPosicionBoxRock5, Rock5Box.Max + Rock13Position - correctorPosicionBoxRock5),
-                new BoundingBox(Rock5Box.Min + Rock16Position -correctorPosicionBoxRock5, Rock5Box.Max + Rock16Position - correctorPosicionBoxRock5),
-                new BoundingBox(Rock5Box.Min + Rock17Position -correctorPosicionBoxRock5, Rock5Box.Max + Rock17Position - correctorPosicionBoxRock5),
-                new BoundingBox(Rock5Box.Min + Rock20Position -correctorPosicionBoxRock5, Rock5Box.Max + Rock20Position - correctorPosicionBoxRock5),
-                new BoundingBox(Rock5Box.Min + Rock21Position -correctorPosicionBoxRock5, Rock5Box.Max + Rock21Position - correctorPosicionBoxRock5),
-                new BoundingBox(Rock5Box.Min + Rock24Position -correctorPosicionBoxRock5, Rock5Box.Max + Rock24Position - correctorPosicionBoxRock5),
-                new BoundingBox(Rock5Box.Min + Rock25Position -correctorPosicionBoxRock5, Rock5Box.Max + Rock25Position - correctorPosicionBoxRock5),
-                new BoundingBox(Rock5Box.Min + Rock26Position -correctorPosicionBoxRock5, Rock5Box.Max + Rock26Position - correctorPosicionBoxRock5),
-                new BoundingBox(Rock5Box.Min + Rock27Position -correctorPosicionBoxRock5, Rock5Box.Max + Rock27Position - correctorPosicionBoxRock5),
-                new BoundingBox(Rock5Box.Min + Rock28Position -correctorPosicionBoxRock5, Rock5Box.Max + Rock28Position - correctorPosicionBoxRock5),
-                new BoundingBox(Rock5Box.Min + Rock29Position -correctorPosicionBoxRock5, Rock5Box.Max + Rock29Position - correctorPosicionBoxRock5),
-                new BoundingBox(Rock5Box.Min + Rock30Position -correctorPosicionBoxRock5, Rock5Box.Max + Rock30Position - correctorPosicionBoxRock5),
-                new BoundingBox(Rock5Box.Min + Rock31Position -correctorPosicionBoxRock5, Rock5Box.Max + Rock31Position - correctorPosicionBoxRock5),
-                new BoundingBox(Rock5Box.Min + Rock32Position -correctorPosicionBoxRock5, Rock5Box.Max + Rock32Position - correctorPosicionBoxRock5),
+               // new BoundingBox(Rock5Box1.Min + Rock8Position - correctorPosicionBoxRock5, Rock5Box1.Max + Rock8Position - correctorPosicionBoxRock5),
+                new BoundingBox(Rock5Box1.Min + Rock9Position - correctorPosicionBoxRock5, Rock5Box1.Max + Rock9Position - correctorPosicionBoxRock5),
+                new BoundingBox(Rock5Box1.Min + Rock10Position - correctorPosicionBoxRock5, Rock5Box1.Max + Rock10Position - correctorPosicionBoxRock5),
+                new BoundingBox(Rock5Box1.Min + Rock11Position - correctorPosicionBoxRock5, Rock5Box1.Max + Rock11Position - correctorPosicionBoxRock5),
+                new BoundingBox(Rock5Box1.Min + Rock12Position - correctorPosicionBoxRock5, Rock5Box1.Max + Rock12Position - correctorPosicionBoxRock5),
+                new BoundingBox(Rock5Box2.Min + Rock13Position -correctorPosicionBoxRock5, Rock5Box2.Max + Rock13Position - correctorPosicionBoxRock5),
+                new BoundingBox(Rock5Box2.Min + Rock16Position -correctorPosicionBoxRock5, Rock5Box2.Max + Rock16Position - correctorPosicionBoxRock5),
+                new BoundingBox(Rock5Box2.Min + Rock17Position -correctorPosicionBoxRock5, Rock5Box2.Max + Rock17Position - correctorPosicionBoxRock5),
+                new BoundingBox(Rock5Box2.Min + Rock20Position -correctorPosicionBoxRock5, Rock5Box2.Max + Rock20Position - correctorPosicionBoxRock5),
+                new BoundingBox(Rock5Box2.Min + Rock21Position -correctorPosicionBoxRock5, Rock5Box2.Max + Rock21Position - correctorPosicionBoxRock5),
+                new BoundingBox(Rock5Box2.Min + Rock24Position -correctorPosicionBoxRock5, Rock5Box2.Max + Rock24Position - correctorPosicionBoxRock5),
+                new BoundingBox(Rock5Box2.Min + Rock25Position -correctorPosicionBoxRock5, Rock5Box2.Max + Rock25Position - correctorPosicionBoxRock5),
+                new BoundingBox(Rock5Box2.Min + Rock26Position -correctorPosicionBoxRock5, Rock5Box2.Max + Rock26Position - correctorPosicionBoxRock5),
+                new BoundingBox(Rock5Box2.Min + Rock27Position -correctorPosicionBoxRock5, Rock5Box2.Max + Rock27Position - correctorPosicionBoxRock5),
+                new BoundingBox(Rock5Box2.Min + Rock28Position -correctorPosicionBoxRock5, Rock5Box2.Max + Rock28Position - correctorPosicionBoxRock5),
+                new BoundingBox(Rock5Box2.Min + Rock29Position -correctorPosicionBoxRock5, Rock5Box2.Max + Rock29Position - correctorPosicionBoxRock5),
+                new BoundingBox(Rock5Box2.Min + Rock30Position -correctorPosicionBoxRock5, Rock5Box2.Max + Rock30Position - correctorPosicionBoxRock5),
+                new BoundingBox(Rock5Box2.Min + Rock31Position -correctorPosicionBoxRock5, Rock5Box2.Max + Rock31Position - correctorPosicionBoxRock5),
+                new BoundingBox(Rock5Box2.Min + Rock32Position -correctorPosicionBoxRock5, Rock5Box2.Max + Rock32Position - correctorPosicionBoxRock5),
             };
 
             Rock10Boxes = new BoundingBox[]
             {
-                new BoundingBox(Rock10Box.Min, Rock10Box.Max),
-
                 new BoundingBox(Rock10Box.Min + Rock14Position -correctorPosicionBoxRock10, Rock10Box.Max + Rock14Position - correctorPosicionBoxRock10),
                 new BoundingBox(Rock10Box.Min + Rock15Position -correctorPosicionBoxRock10, Rock10Box.Max + Rock15Position - correctorPosicionBoxRock10),
                 new BoundingBox(Rock10Box.Min + Rock18Position -correctorPosicionBoxRock10, Rock10Box.Max + Rock18Position - correctorPosicionBoxRock10),
@@ -735,19 +733,19 @@ namespace TGC.MonoGame.TP
             {
                 if(index < 7)
                     dibujar(view,projection,effect,RocksWorld[index], Rock1, Color.Gray);
-                if(index < 13 )
-                    dibujar(view,projection,effect,RocksWorld[index], Rock5, Color.Gray);
-                if(index < 15)
+                else if(index < 13 )
+                   dibujar(view,projection,effect,RocksWorld[index], Rock5, Color.Gray);
+                else if(index < 15)
                      dibujar(view,projection,effect,RocksWorld[index], Rock10, Color.Gray);
-                if(index < 17)
-                    dibujar(view,projection,effect,RocksWorld[index], Rock5, Color.Gray);
-                if(index < 19)
+                else if(index < 17)
+                   dibujar(view,projection,effect,RocksWorld[index], Rock5, Color.Gray);
+                else if(index < 19)
                     dibujar(view,projection,effect,RocksWorld[index], Rock10, Color.Gray);
-                if(index < 21)
+                else if(index < 21)
                     dibujar(view,projection,effect,RocksWorld[index], Rock5, Color.Gray);
-                if(index < 23)
+                else if(index < 23)
                     dibujar(view,projection,effect,RocksWorld[index], Rock10, Color.Gray);
-                if(index >= 23)
+                else if(index >= 23)
                     dibujar(view,projection,effect,RocksWorld[index], Rock5, Color.Gray);
 
                 //Rock1 Model = [0,6]

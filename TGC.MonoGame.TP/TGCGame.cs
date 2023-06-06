@@ -312,22 +312,22 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
       {
         case ST_COUNTDOWN_3:          
           GraphicsDevice.Clear(Color.Black);
-          DrawCenterTextY("3", 100, 10);
+          DrawCenterTextY("3", 300, 10);
           break;
 
         case ST_COUNTDOWN_2:
           GraphicsDevice.Clear(Color.Black);
-          DrawCenterTextY("2", 100, 10);
+          DrawCenterTextY("2", 300, 10);
           break;
 
         case ST_COUNTDOWN_1:
           GraphicsDevice.Clear(Color.Black);
-          DrawCenterTextY("1", 100, 10);
+          DrawCenterTextY("1", 300, 10);
           break;
 
         case ST_COUNTDOWN_GO:
           GraphicsDevice.Clear(Color.Black);
-          DrawCenterTextY("GO!", 100, 10);
+          DrawCenterTextY("GO!", 300, 10);
           break;
 
         case ST_PRESENTACION:

@@ -6,7 +6,6 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Audio;
 using TGC.MonoGame.TP.Collisions;
 using TGC.MonoGame.TP.Viewer.Gizmos;
-using TGC.MonoGame.TP.Collisions;
 
 namespace TGC.MonoGame.TP
 {
