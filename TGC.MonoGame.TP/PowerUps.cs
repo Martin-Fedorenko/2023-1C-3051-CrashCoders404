@@ -242,7 +242,7 @@ namespace TGC.MonoGame.TP
       };
 
       MisilPowerUP = BoundingVolumesExtensions.CreateAABBFrom(Misil);
-      MisilPowerUP = BoundingVolumesExtensions.Scale(MisilPowerUP, new Vector3(.1f, .1f, .1f));
+      MisilPowerUP = BoundingVolumesExtensions.Scale(MisilPowerUP, new Vector3(0.1f, 0.1f, 0.1f));
       colliderMisil = OrientedBoundingBox.FromAABB(new BoundingBox(MisilPowerUP.Min - new Vector3(0f,190f,0f), MisilPowerUP.Max - new Vector3(0f,190f,0f)));
 
       BalasPowerUp = BoundingVolumesExtensions.CreateAABBFrom(bala);
@@ -277,7 +277,7 @@ namespace TGC.MonoGame.TP
       var keyboardState = Keyboard.GetState();
       var elapsedTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
       var Rotation = (float)gameTime.ElapsedGameTime.TotalSeconds;
-      OrientedBoundingBox autoCollider = autos.GetAutoPrincipalBox();
+      OrientedBoundingBox autoCollider = autos.getAutoPrincipalBox();
 
       tieneAmetalladora = false;
       tieneLanzaCohetes = false;
@@ -305,9 +305,9 @@ namespace TGC.MonoGame.TP
         ametralladoraCooldown -= elapsedTime;
         if(agarrarAmetralladora == 0)
         {
+          agarrarAmetralladora = 1;
           Instance = PickUpGunSound.CreateInstance();
           Instance.Play();
-          agarrarAmetralladora = 1;
         }
         tieneAmetalladora = true;
       }
@@ -373,18 +373,24 @@ namespace TGC.MonoGame.TP
       if (recorridoMisil > 0f)
       {
         recorridoMisil -= elapsedTime;
-        misilPos += MisilWorld.Up * 750f * elapsedTime;
+        misilPos += MisilWorld.Up * 5000f * elapsedTime;
         MisilWorld = Matrix.CreateScale(0.05f, 0.05f, 0.05f) * Matrix.CreateRotationZ(-cuartoDeVuelta) * Matrix.CreateRotationY(misilRot) * Matrix.CreateTranslation(misilPos) * Matrix.CreateTranslation(0f, 10f, 0f);
         colliderMisil = OrientedBoundingBox.FromAABB(new BoundingBox(MisilPowerUP.Min + misilPos + (MisilWorld.Up * 150)  - new Vector3(0f,190f,0f), MisilPowerUP.Max + misilPos + (MisilWorld.Up * 150) - new Vector3(0f,190f,0f)));
         colliderMisil.Rotate(Matrix.CreateRotationY(misilRot));
 
+        //Colisión con el auto principal
+        if(colliderMisil.Intersects(autos.getAutoPrincipalBox()))
+          {
+            recorridoMisil = 0f;
+            autos.recibirDanio(autos.getVidaProtagonista(),50);
+          }
         //Colisiones con otros auto
         for (var index = 0; index < autos.getPosAutos().Length; index++)
           {
             if(colliderMisil.Intersects(autos.getPosAutos()[index]))
             {
               recorridoMisil = 0f;
-              autos.getVidaAutos()[index] -= 50;
+              autos.recibirDanio(autos.getVidaAutos()[index],50);
             }
           }
 
@@ -460,11 +466,18 @@ namespace TGC.MonoGame.TP
         if (recorridoBalas[i] > 0f)
         {
           recorridoBalas[i] -= elapsedTime;
-          balasPos[i] += BalasWorld[i].Up * 750f * elapsedTime;
+          balasPos[i] += BalasWorld[i].Up * 7500f * elapsedTime;
           BalasWorld[i] = Matrix.CreateScale(0.07f, 0.07f, 0.07f) * Matrix.CreateRotationZ(-cuartoDeVuelta) * Matrix.CreateRotationY(balasRot[i]) * Matrix.CreateTranslation(balasPos[i]) * Matrix.CreateTranslation(0f, 10f, 0f);
           collidersBalas[i] = OrientedBoundingBox.FromAABB(new BoundingBox(BalasPowerUp.Min + balasPos[i] + (BalasWorld[i].Up * 40) - new Vector3(0f,30f,0f), BalasPowerUp.Max + balasPos[i] + (BalasWorld[i].Up * 40) - new Vector3(0f,50f,0f)));
           collidersBalas[i].Rotate(Matrix.CreateRotationZ(-cuartoDeVuelta));
           collidersBalas[i].Rotate(Matrix.CreateRotationY(balasRot[i]));
+
+        //Colisión con el auto principal
+        if(collidersBalas[i].Intersects(autos.getAutoPrincipalBox()))
+          {
+            recorridoBalas[i] = 0f;
+            autos.recibirDanio(autos.getVidaProtagonista(),10);
+          }
 
           //Colisiones con otros auto
           for (var index = 0; index < autos.getPosAutos().Length; index++)
@@ -472,7 +485,7 @@ namespace TGC.MonoGame.TP
             if(collidersBalas[i].Intersects(autos.getPosAutos()[index]))
             {
               recorridoBalas[i] = 0f;
-              autos.getVidaAutos()[index] -= 10;
+              autos.recibirDanio(autos.getVidaAutos()[index],10);
             }
           }
 

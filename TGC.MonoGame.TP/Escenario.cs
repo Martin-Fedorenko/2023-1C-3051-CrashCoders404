@@ -129,6 +129,7 @@ namespace TGC.MonoGame.TP
     private Texture2D TexturaColumna;
     private Texture2D TexturaRampa;
     private Texture2D TexturaPlataforma;
+    private float retardoColisionBox;
 
     public void Initialize()
     {
@@ -291,7 +292,7 @@ namespace TGC.MonoGame.TP
             Vector3 vectorChoque = Vector3.Zero;
             float penetration = 0f;
             Boolean enPisoOPlataforma = false;
-            autoCollider = auto.GetAutoPrincipalBox();
+            autoCollider = auto.getAutoPrincipalBox();
 
 
             if(autoCollider.Intersects(PisoBox))
@@ -323,6 +324,10 @@ namespace TGC.MonoGame.TP
             {
                 if(autoCollider.Intersects(ColumnBoxes[index],out vectorChoque,out penetration))
                 {
+                  if(auto.CarSpeed > 10f) 
+                    {
+                        auto.audioChoque();
+                    }
                    auto.rebotar(vectorChoque,penetration);
                    auto.FrenarAuto();
                 }
@@ -340,6 +345,10 @@ namespace TGC.MonoGame.TP
             {
                 if(autoCollider.Intersects(ParedBoxes[index],out vectorChoque,out penetration))
                 {
+                  if(auto.CarSpeed > 10f) 
+                  {
+                    auto.audioChoque();
+                  }
                    auto.rebotar(vectorChoque,penetration);
                    auto.FrenarAuto();
                 }

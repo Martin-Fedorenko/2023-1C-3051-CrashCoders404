@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Audio;
 using TGC.MonoGame.TP.Collisions;
 using TGC.MonoGame.TP.Viewer.Gizmos;
 
@@ -117,6 +118,13 @@ namespace TGC.MonoGame.TP
     private Matrix autoMenu;
     private Matrix autoMenu2;
     private Matrix autoMenu3;
+
+    //Sonidos
+    private SoundEffectInstance Instance { get; set; }
+    private SoundEffect CarCrash {get; set;}
+
+    private int acabaDeChocar = 0;
+    private bool choco;
     public void Initialize()
     {
       //MovimientoAuto
@@ -216,10 +224,11 @@ namespace TGC.MonoGame.TP
 
     }
 
-    public void LoadContent(Model Auto1, Model Auto2, Effect effect)
+    public void LoadContent(Model Auto1, Model Auto2, Effect effect, SoundEffect carCrash)
     {
       AutoDeportivo = Auto1;
       AutoDeCombate = Auto2;
+      CarCrash = carCrash;
 
       leftBackWheelBone = AutoDeportivo.Bones["WheelD"];
       rightBackWheelBone = AutoDeportivo.Bones["WheelC"];
@@ -262,6 +271,8 @@ namespace TGC.MonoGame.TP
       Desplazamiento = Vector3.Zero;
       collided = false;
       collidedCars = 0;
+      choco = false;
+
       for(int index = 0 ; index < DesplazamientoAutos.Length; index++)
       {
         DesplazamientoAutos[index] = Vector3.Zero;
@@ -415,6 +426,14 @@ namespace TGC.MonoGame.TP
             Desplazamiento*=-1;
             CarsSpeeds[CollisionIndex] = CarSpeed * 0.5f;
             CarSpeed*=-0.5f;
+
+          if(acabaDeChocar == 0)
+          {
+            acabaDeChocar = 1;
+            Instance = CarCrash.CreateInstance();
+            Instance.Play();
+          }
+          choco = true;
         }
       }
 
@@ -456,6 +475,8 @@ namespace TGC.MonoGame.TP
 
       AutoPrincipalBox = OrientedBoundingBox.FromAABB(new BoundingBox(AutoDeportivoBoxAABB.Min + AutoPrincipalPos - coreccionAltura, AutoDeportivoBoxAABB.Max + AutoPrincipalPos - coreccionAltura));
       AutoPrincipalBox.Rotate(Matrix.CreateRotationX(-jumpRotation) * Matrix.CreateRotationY(Rotation * 2));
+
+      if (!choco) {acabaDeChocar = 0;}
     }
 
     public void dibujarAuto(Matrix view, Matrix projection, Effect effect, Model modelo, float WheelRot, Matrix matrizMundo)
@@ -513,7 +534,7 @@ namespace TGC.MonoGame.TP
       return AutoPrincipalPos;
     }
 
-    public OrientedBoundingBox GetAutoPrincipalBox()
+    public OrientedBoundingBox getAutoPrincipalBox()
     {
       return AutoPrincipalBox;
     }
@@ -550,6 +571,17 @@ namespace TGC.MonoGame.TP
     public void rebotar(Vector3 vectorChoque, float penetration){
       AutoPrincipalPos += vectorChoque *penetration;
     }
+
+    public void audioChoque()
+    {
+      if(acabaDeChocar == 0)
+          {
+            acabaDeChocar = 1;
+            Instance = CarCrash.CreateInstance();
+            Instance.Play();
+          }
+          choco = true;
+    }
     public void aplicarTurbo(){
 
       PreviousSpeed = CarSpeed;
@@ -570,6 +602,12 @@ namespace TGC.MonoGame.TP
     {
       return vidaAutos;
     }
+
+    public int getVidaProtagonista()
+    {
+      return vidaProtagonista;
+    }
+    
 
     public void inicializarBoundingBoxes()
     {
@@ -604,6 +642,12 @@ namespace TGC.MonoGame.TP
         gizmos.DrawCube(OBBWorld, Color.Red);
       }
     }
+
+    public void recibirDanio(int vidaAuto, int valorDanio)
+    {
+      vidaAuto -= valorDanio;
+    }
+
 
   }
 }

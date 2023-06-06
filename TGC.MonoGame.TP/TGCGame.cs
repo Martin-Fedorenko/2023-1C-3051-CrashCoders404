@@ -34,6 +34,7 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
     private SpriteBatch SpriteBatch { get; set; }
     private Effect Effect { get; set; }
     private Effect EscenarioShader { get; set; }
+    private Effect DetallesShader { get; set; }
     private Effect AutoShader { get; set; }
 
     private Autos autos;
@@ -99,6 +100,7 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
     private SoundEffect RocketSound { get; set; }
     private SoundEffect PickUpRocketSound { get; set; }
     private SoundEffect BoostSound { get; set; }
+    private SoundEffect CarCrash { get; set; }
 
 
     //Texturas
@@ -108,12 +110,19 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
     private Texture2D TexturaPlataforma;
     private Texture2D TexturaColumna;
 
+    private Texture2D TexturaRoca;
+    private Texture2D TexturaArbol;
+    private Texture2D TexturaTire1;
+    private Texture2D TexturaTire2;
+    private Texture2D TexturaMenu;
+
 
     //HUD
     private float totalGameTime;
     private float countdownStart;
+    private Vector2 autoPos;
 
-    protected override void Initialize()
+        protected override void Initialize()
     {
       gizmos = new Gizmos();
 
@@ -180,6 +189,7 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
       //Efectos
       Effect = Content.Load<Effect>(ContentFolderEffects + "BasicShader");
       EscenarioShader = Content.Load<Effect>(ContentFolderEffects + "EscenarioShader");
+      DetallesShader = Content.Load<Effect>(ContentFolderEffects + "DetallesShader");
       AutoShader = Content.Load<Effect>(ContentFolderEffects + "AutoShader");
 
       //Música y sonido
@@ -188,6 +198,7 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
       RocketSound = Content.Load<SoundEffect>(ContentFolderSounds + "bullet-rocket");
       PickUpRocketSound = Content.Load<SoundEffect>(ContentFolderSounds + "pickup-rocket");
       BoostSound = Content.Load<SoundEffect>(ContentFolderSounds + "boost-effect");
+      CarCrash = Content.Load<SoundEffect>(ContentFolderSounds + "car-crash");
 
       //Textura
       TexturaPiso = Content.Load<Texture2D>(ContentFolderTextures + "ground");
@@ -195,13 +206,18 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
       TexturaColumna = Content.Load<Texture2D>(ContentFolderTextures + "displacement");
       TexturaRampa = Content.Load<Texture2D>(ContentFolderTextures + "color");
       TexturaPlataforma = Content.Load<Texture2D>(ContentFolderTextures + "colorPlatform");
+      TexturaRoca = Content.Load<Texture2D>(ContentFolderTextures + "rock");
+      TexturaArbol = Content.Load<Texture2D>(ContentFolderTextures + "tree");
+      TexturaTire1 = Content.Load<Texture2D>(ContentFolderTextures + "tire1");
+      TexturaTire2 = Content.Load<Texture2D>(ContentFolderTextures + "tire2");
+      TexturaMenu = Content.Load<Texture2D>(ContentFolderTextures + "backMenu");
       
 
       escenario.LoadContent(Piso, Pared, Column, Ramp, Platform, TexturaPiso, TexturaPared, TexturaColumna, TexturaRampa, TexturaPlataforma);
-      detalles.LoadContent(Tree, Rock1, Rock5, Rock10, Tire);
+      detalles.LoadContent(Tree, Rock1, Rock5, Rock10, Tire, TexturaRoca, TexturaRoca, TexturaTire1, TexturaTire2);
       powerUps.LoadContent(CajaAmetralladora, CajaMisil, CajaTurbo, Misil, Bala, BulletSound, PickUpGunSound, RocketSound, PickUpRocketSound,
                            BoostSound);
-      autos.LoadContent(AutoDeportivo, AutoDeCombate, AutoShader);
+      autos.LoadContent(AutoDeportivo, AutoDeCombate, AutoShader,CarCrash);
 
 
       //Musica
@@ -209,7 +225,6 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
       SongMenu = Content.Load<Song>(ContentFolderMusic + "retro-platforming");
       SongCountdown = Content.Load<Song>(ContentFolderMusic + "countdown-start");
 
-      MediaPlayer.Play(SongMenu);
       base.LoadContent();
     }
 
@@ -222,6 +237,11 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
       switch (status)
       {
         case ST_PRESENTACION:
+          if(!(MediaPlayer.State == MediaState.Playing))
+          {
+            MediaPlayer.Play(SongMenu);
+          }
+
           if (Keyboard.GetState().IsKeyDown(Keys.Enter))
           {
             status = ST_COUNTDOWN_3;
@@ -265,7 +285,6 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
         if(countdownStart > 3)
         {
           status = ST_COUNTDOWN_GO;
-          MediaPlayer.Play(SongGame);
           break;
         }
         break;
@@ -281,6 +300,11 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
         break;
 
         case ST_JUEGO:
+          if(!(MediaPlayer.State == MediaState.Playing))
+          {
+            //MediaPlayer.Play(SongGame);
+          }
+
           totalGameTime += (float)gameTime.ElapsedGameTime.TotalSeconds;
           autos.Update(gameTime,totalGameTime);
           powerUps.Update(gameTime, autos, detalles, escenario);
@@ -356,8 +380,22 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
           SpriteBatch.DrawString(font, "Velocidad:" + (autos.autoSpeed().ToString()), new Vector2(700, 10), Color.Black);
           SpriteBatch.DrawString(font, "PowerUp:" + (powerUps.powerUpActual()), new Vector2(1250, 900), Color.Black);
 
+          autoPos = new Vector2(GraphicsDevice.Viewport.Width/2, GraphicsDevice.Viewport.Height/2 - 80);
+          if (autos.getVidaProtagonista() > 50)
+          {
+            SpriteBatch.DrawString(font, autos.getVidaProtagonista().ToString(), autoPos, Color.Green);
+          } 
+          else if(autos.getVidaProtagonista() <= 50)
+          {
+            SpriteBatch.DrawString(font, autos.getVidaProtagonista().ToString(), autoPos, Color.Yellow);
+          } 
+          else if(autos.getVidaProtagonista() <= 20)
+          {
+            SpriteBatch.DrawString(font, autos.getVidaProtagonista().ToString(), autoPos, Color.Red);
+          }
+
           escenario.dibujarEscenario(View, Projection, EscenarioShader);
-          detalles.dibujarDetalles(View, Projection, Effect);
+          detalles.dibujarDetalles(View, Projection, DetallesShader);
           powerUps.dibujarPowerUps(View, Projection, Effect);
           autos.dibujarAutos(View, Projection, AutoShader);
 

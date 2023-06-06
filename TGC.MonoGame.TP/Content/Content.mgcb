@@ -25,6 +25,12 @@
 /processorParam:DebugMode=Auto
 /build:Effects/BasicShader.fx
 
+#begin Effects/DetallesShader.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:Effects/DetallesShader.fx
+
 #begin Effects/EscenarioShader.fx
 /importer:EffectImporter
 /processor:EffectProcessor
@@ -568,18 +574,6 @@
 /processorParam:Quality=Best
 /build:Music/trap-movement.mp3
 
-#begin Sonido/bullet-ametralladora.wav
-/importer:WavImporter
-/processor:SoundEffectProcessor
-/processorParam:Quality=Best
-/build:Sonido/bullet-ametralladora.wav
-
-#begin Sonido/pickup-ametralladora.wav
-/importer:WavImporter
-/processor:SoundEffectProcessor
-/processorParam:Quality=Best
-/build:Sonido/pickup-ametralladora.wav
-
 #begin Sounds/boost-effect.wav
 /importer:WavImporter
 /processor:SoundEffectProcessor
@@ -597,6 +591,12 @@
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
 /build:Sounds/bullet-rocket.wav
+
+#begin Sounds/car-crash.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/car-crash.wav
 
 #begin Sounds/pickup-ametralladora.wav
 /importer:WavImporter
@@ -616,6 +616,18 @@
 /processorParam:PremultiplyAlpha=True
 /processorParam:TextureFormat=Compressed
 /build:SpriteFonts/CascadiaCode/CascadiaCodePL.spritefont
+
+#begin Textures/backmenu.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Textures/backmenu.png
 
 #begin Textures/color.jpg
 /importer:TextureImporter
@@ -665,7 +677,7 @@
 /processorParam:TextureFormat=Color
 /build:Textures/ground.jpg
 
-#begin Textures/ground.jpg
+#begin Textures/rock.jpg
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -675,7 +687,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Textures/ground.jpg
+/build:Textures/rock.jpg
 
 #begin Textures/stones.jpg
 /importer:TextureImporter
@@ -688,4 +700,40 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Textures/stones.jpg
+
+#begin Textures/tire1.jpg
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Textures/tire1.jpg
+
+#begin Textures/tire2.jpg
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Textures/tire2.jpg
+
+#begin Textures/tree.jpg
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Textures/tree.jpg
 

@@ -155,7 +155,7 @@ namespace TGC.MonoGame.TP
         public Vector3 Rock5Position = new Vector3 (350, 0, 100);
         public Vector3 Rock6Position = new Vector3 (350, 0, 125);     
         public Vector3 Rock7Position = new Vector3 (350, 0, 150); 
-        public Vector3 Rock8Position = new Vector3 (350, 0, 150);
+        public Vector3 Rock8Position = new Vector3 (550, 0, 150);
         public Vector3 Rock9Position = new Vector3 (15, 0, 350);
         public Vector3 Rock10Position = new Vector3 (-15, 0, 375);
         public Vector3 Rock11Position = new Vector3 (15, 0, 400);
@@ -281,6 +281,12 @@ namespace TGC.MonoGame.TP
         private BoundingBox[] Rock5Boxes;
         private BoundingBox[] Rock10Boxes;
         private BoundingBox[] TireBoxes;
+
+        //Texturas
+        private Texture2D TexturaRoca;
+        private Texture2D TexturaArbol;
+        private Texture2D TexturaTire1;
+        private Texture2D TexturaTire2;
         
       public void Initialize()
         {
@@ -437,7 +443,8 @@ namespace TGC.MonoGame.TP
 
         }
 
-        public void LoadContent(Model tree, Model rock1, Model rock5, Model rock10, Model tire)
+        public void LoadContent(Model tree, Model rock1, Model rock5, Model rock10, Model tire, Texture2D texturaRoca,
+                                Texture2D texturaArbol, Texture2D texturaTire1, Texture2D texturaTire2)
         {
         
             Tree = tree;
@@ -445,6 +452,10 @@ namespace TGC.MonoGame.TP
             Rock5 = rock5;
             Rock10 = rock10;
             Tire = tire;
+            TexturaRoca = texturaRoca;
+            TexturaArbol = texturaArbol;
+            TexturaTire1 = texturaTire1;
+            TexturaTire2 = texturaTire2;
 
             Vector3 correctorPosicionBoxTree = new Vector3(3695f,350f,5875f);//Sino la bounding box aparecia en posiciones lejanas al modelo, de esta forma la llevo al origen
         
@@ -503,7 +514,7 @@ namespace TGC.MonoGame.TP
 
             Rock5Boxes = new BoundingBox[] 
             {
-               // new BoundingBox(Rock5Box1.Min + Rock8Position - correctorPosicionBoxRock5, Rock5Box1.Max + Rock8Position - correctorPosicionBoxRock5),
+                new BoundingBox(Rock5Box2.Min + Rock8Position - correctorPosicionBoxRock5, Rock5Box2.Max + Rock8Position - correctorPosicionBoxRock5),
                 new BoundingBox(Rock5Box1.Min + Rock9Position - correctorPosicionBoxRock5, Rock5Box1.Max + Rock9Position - correctorPosicionBoxRock5),
                 new BoundingBox(Rock5Box1.Min + Rock10Position - correctorPosicionBoxRock5, Rock5Box1.Max + Rock10Position - correctorPosicionBoxRock5),
                 new BoundingBox(Rock5Box1.Min + Rock11Position - correctorPosicionBoxRock5, Rock5Box1.Max + Rock11Position - correctorPosicionBoxRock5),
@@ -534,10 +545,10 @@ namespace TGC.MonoGame.TP
                 new BoundingBox(Rock10Box.Min + Rock23Position -correctorPosicionBoxRock10, Rock10Box.Max + Rock23Position - correctorPosicionBoxRock10),
             };
 
-            Vector3 correctorPosicionBoxTires = new Vector3(136f,42f,-7f);
+            Vector3 correctorPosicionBoxTires = new Vector3(1f,296f,33f);
 
-            TireBox = BoundingVolumesExtensions.CreateAABBFrom(Rock1);
-            TireBox = BoundingVolumesExtensions.Scale(TireBox,new Vector3(0.01f,0.5f,0.01f));
+            TireBox = BoundingVolumesExtensions.CreateAABBFrom(Tire);
+            TireBox = BoundingVolumesExtensions.Scale(TireBox,new Vector3(0.02f,0.01f,0.04f));
 
             TireBoxes = new BoundingBox[]
             {
@@ -599,7 +610,7 @@ namespace TGC.MonoGame.TP
         
         public void Update(GameTime gameTime, Autos auto)
         {
-            OrientedBoundingBox autoCollider = auto.GetAutoPrincipalBox();
+            OrientedBoundingBox autoCollider = auto.getAutoPrincipalBox();
             Vector3 vectorChoque = Vector3.Zero;
             float penetration = 0f;
 
@@ -607,6 +618,10 @@ namespace TGC.MonoGame.TP
             {
                 if(autoCollider.Intersects(TreeBoxes[index],out vectorChoque,out penetration))
                 {
+                    if(auto.CarSpeed > 10f) 
+                    {
+                        auto.audioChoque();
+                    }
                    auto.rebotar(vectorChoque,penetration);
                    auto.FrenarAuto();
                 }
@@ -616,6 +631,10 @@ namespace TGC.MonoGame.TP
             {
                 if(autoCollider.Intersects(Rock1Boxes[index],out vectorChoque,out penetration))
                 {
+                    if(auto.CarSpeed > 10f) 
+                    {
+                        auto.audioChoque();
+                    }
                     auto.rebotar(vectorChoque,penetration);
                     auto.FrenarAuto();
                 }
@@ -625,7 +644,12 @@ namespace TGC.MonoGame.TP
             {
                 if (autoCollider.Intersects(Rock5Boxes[index], out vectorChoque, out penetration))
                 {
+                    if(auto.CarSpeed > 10f) 
+                    {
+                        auto.audioChoque();
+                    }
                     auto.rebotar(vectorChoque, penetration);
+                    auto.FrenarAuto();
                 }
             }
 
@@ -633,7 +657,12 @@ namespace TGC.MonoGame.TP
             {
                 if (autoCollider.Intersects(Rock10Boxes[index], out vectorChoque, out penetration))
                 {
+                    if(auto.CarSpeed > 10f) 
+                    {
+                        auto.audioChoque();
+                    }
                     auto.rebotar(vectorChoque, penetration);
+                    auto.FrenarAuto();
                 }
             }
 
@@ -641,8 +670,13 @@ namespace TGC.MonoGame.TP
             {
                 if(autoCollider.Intersects(TireBoxes[index],out vectorChoque,out penetration))
                 {
+                    if(auto.CarSpeed > 10f) 
+                    {
+                        auto.audioChoque();
+                    }
                     auto.rebotar(vectorChoque,penetration);
                     auto.FrenarAuto();
+                    
                 }
             }
         }
@@ -673,7 +707,7 @@ namespace TGC.MonoGame.TP
         }
 
 
-        public void dibujar(Matrix view,Matrix projection,Effect effect,Matrix matrizMundo,Model modelo,Color color)
+        public void dibujar(Matrix view,Matrix projection,Effect effect,Matrix matrizMundo,Model modelo,Texture2D textura)
         {
             foreach (var mesh in modelo.Meshes)
             {
@@ -685,7 +719,7 @@ namespace TGC.MonoGame.TP
 
             effect.Parameters["View"].SetValue(view);
             effect.Parameters["Projection"].SetValue(projection);
-            effect.Parameters["DiffuseColor"].SetValue(color.ToVector3());
+            effect.Parameters["ModelTexture"].SetValue(textura);
 
             relativeMatrices = new Matrix[modelo.Bones.Count];
             modelo.CopyAbsoluteBoneTransformsTo(relativeMatrices);
@@ -725,28 +759,28 @@ namespace TGC.MonoGame.TP
         {
             for(int index = 0; index < TreesWorld.Length; index++)
             {
-                dibujarArboles(view,projection,effect,TreesWorld[index], Tree, Color.Black);
+                dibujar(view,projection,effect,TreesWorld[index], Tree, TexturaArbol);
             }
 
 
             for(int index = 0; index < RocksWorld.Length; index++)
             {
                 if(index < 7)
-                    dibujar(view,projection,effect,RocksWorld[index], Rock1, Color.Gray);
+                    dibujar(view,projection,effect,RocksWorld[index], Rock1, TexturaRoca);
                 else if(index < 13 )
-                   dibujar(view,projection,effect,RocksWorld[index], Rock5, Color.Gray);
+                   dibujar(view,projection,effect,RocksWorld[index], Rock5, TexturaRoca);
                 else if(index < 15)
-                     dibujar(view,projection,effect,RocksWorld[index], Rock10, Color.Gray);
+                     dibujar(view,projection,effect,RocksWorld[index], Rock10, TexturaRoca);
                 else if(index < 17)
-                   dibujar(view,projection,effect,RocksWorld[index], Rock5, Color.Gray);
+                   dibujar(view,projection,effect,RocksWorld[index], Rock5, TexturaRoca);
                 else if(index < 19)
-                    dibujar(view,projection,effect,RocksWorld[index], Rock10, Color.Gray);
+                    dibujar(view,projection,effect,RocksWorld[index], Rock10, TexturaRoca);
                 else if(index < 21)
-                    dibujar(view,projection,effect,RocksWorld[index], Rock5, Color.Gray);
+                    dibujar(view,projection,effect,RocksWorld[index], Rock5, TexturaRoca);
                 else if(index < 23)
-                    dibujar(view,projection,effect,RocksWorld[index], Rock10, Color.Gray);
+                    dibujar(view,projection,effect,RocksWorld[index], Rock10, TexturaRoca);
                 else if(index >= 23)
-                    dibujar(view,projection,effect,RocksWorld[index], Rock5, Color.Gray);
+                    dibujar(view,projection,effect,RocksWorld[index], Rock5, TexturaRoca);
 
                 //Rock1 Model = [0,6]
                 //Roc5 Model = [7,12], 15, 16, 19, 20, [23,31]
@@ -755,9 +789,9 @@ namespace TGC.MonoGame.TP
 
             for (int index = 0; index < TiresWorld.Length; index++)
             {
-                dibujar(view,projection,effect,TiresWorld[index], Tire, Color.Black);
+                dibujar(view,projection,effect,TiresWorld[index], Tire, TexturaTire1);
                 index++;
-                dibujar(view,projection,effect,TiresWorld[index], Tire, Color.Gray);
+                dibujar(view,projection,effect,TiresWorld[index], Tire, TexturaTire2);
             }
         }
 
