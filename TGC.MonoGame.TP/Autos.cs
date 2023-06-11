@@ -17,7 +17,7 @@ namespace TGC.MonoGame.TP
 
     //MovimientoAuto
     public Vector3 CarDirection;
-    public float CarSpeed;
+    public Vector2 CarSpeed;
     public float CarAcceleration;
     private float CarBrakes;
     private float Rozamiento;
@@ -128,7 +128,7 @@ namespace TGC.MonoGame.TP
     public void Initialize()
     {
       //MovimientoAuto
-      CarSpeed = 0f;
+      CarSpeed = new Vector2(0f,0f);
       CarAcceleration = 200f;
       CarBrakes = 400f;
       Rozamiento = -500f;
@@ -294,24 +294,24 @@ namespace TGC.MonoGame.TP
 
       if (Keyboard.GetState().IsKeyDown(Keys.W) && !onJump)
       {
-        if (CarSpeed < 0) //De esta manera si estaba yendo hacia atras, frena y luego acelera hacia delante
+        if (CarSpeed.X < 0) //De esta manera si estaba yendo hacia atras, frena y luego acelera hacia delante
         {
-          CarSpeed += CarBrakes * elapsedTime;
+          CarSpeed.X += CarBrakes * elapsedTime;
         }
-        else if (CarSpeed < maxSpeed) CarSpeed += CarAcceleration * elapsedTime;
-        Desplazamiento += CarDirection * CarSpeed * elapsedTime + CarAcceleration * elapsedTime * CarDirection / 2f;
+        else if (CarSpeed.X < maxSpeed) CarSpeed.X += CarAcceleration * elapsedTime;
+        Desplazamiento += CarDirection * CarSpeed.X * elapsedTime + CarAcceleration * elapsedTime * CarDirection / 2f;
         ActiveMovement = true;
         accelerating = true;
 
       }
       else if (Keyboard.GetState().IsKeyDown(Keys.S) && !onJump)
       {
-        if (CarSpeed >= 0) //De esta manera si estaba yendo hacia delante, frena y luego acelera hacia atras
+        if (CarSpeed.X >= 0) //De esta manera si estaba yendo hacia delante, frena y luego acelera hacia atras
         {
-          CarSpeed -= CarBrakes * elapsedTime;
+          CarSpeed.X -= CarBrakes * elapsedTime;
         }
-        else if (CarSpeed > -maxSpeed) CarSpeed -= CarAcceleration * elapsedTime;
-        Desplazamiento += CarDirection * CarSpeed * elapsedTime + CarAcceleration * elapsedTime * CarDirection / 2f;
+        else if (CarSpeed.X > -maxSpeed) CarSpeed.X -= CarAcceleration * elapsedTime;
+        Desplazamiento += CarDirection * CarSpeed.X * elapsedTime + CarAcceleration * elapsedTime * CarDirection / 2f;
         ActiveMovement = true;
         accelerating = true;
       }
@@ -319,32 +319,32 @@ namespace TGC.MonoGame.TP
       if ((keyboardState.IsKeyUp(Keys.S) && keyboardState.IsKeyUp(Keys.W)) || onJump)
       {
         accelerating = false;
-        if (CarSpeed > 3)
+        if (CarSpeed.X > 3)
         {
-          CarSpeed += Rozamiento * elapsedTime;
+          CarSpeed.X += Rozamiento * elapsedTime;
           ActiveMovement = true;
         }
-        else if (CarSpeed < -3) //La velocidad nunca acaba siendo menor al |3|, de esta forma podemos saber si el auto se queda "quieto" y podemos evitar que gire sin avanzar/retroceder
+        else if (CarSpeed.X < -3) //La velocidad nunca acaba siendo menor al |3|, de esta forma podemos saber si el auto se queda "quieto" y podemos evitar que gire sin avanzar/retroceder
         {
-          CarSpeed -= Rozamiento * elapsedTime;
+          CarSpeed.X -= Rozamiento * elapsedTime;
           ActiveMovement = true;
         }
         else
           ActiveMovement = false;
-        Desplazamiento += CarDirection * CarSpeed * elapsedTime;
+        Desplazamiento += CarDirection * CarSpeed.X * elapsedTime;
 
       }
       //rotar
       if (Keyboard.GetState().IsKeyDown(Keys.D))
       {
-        if (CarSpeed >= 0 && WheelRotationPrincipal > -MathF.PI * 1 / 6) WheelRotationPrincipal -= elapsedTime;
-        else if (CarSpeed < 0 && WheelRotationPrincipal < MathF.PI * 1 / 6) WheelRotationPrincipal += elapsedTime;
+        if (CarSpeed.X >= 0 && WheelRotationPrincipal > -MathF.PI * 1 / 6) WheelRotationPrincipal -= elapsedTime;
+        else if (CarSpeed.X < 0 && WheelRotationPrincipal < MathF.PI * 1 / 6) WheelRotationPrincipal += elapsedTime;
         if (ActiveMovement) Rotation -= elapsedTime;         //NO DEBERIA PODER GIRAR AL ESTAR QUIETO
       }
       else if (Keyboard.GetState().IsKeyDown(Keys.A))
       {
-        if (CarSpeed >= 0 && WheelRotationPrincipal < MathF.PI * 1 / 6) WheelRotationPrincipal += elapsedTime;
-        else if (CarSpeed < 0 && WheelRotationPrincipal > -MathF.PI * 1 / 6) WheelRotationPrincipal -= elapsedTime;
+        if (CarSpeed.X >= 0 && WheelRotationPrincipal < MathF.PI * 1 / 6) WheelRotationPrincipal += elapsedTime;
+        else if (CarSpeed.X < 0 && WheelRotationPrincipal > -MathF.PI * 1 / 6) WheelRotationPrincipal -= elapsedTime;
         if (ActiveMovement) Rotation += elapsedTime;
       }
       else if (Keyboard.GetState().IsKeyUp(Keys.A) && Keyboard.GetState().IsKeyUp(Keys.D))
@@ -355,6 +355,7 @@ namespace TGC.MonoGame.TP
       //saltar
       if (Keyboard.GetState().IsKeyDown(Keys.Space) && !accelerating)
       {
+        CarSpeed.Y = jumpSpeed;
         onJump = true;
         enElPiso = false;
       }
@@ -362,31 +363,24 @@ namespace TGC.MonoGame.TP
       if(!enElPiso)
       {
         tiempoEnAire += (float)gameTime.ElapsedGameTime.TotalSeconds;
-        if(onJump)
-        {
-            jumpSpeed -= gravity * tiempoEnAire;
-            Desplazamiento.Y += jumpSpeed;
+        CarSpeed.Y -= gravity * tiempoEnAire;
+        Desplazamiento.Y += CarSpeed.Y;
 
-            if (CarSpeed >= 0)
+            if (CarSpeed.X >= 0)
             {
-              if (jumpSpeed >= 0 && jumpRotation < jumpAngle) jumpRotation += 0.05f;
-              if (jumpSpeed < 0 && jumpRotation > -jumpAngle) jumpRotation -= 0.05f;
+              if(CarSpeed.Y > 0) jumpRotation += elapsedTime;
+              else jumpRotation -= elapsedTime*2;
             }
-            else if (CarSpeed < 0)
+            else if (CarSpeed.X < 0)
             {
-              if (jumpSpeed >= 0 && jumpRotation > -jumpAngle) jumpRotation -= 0.05f;
-              if (jumpSpeed < 0 && jumpRotation < jumpAngle) jumpRotation += 0.05f;
+              if(CarSpeed.Y > 0) jumpRotation += elapsedTime;
+              else jumpRotation -= elapsedTime*2;
             }
-        }
-        else 
-        {  
-          Desplazamiento.Y -= gravity * tiempoEnAire;
-          if (CarSpeed >= 0 && jumpRotation > -jumpAngle) jumpRotation -= 0.05f;
-          if (CarSpeed < 0 && jumpRotation < jumpAngle) jumpRotation += 0.05f;
-        }
+    
       }
        if (enElPiso) //por alguna cuando cae al piso no queda recto de una sino que "vibra" un poco
       {
+        CarSpeed.Y = 0f;
         onJump = false;
         jumpSpeed = 10f;
         jumpRotation = 0;
@@ -399,15 +393,15 @@ namespace TGC.MonoGame.TP
 
         if(turboTime < 1f)
         {
-          if(CarSpeed < 2800 && CarSpeed > -2800)
+          if(CarSpeed.X < 2800 && CarSpeed.X > -2800)
              CarSpeed *= 1.1f;
         }
 
         else{
           if(PreviousSpeed < 2800 && PreviousSpeed > -2800)
-              CarSpeed = PreviousSpeed;
+              CarSpeed.X = PreviousSpeed;
           else
-              CarSpeed = 2800;
+              CarSpeed.X = 2800;
           turbo = false;
           turboTime = 0f;
         }
@@ -424,7 +418,7 @@ namespace TGC.MonoGame.TP
             CollisionIndex = index;
             direccionPostChoque = CarDirection;
             Desplazamiento*=-1;
-            CarsSpeeds[CollisionIndex] = CarSpeed * 0.5f;
+            CarsSpeeds[CollisionIndex] = CarSpeed.X * 0.5f;
             CarSpeed*=-0.5f;
 
           if(acabaDeChocar == 0)
@@ -541,10 +535,10 @@ namespace TGC.MonoGame.TP
 
     public void FrenarAuto()
     {
-      CarSpeed = 0;
+      CarSpeed.X = 0;
     }
     public float autoSpeed(){
-      return CarSpeed;
+      return CarSpeed.X;
     }
     public float prevSpeed(){
       return PreviousSpeed;
@@ -584,7 +578,7 @@ namespace TGC.MonoGame.TP
     }
     public void aplicarTurbo(){
 
-      PreviousSpeed = CarSpeed;
+      PreviousSpeed = CarSpeed.X;
       turbo = true;
     }
 

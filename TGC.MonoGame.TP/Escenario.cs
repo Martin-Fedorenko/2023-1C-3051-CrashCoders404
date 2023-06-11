@@ -324,7 +324,7 @@ namespace TGC.MonoGame.TP
             {
                 if(autoCollider.Intersects(ColumnBoxes[index],out vectorChoque,out penetration))
                 {
-                  if(auto.CarSpeed > 10f) 
+                  if(auto.autoSpeed() > 10f) 
                     {
                         auto.audioChoque();
                     }
@@ -345,7 +345,7 @@ namespace TGC.MonoGame.TP
             {
                 if(autoCollider.Intersects(ParedBoxes[index],out vectorChoque,out penetration))
                 {
-                  if(auto.CarSpeed > 10f) 
+                  if(auto.autoSpeed() > 10f) 
                   {
                     auto.audioChoque();
                   }

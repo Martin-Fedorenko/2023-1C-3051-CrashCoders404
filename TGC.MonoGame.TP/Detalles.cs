@@ -618,7 +618,7 @@ namespace TGC.MonoGame.TP
             {
                 if(autoCollider.Intersects(TreeBoxes[index],out vectorChoque,out penetration))
                 {
-                    if(auto.CarSpeed > 10f) 
+                    if(auto.autoSpeed() > 10f) 
                     {
                         auto.audioChoque();
                     }
@@ -631,7 +631,7 @@ namespace TGC.MonoGame.TP
             {
                 if(autoCollider.Intersects(Rock1Boxes[index],out vectorChoque,out penetration))
                 {
-                    if(auto.CarSpeed > 10f) 
+                    if(auto.autoSpeed() > 10f) 
                     {
                         auto.audioChoque();
                     }
@@ -644,7 +644,7 @@ namespace TGC.MonoGame.TP
             {
                 if (autoCollider.Intersects(Rock5Boxes[index], out vectorChoque, out penetration))
                 {
-                    if(auto.CarSpeed > 10f) 
+                    if(auto.autoSpeed() > 10f) 
                     {
                         auto.audioChoque();
                     }
@@ -657,7 +657,7 @@ namespace TGC.MonoGame.TP
             {
                 if (autoCollider.Intersects(Rock10Boxes[index], out vectorChoque, out penetration))
                 {
-                    if(auto.CarSpeed > 10f) 
+                    if(auto.autoSpeed() > 10f) 
                     {
                         auto.audioChoque();
                     }
@@ -670,7 +670,7 @@ namespace TGC.MonoGame.TP
             {
                 if(autoCollider.Intersects(TireBoxes[index],out vectorChoque,out penetration))
                 {
-                    if(auto.CarSpeed > 10f) 
+                    if(auto.autoSpeed() > 10f) 
                     {
                         auto.audioChoque();
                     }
@@ -733,7 +733,7 @@ namespace TGC.MonoGame.TP
         }
 
 
-        public void dibujarArboles(Matrix view,Matrix projection,Effect effect,Matrix matrizMundo, Model modelo, Color color)//con el otro metodo por alguna razon el modelo del arbol no se dibuja
+        public void dibujarArboles(Matrix view,Matrix projection,Effect effect,Matrix matrizMundo, Model modelo, Texture2D textura)
         {
             foreach (var mesh in modelo.Meshes)
             {
@@ -743,9 +743,9 @@ namespace TGC.MonoGame.TP
                 }
             }
 
-            effect.Parameters["View"].SetValue(view);
+             effect.Parameters["View"].SetValue(view);
             effect.Parameters["Projection"].SetValue(projection);
-            effect.Parameters["DiffuseColor"].SetValue(color.ToVector3());
+            effect.Parameters["ModelTexture"].SetValue(textura);
 
             foreach (var mesh in modelo.Meshes)
             {
@@ -759,7 +759,7 @@ namespace TGC.MonoGame.TP
         {
             for(int index = 0; index < TreesWorld.Length; index++)
             {
-                dibujar(view,projection,effect,TreesWorld[index], Tree, TexturaArbol);
+                dibujarArboles(view,projection,effect,TreesWorld[index], Tree, TexturaArbol);
             }
 
 
