@@ -613,7 +613,7 @@ namespace TGC.MonoGame.TP
 
       effect.Parameters["View"].SetValue(view);
       effect.Parameters["Projection"].SetValue(projection);
-      effect.Parameters["DiffuseColor"].SetValue(color.ToVector3());
+      //effect.Parameters["DiffuseColor"].SetValue(color.ToVector3());
 
       relativeMatrices = new Matrix[modelo.Bones.Count];
       modelo.CopyAbsoluteBoneTransformsTo(relativeMatrices);
