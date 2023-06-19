@@ -328,12 +328,12 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
           //Camera.Update(gameTime);
           gizmos.UpdateViewProjection(View, Projection);
 
-          var lightPosition = new Vector3(autos.posAutoPrincipal().X+5f, autos.posAutoPrincipal().Y+10f, autos.posAutoPrincipal().Z+5f);
+          //var lightPosition = new Vector3(autos.posAutoPrincipal().X+5f, autos.posAutoPrincipal().Y+10f, autos.posAutoPrincipal().Z+5f);
 
             // Set the light position and camera position
             // These change every update so we need to set them on every update call
-            AutoShader.Parameters["lightPosition"].SetValue(lightPosition);
-            AutoShader.Parameters["eyePosition"].SetValue(posicionCamara + autos.posAutoPrincipal());
+            //AutoShader.Parameters["lightPosition"].SetValue(lightPosition);
+            //AutoShader.Parameters["eyePosition"].SetValue(posicionCamara + autos.posAutoPrincipal());
 
           break;
 

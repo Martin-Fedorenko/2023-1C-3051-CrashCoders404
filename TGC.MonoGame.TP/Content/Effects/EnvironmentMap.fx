@@ -7,9 +7,10 @@
 #define PS_SHADERMODEL ps_4_0_level_9_1
 #endif
 
-float4x4 WorldViewProjection;
 float4x4 World;
 float4x4 InverseTransposeWorld;
+float4x4 View;
+float4x4 Projection;
 
 float3 eyePosition;
 
@@ -37,7 +38,7 @@ samplerCUBE environmentMapSampler = sampler_state
 struct VertexShaderInput
 {
 	float4 Position : POSITION0;
-	float3 Normal : NORMAL;
+	float4 Normal : NORMAL;
     float2 TextureCoordinates : TEXCOORD0;
 };
 
@@ -52,14 +53,20 @@ struct VertexShaderOutput
 
 VertexShaderOutput MainVS(in VertexShaderInput input)
 {
-    VertexShaderOutput output = (VertexShaderOutput) 0;
+	VertexShaderOutput output = (VertexShaderOutput)0;
 
-	output.Position = mul(input.Position, WorldViewProjection);
-	output.WorldPosition = mul(input.Position, World);
-    output.Normal = mul(float4(normalize(input.Normal.xyz), 1.0), InverseTransposeWorld);
+    float4 worldPosition = mul(input.Position, World);
+    // World space to View space
+    float4 viewPosition = mul(worldPosition, View);	
+	// View space to Projection space
+    output.Position = mul(viewPosition, Projection);
+
+    //output.Position = mul(input.Position, WorldViewProjection);
+    output.WorldPosition = mul(input.Position, World);
+    output.Normal = mul(input.Normal, InverseTransposeWorld);
     output.TextureCoordinates = input.TextureCoordinates;
 	
-    return output;
+	return output;
 }
 
 float4 EnvironmentMapPS(VertexShaderOutput input) : COLOR
@@ -85,19 +92,6 @@ float4 EnvironmentMapPS(VertexShaderOutput input) : COLOR
 
 
 
-VertexShaderOutput SphereVS(in VertexShaderInput input)
-{
-    VertexShaderOutput output = (VertexShaderOutput) 0;
-
-    output.Position = mul(input.Position, WorldViewProjection);
-    output.WorldPosition = mul(input.Position, World);
-    output.Normal = mul(float4(normalize(input.Position.xyz), 1.0), InverseTransposeWorld);
-    output.TextureCoordinates = input.TextureCoordinates;
-	
-    return output;
-}
-
-
 technique EnvironmentMap
 {
     pass Pass0
@@ -109,11 +103,3 @@ technique EnvironmentMap
 
 
 
-technique EnvironmentMapSphere
-{
-    pass Pass0
-    {
-        VertexShader = compile VS_SHADERMODEL SphereVS();
-        PixelShader = compile PS_SHADERMODEL EnvironmentMapPS();
-    }
-};
