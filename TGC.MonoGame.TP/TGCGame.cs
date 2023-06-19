@@ -189,20 +189,20 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
       Bala = Content.Load<Model>(ContentFolder3D + "PowerUps/Ametralladora/balaModel");
 
       //Efectos
-      Effect = Content.Load<Effect>(ContentFolderEffects + "BlinnPhong"); //aca
+      Effect = Content.Load<Effect>(ContentFolderEffects + "BasicShader"); //aca
       EscenarioShader = Content.Load<Effect>(ContentFolderEffects + "EscenarioShader");
       DetallesShader = Content.Load<Effect>(ContentFolderEffects + "DetallesShader");
       AutoShader = Content.Load<Effect>(ContentFolderEffects + "AutoShader");
 
       // iluminacion
-      Effect.Parameters["ambientColor"].SetValue(new Vector3(0.25f, 0.0f, 0.0f));
-      Effect.Parameters["diffuseColor"].SetValue(new Vector3(0.1f, 0.1f, 0.6f));
-      Effect.Parameters["specularColor"].SetValue(new Vector3(1f, 1f, 1f));
+      AutoShader.Parameters["ambientColor"].SetValue(new Vector3(1f, 1f, 1f));
+      AutoShader.Parameters["diffuseColor"].SetValue(new Vector3(0.1f, 0.1f, 0.6f));
+      AutoShader.Parameters["specularColor"].SetValue(new Vector3(1f, 1f, 1f));
 
-      Effect.Parameters["KAmbient"].SetValue(0.1f);
-      Effect.Parameters["KDiffuse"].SetValue(1.0f);
-      Effect.Parameters["KSpecular"].SetValue(0.8f);
-      Effect.Parameters["shininess"].SetValue(16.0f);
+      AutoShader.Parameters["KAmbient"].SetValue(0.1f);
+      AutoShader.Parameters["KDiffuse"].SetValue(0.1f);
+      AutoShader.Parameters["KSpecular"].SetValue(1f);
+      AutoShader.Parameters["shininess"].SetValue(5f);
 
       //Música y sonido
       BulletSound = Content.Load<SoundEffect>(ContentFolderSounds + "bullet-ametralladora");
@@ -327,6 +327,13 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
           View = Matrix.CreateLookAt(posicionCamara + autos.posAutoPrincipal(), autos.posAutoPrincipal(), Vector3.Up);
           //Camera.Update(gameTime);
           gizmos.UpdateViewProjection(View, Projection);
+
+          var lightPosition = new Vector3(autos.posAutoPrincipal().X+5f, autos.posAutoPrincipal().Y+10f, autos.posAutoPrincipal().Z+5f);
+
+            // Set the light position and camera position
+            // These change every update so we need to set them on every update call
+            AutoShader.Parameters["lightPosition"].SetValue(lightPosition);
+            AutoShader.Parameters["eyePosition"].SetValue(posicionCamara + autos.posAutoPrincipal());
 
           break;
 

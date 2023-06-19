@@ -490,7 +490,7 @@ namespace TGC.MonoGame.TP
         {
           effect.GraphicsDevice.SetVertexBuffer(meshPart.VertexBuffer);
           effect.GraphicsDevice.Indices = meshPart.IndexBuffer;
-          effect.Parameters["ModelTexture"].SetValue(ColorTextures[index]);
+          effect.Parameters["ModelTexture"]?.SetValue(ColorTextures[index]);
           foreach (var pass in effect.CurrentTechnique.Passes)
           {
             pass.Apply();
