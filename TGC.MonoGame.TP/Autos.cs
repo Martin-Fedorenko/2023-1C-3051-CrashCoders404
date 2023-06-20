@@ -131,7 +131,6 @@ namespace TGC.MonoGame.TP
       CarSpeed = new Vector2(0f,0f);
       CarAcceleration = 200f;
       CarBrakes = 400f;
-      Rozamiento = -500f;
       ActiveMovement = false;
       jumpAngle = MathF.PI / 9;
       jumpSpeed = 20f;
@@ -269,6 +268,7 @@ namespace TGC.MonoGame.TP
       var elapsedTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
       CarDirection = AutoPrincipalWorld.Backward;
       Desplazamiento = Vector3.Zero;
+      Rozamiento = CarSpeed.X * 0.5f;
       collided = false;
       collidedCars = 0;
       choco = false;
@@ -319,21 +319,19 @@ namespace TGC.MonoGame.TP
       if ((keyboardState.IsKeyUp(Keys.S) && keyboardState.IsKeyUp(Keys.W)) || onJump)
       {
         accelerating = false;
-        if (CarSpeed.X > 3)
+
+        if(CarSpeed.X < 3 && CarSpeed.X > -3)
         {
-          CarSpeed.X += Rozamiento * elapsedTime;
-          ActiveMovement = true;
-        }
-        else if (CarSpeed.X < -3) //La velocidad nunca acaba siendo menor al |3|, de esta forma podemos saber si el auto se queda "quieto" y podemos evitar que gire sin avanzar/retroceder
+          CarSpeed.X = 0f;
+        }      
+        else
         {
           CarSpeed.X -= Rozamiento * elapsedTime;
-          ActiveMovement = true;
         }
-        else
-          ActiveMovement = false;
         Desplazamiento += CarDirection * CarSpeed.X * elapsedTime;
-
       }
+
+      if(CarSpeed.X == 0f) ActiveMovement = false;
       //rotar
       if (Keyboard.GetState().IsKeyDown(Keys.D))
       {
@@ -353,7 +351,7 @@ namespace TGC.MonoGame.TP
       }
 
       //saltar
-      if (Keyboard.GetState().IsKeyDown(Keys.Space) && !accelerating)
+      if (Keyboard.GetState().IsKeyDown(Keys.Space) && !accelerating && enElPiso)
       {
         CarSpeed.Y = jumpSpeed;
         onJump = true;
@@ -385,6 +383,7 @@ namespace TGC.MonoGame.TP
         jumpSpeed = 10f;
         jumpRotation = 0;
         tiempoEnAire = 0f;
+        AutoPrincipalPos.Y = 0f;
       }
       
 
@@ -601,8 +600,6 @@ namespace TGC.MonoGame.TP
     {
       return vidaProtagonista;
     }
-    
-
     public void inicializarBoundingBoxes()
     {
       AutoDeportivoBoxAABB = BoundingVolumesExtensions.CreateAABBFrom(AutoDeportivo);

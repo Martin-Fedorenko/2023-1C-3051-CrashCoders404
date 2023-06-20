@@ -130,7 +130,7 @@ namespace TGC.MonoGame.TP
     private Texture2D TexturaRampa;
     private Texture2D TexturaPlataforma;
     private float retardoColisionBox;
-
+    Boolean enPisoOPlataforma;
     public void Initialize()
     {
       //Arena
@@ -291,8 +291,8 @@ namespace TGC.MonoGame.TP
             OrientedBoundingBox autoCollider;
             Vector3 vectorChoque = Vector3.Zero;
             float penetration = 0f;
-            Boolean enPisoOPlataforma = false;
             autoCollider = auto.getAutoPrincipalBox();
+            enPisoOPlataforma = false;
 
 
             if(autoCollider.Intersects(PisoBox))
