@@ -9,6 +9,7 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Audio;
 using TGC.MonoGame.TP.Viewer.Gizmos;
 using TGC.MonoGame.TP.Cameras;
+using TGC.MonoGame.TP.Geometries;
 
 namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
 {
@@ -45,7 +46,8 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
     private PowerUps powerUps;
 
     // Modelos
-    private Model Piso { get; set; }
+    //private Model Piso { get; set; }
+    private QuadPrimitive Piso { get; set; }
     private Model Pared { get; set; }
     private Model Column { get; set; }
     private Model Ramp { get; set; }
@@ -117,6 +119,7 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
     private Texture2D TexturaTire1;
     private Texture2D TexturaTire2;
     private Texture2D TexturaMenu;
+    private Texture2D TexturaPowerUp;
 
 
     //HUD
@@ -160,11 +163,12 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
     {
       gizmos.LoadContent(GraphicsDevice, Content);
       SpriteBatch = new SpriteBatch(GraphicsDevice);
+      Piso = new QuadPrimitive(GraphicsDevice);
 
       font = Content.Load<SpriteFont>(ContentFolderSpriteFonts + "CascadiaCode/CascadiaCodePL");
 
       //Escenario
-      Piso = Content.Load<Model>(ContentFolder3D + "Arena/Plano"); //No tiene textura incluida
+      //Piso = Content.Load<Model>(ContentFolder3D + "Arena/Plano"); //No tiene textura incluida
       Pared = Content.Load<Model>(ContentFolder3D + "Arena/Arena"); //No tiene textura incluida
       Column = Content.Load<Model>(ContentFolder3D + "Platforms/Column/Column"); //Tiene textura incluida pero HAY QUE ARREGLAR O CAMBIAR EL MODELO
       Ramp = Content.Load<Model>(ContentFolder3D + "Platforms/Ramps/Ramp"); //No tiene textura incluida
@@ -195,14 +199,14 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
       AutoShader = Content.Load<Effect>(ContentFolderEffects + "AutoShader");
 
       // iluminacion
-      AutoShader.Parameters["ambientColor"].SetValue(new Vector3(1f, 1f, 1f));
-      AutoShader.Parameters["diffuseColor"].SetValue(new Vector3(0.1f, 0.1f, 0.6f));
+      AutoShader.Parameters["ambientColor"].SetValue(new Vector3(255f, 255f, 255f));
+      AutoShader.Parameters["diffuseColor"].SetValue(new Vector3(100f, 100f, 100f));
       AutoShader.Parameters["specularColor"].SetValue(new Vector3(1f, 1f, 1f));
 
       AutoShader.Parameters["KAmbient"].SetValue(0.1f);
       AutoShader.Parameters["KDiffuse"].SetValue(0.1f);
       AutoShader.Parameters["KSpecular"].SetValue(1f);
-      AutoShader.Parameters["shininess"].SetValue(5f);
+      AutoShader.Parameters["shininess"].SetValue(500f);
 
       //Música y sonido
       BulletSound = Content.Load<SoundEffect>(ContentFolderSounds + "bullet-ametralladora");
@@ -213,7 +217,7 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
       CarCrash = Content.Load<SoundEffect>(ContentFolderSounds + "car-crash");
 
       //Textura
-      TexturaPiso = Content.Load<Texture2D>(ContentFolderTextures + "ground");
+      TexturaPiso = Content.Load<Texture2D>(ContentFolderTextures + "sand");
       TexturaPared = Content.Load<Texture2D>(ContentFolderTextures + "stones");
       TexturaColumna = Content.Load<Texture2D>(ContentFolderTextures + "displacement");
       TexturaRampa = Content.Load<Texture2D>(ContentFolderTextures + "color");
@@ -223,12 +227,13 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
       TexturaTire1 = Content.Load<Texture2D>(ContentFolderTextures + "tire1");
       TexturaTire2 = Content.Load<Texture2D>(ContentFolderTextures + "tire2");
       TexturaMenu = Content.Load<Texture2D>(ContentFolderTextures + "backMenu");
+      TexturaPowerUp = Content.Load<Texture2D>(ContentFolderTextures + "gold");
       
 
       escenario.LoadContent(Piso, Pared, Column, Ramp, Platform, TexturaPiso, TexturaPared, TexturaColumna, TexturaRampa, TexturaPlataforma);
       detalles.LoadContent(Tree, Rock1, Rock5, Rock10, Tire, TexturaRoca, TexturaRoca, TexturaTire1, TexturaTire2);
       powerUps.LoadContent(CajaAmetralladora, CajaMisil, CajaTurbo, Misil, Bala, BulletSound, PickUpGunSound, RocketSound, PickUpRocketSound,
-                           BoostSound);
+                           BoostSound, TexturaPowerUp);
       autos.LoadContent(AutoDeportivo, AutoDeCombate, AutoShader,CarCrash);
 
 
@@ -328,12 +333,14 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
           //Camera.Update(gameTime);
           gizmos.UpdateViewProjection(View, Projection);
 
-          //var lightPosition = new Vector3(autos.posAutoPrincipal().X+5f, autos.posAutoPrincipal().Y+10f, autos.posAutoPrincipal().Z+5f);
+
+          var lightPosition = new Vector3(0.0f,50.0f,0.0f); //SOL "FIJO"
+          //var lightPosition = new Vector3(autos.posAutoPrincipal().X, autos.posAutoPrincipal().Y+20f, autos.posAutoPrincipal().Z);
 
             // Set the light position and camera position
             // These change every update so we need to set them on every update call
-            //AutoShader.Parameters["lightPosition"].SetValue(lightPosition);
-            //AutoShader.Parameters["eyePosition"].SetValue(posicionCamara + autos.posAutoPrincipal());
+            AutoShader.Parameters["lightPosition"].SetValue(lightPosition);
+            AutoShader.Parameters["eyePosition"].SetValue(posicionCamara + autos.posAutoPrincipal());
 
           break;
 
@@ -413,9 +420,10 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
             SpriteBatch.DrawString(font, autos.getVidaProtagonista().ToString(), autoPos, Color.Red);
           }
 
-          escenario.dibujarEscenario(View, Projection, EscenarioShader);
-          detalles.dibujarDetalles(View, Projection, DetallesShader);
-          powerUps.dibujarPowerUps(View, Projection, Effect);
+
+          escenario.dibujarEscenario(View, Projection, AutoShader);
+          detalles.dibujarDetalles(View, Projection, AutoShader);
+          powerUps.dibujarPowerUps(View, Projection, AutoShader);
           autos.dibujarAutos(View, Projection, AutoShader);
 
           autos.dibujarBoundingBoxes(gizmos); //OBB de autos deportivos bien ubicadas

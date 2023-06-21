@@ -19,6 +19,9 @@ namespace TGC.MonoGame.TP
     private Model Misil { get; set; }
     private Model Bala { get; set; }
 
+    private Texture2D TexturaPowerUp { get; set; }
+
+
     // Matrices
     private Matrix[] AmetralladorasWorld;
     private Matrix[] TurbosWorld;
@@ -193,7 +196,7 @@ namespace TGC.MonoGame.TP
 
     public void LoadContent(Model cajaAmetralladora, Model cajaMisil, Model cajaTurbo, Model misil, Model bala, 
                             SoundEffect bulletSound, SoundEffect pickUpGunSound, SoundEffect pickUpRocketSound, SoundEffect rocketSound, 
-                            SoundEffect boostSound)
+                            SoundEffect boostSound, Texture2D texturaPowerUp)
     {
       CajaAmetralladora = cajaAmetralladora;
       CajaMisil = cajaMisil;
@@ -205,6 +208,7 @@ namespace TGC.MonoGame.TP
       PickUpRocketSound = pickUpRocketSound;
       RocketSound = rocketSound;
       BoostSound = boostSound;
+      TexturaPowerUp = texturaPowerUp;
 
 
 
@@ -613,7 +617,8 @@ namespace TGC.MonoGame.TP
 
       effect.Parameters["View"].SetValue(view);
       effect.Parameters["Projection"].SetValue(projection);
-      effect.Parameters["DiffuseColor"].SetValue(color.ToVector3());
+      //effect.Parameters["DiffuseColor"].SetValue(color.ToVector3());
+      effect.Parameters["ModelTexture"].SetValue(TexturaPowerUp);
 
       relativeMatrices = new Matrix[modelo.Bones.Count];
       modelo.CopyAbsoluteBoneTransformsTo(relativeMatrices);
@@ -622,6 +627,7 @@ namespace TGC.MonoGame.TP
       foreach (var mesh in modelo.Meshes)
       {
         effect.Parameters["World"].SetValue(relativeMatrices[mesh.ParentBone.Index] * matrizMundo);
+        effect.Parameters["InverseTransposeWorld"]?.SetValue(Matrix.Invert(Matrix.Transpose(matrizMundo)));
         mesh.Draw();
       }
     }

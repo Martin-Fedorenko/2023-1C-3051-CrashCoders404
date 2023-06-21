@@ -728,6 +728,7 @@ namespace TGC.MonoGame.TP
             foreach (var mesh in modelo.Meshes)
             {
                 effect.Parameters["World"].SetValue(relativeMatrices[mesh.ParentBone.Index] * matrizMundo);
+                effect.Parameters["InverseTransposeWorld"]?.SetValue(Matrix.Invert(Matrix.Transpose(matrizMundo)));
                 mesh.Draw();
             }
         }
@@ -750,6 +751,7 @@ namespace TGC.MonoGame.TP
             foreach (var mesh in modelo.Meshes)
             {
                 effect.Parameters["World"].SetValue(matrizMundo);
+                effect.Parameters["InverseTransposeWorld"]?.SetValue(Matrix.Invert(Matrix.Transpose(matrizMundo)));
                 mesh.Draw();
             }
         }

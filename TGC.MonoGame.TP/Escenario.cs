@@ -4,13 +4,15 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using TGC.MonoGame.TP.Collisions;
 using TGC.MonoGame.TP.Viewer.Gizmos;
+using TGC.MonoGame.TP.Geometries;
 
 namespace TGC.MonoGame.TP
 {
   public class Escenario
   {
     public Escenario() { }
-    private Model Piso { get; set; }
+    //private Model Piso { get; set; }
+    private QuadPrimitive Piso { get; set; }
     private Model Pared { get; set; }
     private Model Column { get; set; }
     private Model Ramp { get; set; }
@@ -134,7 +136,7 @@ namespace TGC.MonoGame.TP
     public void Initialize()
     {
       //Arena
-      PisoWorld = Matrix.CreateScale(30, 1, 30);
+      PisoWorld = Matrix.CreateScale(800, 1, 800);
       //ParedWorld = Matrix.CreateScale(30, 0, 30);
 
       var scale1 = new Vector3(800f, 1f, 200f);
@@ -200,7 +202,7 @@ namespace TGC.MonoGame.TP
     }
 
 
-    public void LoadContent(Model piso, Model pared, Model column, Model ramp, Model platform, Texture2D texturaPiso, Texture2D texturaPared,
+    public void LoadContent(QuadPrimitive piso, Model pared, Model column, Model ramp, Model platform, Texture2D texturaPiso, Texture2D texturaPared,
                             Texture2D texturaColumna, Texture2D texturaRampa, Texture2D texturaPlataforma)
     {
       Piso = piso;
@@ -215,9 +217,10 @@ namespace TGC.MonoGame.TP
       TexturaRampa = texturaRampa;
       TexturaPlataforma = texturaPlataforma;
 
-      PisoBox = BoundingVolumesExtensions.CreateAABBFrom(Piso);
-      PisoBox = BoundingVolumesExtensions.Scale(PisoBox, new Vector3(20,1,20));
-      PisoBox = new BoundingBox(PisoBox.Min,PisoBox.Max);
+      PisoBox = new BoundingBox(new Vector3(-20000f, -0.001f, -20000f), new Vector3(20000f, 0f, 20000f));
+      //PisoBox = BoundingVolumesExtensions.CreateAABBFrom(Piso);
+      //PisoBox = BoundingVolumesExtensions.Scale(PisoBox, new Vector3(20,1,20));
+      //PisoBox = new BoundingBox(PisoBox.Min,PisoBox.Max);
 
       var minVector = Vector3.One * 0.25f;
       ParedBoxes = new BoundingBox[]
@@ -378,8 +381,20 @@ namespace TGC.MonoGame.TP
       foreach (var mesh in modelo.Meshes)
       {
         effect.Parameters["World"].SetValue(relativeMatrices[mesh.ParentBone.Index] * matrizMundo);
+        effect.Parameters["InverseTransposeWorld"]?.SetValue(Matrix.Invert(Matrix.Transpose(matrizMundo)));
         mesh.Draw();
       }
+    }
+
+
+    public void dibujar(Matrix view, Matrix projection, Effect effect, Matrix matrizMundo, QuadPrimitive quad, Texture2D textura)
+    {
+        effect.Parameters["View"].SetValue(view);
+        effect.Parameters["Projection"].SetValue(projection);
+        effect.Parameters["ModelTexture"].SetValue(textura);
+        effect.Parameters["World"].SetValue(matrizMundo);
+        effect.Parameters["InverseTransposeWorld"]?.SetValue(Matrix.Invert(Matrix.Transpose(matrizMundo)));
+        quad.Draw(effect);
     }
 
 
