@@ -80,7 +80,7 @@ namespace TGC.MonoGame.TP
     private Vector3  Column11Position = new Vector3(-500, 0, 0);
     private Vector3  Column12Position = new Vector3(436, 0, -80);
     private Vector3  BrokenColumn1Position = new Vector3(450, 0, 250);
-    private Vector3  BrokenColumn2Position = new Vector3(-230, 0, -290);
+    private Vector3  BrokenColumn2Position = new Vector3(-230, 0, -270);
     private Vector3  Ramp1Position = new Vector3(-80, 0, -380);
     private Vector3  Ramp2Position = new Vector3(230, 0, -395);
     private Vector3  Ramp3Position = new Vector3(-250, 0, -10);
@@ -119,7 +119,7 @@ namespace TGC.MonoGame.TP
     private BoundingBox PlatformBox3;
     private BoundingBox[] ParedBoxes;
     private BoundingBox[] ColumnBoxes;
-    private OrientedBoundingBox[] BrokenColumnBoxes;
+    private BoundingBox[] BrokenColumnBoxes;
     private BoundingBox[] PlatformBoxes;
     private BoundingBox[] RampBoxes;
     private BoundingBox PisoBox;
@@ -170,8 +170,8 @@ namespace TGC.MonoGame.TP
 
       BrokenColumnWorld = new Matrix[]
       {
-        Matrix.CreateScale(0.6f) * Matrix.CreateRotationY(-MathF.PI / 6) * Matrix.CreateTranslation(BrokenColumn1Position),
-        Matrix.CreateScale(0.7f) * Matrix.CreateRotationY(MathF.PI / 6) * Matrix.CreateTranslation(BrokenColumn2Position),
+        Matrix.CreateScale(0.6f) * Matrix.CreateTranslation(BrokenColumn1Position),
+        Matrix.CreateScale(0.6f) * Matrix.CreateTranslation(BrokenColumn2Position),
       };
 
 
@@ -260,18 +260,17 @@ public void LoadContent(QuadPrimitive piso, Model pared, Model column, Model ram
         new BoundingBox(ColumnBox4.Min + Column12Position -correctorPosicionBoxColumnas, ColumnBox4.Max + Column12Position - correctorPosicionBoxColumnas)
         };
 
+      Vector3 correctorPosicionBoxBrokenColumnas1 = new Vector3(0,-5,40);
+      Vector3 correctorPosicionBoxBrokenColumnas2 = new Vector3(0,-5,40);
+      BrokenColumnAABB1 = BoundingVolumesExtensions.Scale(ColumnBox,new Vector3(0.3f,0.3f,0.6f));
+      BrokenColumnAABB2 = BoundingVolumesExtensions.Scale(ColumnBox,new Vector3(0.4f,0.3f,0.6f));
 
-      BrokenColumnAABB1 = BoundingVolumesExtensions.Scale(ColumnBox,new Vector3(0.4f,0.6f,0.1f));
-      BrokenColumnAABB2 = BoundingVolumesExtensions.Scale(ColumnBox,new Vector3(0.5f,0.7f,0.2f));
-
-      BrokenColumnBoxes = new OrientedBoundingBox[]
+      BrokenColumnBoxes = new BoundingBox[]
       {
-          OrientedBoundingBox.FromAABB(new BoundingBox(BrokenColumnAABB1.Min + BrokenColumn1Position -correctorPosicionBoxColumnas, BrokenColumnAABB1.Max + BrokenColumn1Position - correctorPosicionBoxColumnas)),
-          OrientedBoundingBox.FromAABB(new BoundingBox(BrokenColumnAABB2.Min + BrokenColumn2Position -correctorPosicionBoxColumnas, BrokenColumnAABB2.Max + BrokenColumn2Position - correctorPosicionBoxColumnas))
-     };
+        new BoundingBox(BrokenColumnAABB1.Min + BrokenColumn1Position -correctorPosicionBoxBrokenColumnas1, BrokenColumnAABB1.Max + BrokenColumn1Position - correctorPosicionBoxBrokenColumnas1),
+        new BoundingBox(BrokenColumnAABB2.Min + BrokenColumn2Position-correctorPosicionBoxBrokenColumnas2, BrokenColumnAABB2.Max + BrokenColumn2Position - correctorPosicionBoxBrokenColumnas2)
+      };
      
-      BrokenColumnBoxes[0].Rotate( Matrix.CreateRotationY(-MathF.PI / 6));
-      BrokenColumnBoxes[1].Rotate( Matrix.CreateRotationY(MathF.PI / 6));
 
       PlatformBox = BoundingVolumesExtensions.CreateAABBFrom(Platform);
       PlatformBox1 = BoundingVolumesExtensions.Scale(PlatformBox,new Vector3(100, 5, 80));
@@ -342,13 +341,18 @@ public void LoadContent(QuadPrimitive piso, Model pared, Model column, Model ram
                 }
             }
 
-           /* for(int index = 0; index < BrokenColumnBoxes.Length; index++)
+            for(int index = 0; index < BrokenColumnBoxes.Length; index++)
             {
-                if(autoCollider.Intersects(BrokenColumnBoxes[index]))
+                if(autoCollider.Intersects(BrokenColumnBoxes[index],out vectorChoque,out penetration))
                 {
-                    auto.FrenarAuto();
+                    if(auto.autoSpeed() > 10f) 
+                    {
+                        auto.audioChoque();
+                    }
+                   auto.rebotar(vectorChoque,penetration);
+                   auto.FrenarAuto();
                 }
-            }*/
+            }
 
             for(int index = 0; index < ParedBoxes.Length; index++)
             {
@@ -459,7 +463,10 @@ public void dibujar(Matrix view, Matrix projection, Effect effect, Matrix matriz
 
         gizmos.DrawCube((PisoBox.Max + PisoBox.Min) / 2f,PisoBox.Max - PisoBox.Min,Color.Red);
 
-        //faltarian las rampas y ver como hacer con las obb para las broken columns
+        for(int index = 0; index < BrokenColumnBoxes.Length; index++)
+        {
+           gizmos.DrawCube((BrokenColumnBoxes[index].Max + BrokenColumnBoxes[index].Min) / 2f,BrokenColumnBoxes[index].Max - BrokenColumnBoxes[index].Min,Color.Red);
+        }
     }
 
   public BoundingBox[] getParedBoxes()
