@@ -312,8 +312,14 @@ public void LoadContent(QuadPrimitive piso, Model pared, Model column, Model ram
             {
                 if(autoCollider.Intersects(PlatformBoxes[index]))
                 {
-                     auto.autoEnPlataforma(PlatformBoxes[index].Max.Y);
-             
+                  if(autoCollider.Center.Y > PlatformBoxes[index].Max.Y || index > 2)
+                  {
+                    auto.autoEnPlataforma(PlatformBoxes[index].Max.Y);
+                  }
+                  else
+                  {
+                    auto.chocarTecho();
+                  }
                 }
                 else
                 {

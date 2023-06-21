@@ -375,8 +375,8 @@ namespace TGC.MonoGame.TP
             }
             else if (CarSpeed.X < 0)
             {
-              if(CarSpeed.Y > 0) jumpRotation += elapsedTime;
-              else jumpRotation -= elapsedTime*2;
+              if(CarSpeed.Y > 0) jumpRotation -= elapsedTime;
+              else jumpRotation += elapsedTime*2;
             }
     
       }
@@ -613,6 +613,9 @@ namespace TGC.MonoGame.TP
     public int getVidaProtagonista()
     {
       return vidaProtagonista;
+    }
+    public Vector3 direccionAuto(){
+      return CarDirection;
     }
     public void inicializarBoundingBoxes()
     {
