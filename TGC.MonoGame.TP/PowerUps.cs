@@ -104,6 +104,7 @@ namespace TGC.MonoGame.TP
     private float[] balasRot = { 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f };
     private float mediaVuelta = MathF.PI;
     private float cuartoDeVuelta = MathF.PI / 2;
+    private float totalGameTime = 0f;
 
     public void Initialize(GraphicsDevice graphicsDevice)
     {
@@ -280,7 +281,7 @@ namespace TGC.MonoGame.TP
     {
       var keyboardState = Keyboard.GetState();
       var elapsedTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
-      var Rotation = (float)gameTime.ElapsedGameTime.TotalSeconds;
+      totalGameTime += (float)gameTime.ElapsedGameTime.TotalSeconds;
       OrientedBoundingBox autoCollider = autos.getAutoPrincipalBox();
 
       tieneAmetalladora = false;
@@ -289,15 +290,15 @@ namespace TGC.MonoGame.TP
 
       for (int index = 0; index < AmetralladorasWorld.Length; index++)
       {
-        AmetralladorasWorld[index] = Matrix.CreateRotationX(Rotation * 1.2f) * AmetralladorasWorld[index];
+        AmetralladorasWorld[index] = Matrix.CreateRotationX(elapsedTime * 1.2f) * AmetralladorasWorld[index] * Matrix.CreateTranslation(new Vector3(0f,MathF.Sin(totalGameTime) *0.15f,0f));
       }
       for (int index = 0; index < MisilesWorld.Length; index++)
       {
-        MisilesWorld[index] = Matrix.CreateRotationX(Rotation * 1.2f) * MisilesWorld[index];
+        MisilesWorld[index] = Matrix.CreateRotationX(elapsedTime * 1.2f) * MisilesWorld[index] * Matrix.CreateTranslation(new Vector3(0f,MathF.Sin(totalGameTime) *0.15f,0f));;
       }
       for (int index = 0; index < TurbosWorld.Length; index++)
       {
-        TurbosWorld[index] = Matrix.CreateRotationX(Rotation * 1.2f) * TurbosWorld[index];
+        TurbosWorld[index] = Matrix.CreateRotationX(elapsedTime * 1.2f) * TurbosWorld[index] * Matrix.CreateTranslation(new Vector3(0f,MathF.Sin(totalGameTime) *0.15f,0f));;
       }
 
       if (currentPowerUp != PowerUp.None)

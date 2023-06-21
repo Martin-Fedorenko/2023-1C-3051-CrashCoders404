@@ -132,7 +132,8 @@ namespace TGC.MonoGame.TP
     private Texture2D TexturaRampa;
     private Texture2D TexturaPlataforma;
     private float retardoColisionBox;
-    Boolean enPisoOPlataforma;
+
+    private Boolean enPisoOPlataforma;
     public void Initialize()
     {
       //Arena
@@ -202,8 +203,8 @@ namespace TGC.MonoGame.TP
     }
 
 
-    public void LoadContent(QuadPrimitive piso, Model pared, Model column, Model ramp, Model platform, Texture2D texturaPiso, Texture2D texturaPared,
-                            Texture2D texturaColumna, Texture2D texturaRampa, Texture2D texturaPlataforma)
+public void LoadContent(QuadPrimitive piso, Model pared, Model column, Model ramp, Model platform, Texture2D texturaPiso, 
+                        Texture2D texturaPared,Texture2D texturaColumna, Texture2D texturaRampa, Texture2D texturaPlataforma)
     {
       Piso = piso;
       Pared = pared;
@@ -294,33 +295,32 @@ namespace TGC.MonoGame.TP
             OrientedBoundingBox autoCollider;
             Vector3 vectorChoque = Vector3.Zero;
             float penetration = 0f;
-            autoCollider = auto.getAutoPrincipalBox();
             enPisoOPlataforma = false;
+            autoCollider = auto.getAutoPrincipalBox();
 
 
             if(autoCollider.Intersects(PisoBox))
             {
-              enPisoOPlataforma = true;
+              auto.autoEnPiso();
             }
-
+            else{
+              auto.autoNoEnPiso();
+            }
 
 
           for(int index = 0; index < PlatformBoxes.Length; index++)
             {
                 if(autoCollider.Intersects(PlatformBoxes[index]))
                 {
-                    if(autoCollider.Center.Y > PlatformBoxes[index].Max.Y) //el auto esta encima de la plataforma
-                    {
-                     enPisoOPlataforma = true;
-                    }
-                    else
-                    {
-                      auto.chocarTecho(); //deja de subir
-                    }
+                     auto.autoEnPlataforma(PlatformBoxes[index].Max.Y);
+             
+                }
+                else
+                {
+                  auto.autoNoEnPlataforma();
                 }
             }
-            if(enPisoOPlataforma) auto.autoEnPiso();
-            else auto.autoNoEnPiso();
+
 
 
             for(int index = 0; index < ColumnBoxes.Length; index++)
@@ -360,7 +360,7 @@ namespace TGC.MonoGame.TP
             return false;
 
         }
-    public void dibujar(Matrix view, Matrix projection, Effect effect, Matrix matrizMundo, Model modelo, Texture2D textura)
+public void dibujar(Matrix view, Matrix projection, Effect effect, Matrix matrizMundo, Model modelo, Texture2D textura)
     {
       foreach (var mesh in modelo.Meshes)
       {
@@ -396,7 +396,6 @@ namespace TGC.MonoGame.TP
         effect.Parameters["InverseTransposeWorld"]?.SetValue(Matrix.Invert(Matrix.Transpose(matrizMundo)));
         quad.Draw(effect);
     }
-
 
     public void dibujarEscenario(Matrix view, Matrix projection, Effect effect)
     {

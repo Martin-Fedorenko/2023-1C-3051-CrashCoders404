@@ -87,6 +87,7 @@ namespace TGC.MonoGame.TP
     private Vector3 Desplazamiento;
     private Vector3[] DesplazamientoAutos;
     private Boolean enElPiso;
+    private Boolean enPlataforma;
     float tiempoEnAire;
 
     //Texturas
@@ -109,6 +110,7 @@ namespace TGC.MonoGame.TP
     private Vector3 direccionPostChoque;
     private Vector3 direccionChoqueBB = Vector3.Zero;
     private float penetration;
+    private float alturaPlataforma = 0f;
 
     Vector3 coreccionAltura = new Vector3(0, 66f, 0); //el centro de la oriented bounding box esta quedando muy arriba
     Vector3 coreccionAlturaAutoCombate = new Vector3(199, 4244f, -443); //(3,-20f,0);
@@ -140,6 +142,7 @@ namespace TGC.MonoGame.TP
       jumpHeight = 100f;
       maxSpeed = 2800f;
       enElPiso = true;
+      enPlataforma = false;
       tiempoEnAire = 0f;
       turbo = false;
       turboTime = 0;
@@ -262,7 +265,7 @@ namespace TGC.MonoGame.TP
 
     }
 
-    public void Update(GameTime gameTime,float totalGameTime)
+    public void Update(GameTime gameTime)
     {
       var keyboardState = Keyboard.GetState();
       var elapsedTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
@@ -351,14 +354,15 @@ namespace TGC.MonoGame.TP
       }
 
       //saltar
-      if (Keyboard.GetState().IsKeyDown(Keys.Space) && !accelerating && enElPiso)
+      if (Keyboard.GetState().IsKeyDown(Keys.Space) && !accelerating && (enElPiso || enPlataforma))
       {
         CarSpeed.Y = jumpSpeed;
         onJump = true;
         enElPiso = false;
+        enPlataforma = false;
       }
 
-      if(!enElPiso)
+      if(!enElPiso && !enPlataforma)
       {
         tiempoEnAire += (float)gameTime.ElapsedGameTime.TotalSeconds;
         CarSpeed.Y -= gravity * tiempoEnAire;
@@ -376,16 +380,6 @@ namespace TGC.MonoGame.TP
             }
     
       }
-       if (enElPiso) //por alguna cuando cae al piso no queda recto de una sino que "vibra" un poco
-      {
-        CarSpeed.Y = 0f;
-        onJump = false;
-        jumpSpeed = 10f;
-        jumpRotation = 0;
-        tiempoEnAire = 0f;
-        AutoPrincipalPos.Y = 0f;
-      }
-      
 
       if(turbo){
         turboTime += (float)gameTime.ElapsedGameTime.TotalSeconds;
@@ -543,16 +537,36 @@ namespace TGC.MonoGame.TP
       return PreviousSpeed;
     }
     public void autoEnPiso()
+    {   
+        CarSpeed.Y = 0f;
+        onJump = false;
+        jumpSpeed = 10f;
+        jumpRotation = 0;
+        tiempoEnAire = 0f;
+        AutoPrincipalPos.Y = 0f;
+        enElPiso = true;
+    }
+     public void autoEnPlataforma(float alturaPlataformaIntersectada)
     {
-      enElPiso = true;
+        CarSpeed.Y = 0f;
+        onJump = false;
+        jumpRotation = 0;
+        tiempoEnAire = 0f;
+        enPlataforma = true;
+        AutoPrincipalPos.Y = alturaPlataformaIntersectada;
+
     }
     public void autoNoEnPiso()
     {
       enElPiso = false;
     }
+    public void autoNoEnPlataforma()
+    {
+      enPlataforma = false;
+    }
     public void chocarTecho()
     {
-      jumpSpeed = 0f;
+      CarSpeed.Y = 0f;
     }
     public Vector3 posAutoMenu(){
       return autoMenuPos;
