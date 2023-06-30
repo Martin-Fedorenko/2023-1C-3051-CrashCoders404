@@ -470,6 +470,8 @@ namespace TGC.MonoGame.TP
     {
       effect.Parameters["View"].SetValue(view);
       effect.Parameters["Projection"].SetValue(projection);
+      effect.Parameters["InverseTransposeWorld"]?.SetValue(Matrix.Transpose(Matrix.Invert(matrizMundo)));
+      
 
       relativeMatrices = new Matrix[modelo.Bones.Count];
       modelo.CopyAbsoluteBoneTransformsTo(relativeMatrices);
@@ -497,6 +499,7 @@ namespace TGC.MonoGame.TP
 
     public void dibujarAutosMenu(Matrix view, Matrix projection, Effect effect)
     {
+      effect.CurrentTechnique = effect.Techniques["Luz"];
        dibujarAuto(view, projection, effect, AutoDeportivo, 0, autoMenu);
        dibujarAuto(view, projection, effect, AutoDeCombate, 0, autoMenu2);
        dibujarAuto(view, projection, effect, AutoDeportivo, 0, autoMenu3);
@@ -504,6 +507,9 @@ namespace TGC.MonoGame.TP
     public void dibujarAutos(Matrix view, Matrix projection, Effect effect)
     {
       Model modeloAuto;
+      effect.CurrentTechnique = effect.Techniques["Reflejo"];
+      dibujarAuto(view, projection, effect, AutoDeportivo, WheelRotationPrincipal, AutoPrincipalWorld);
+
       dibujarAuto(view, projection, effect, AutoDeportivo, WheelRotationPrincipal, AutoPrincipalWorld);
 
       for (int index = 0; index < AutosWorld.Length; index++)

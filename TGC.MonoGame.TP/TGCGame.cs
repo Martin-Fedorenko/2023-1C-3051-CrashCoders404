@@ -121,6 +121,9 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
     private Texture2D TexturaMenu;
     private Texture2D TexturaPowerUp;
 
+    //efectos
+    private RenderTargetCube EnvironmentMapRenderTarget { get; set; }
+
 
     //HUD
     private float totalGameTime;
@@ -161,6 +164,12 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
 
     protected override void LoadContent()
     {
+
+      // Create a render target for the scene
+      EnvironmentMapRenderTarget = new RenderTargetCube(GraphicsDevice, 2048, false,
+      SurfaceFormat.Color, DepthFormat.Depth24, 0, RenderTargetUsage.DiscardContents);
+      GraphicsDevice.BlendState = BlendState.Opaque;
+
       gizmos.LoadContent(GraphicsDevice, Content);
       SpriteBatch = new SpriteBatch(GraphicsDevice);
       Piso = new QuadPrimitive(GraphicsDevice);
@@ -198,15 +207,17 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
       DetallesShader = Content.Load<Effect>(ContentFolderEffects + "DetallesShader");
       AutoShader = Content.Load<Effect>(ContentFolderEffects + "AutoShader");
 
-      // iluminacion
-      AutoShader.Parameters["ambientColor"].SetValue(new Vector3(255f, 255f, 255f));
-      AutoShader.Parameters["diffuseColor"].SetValue(new Vector3(100f, 100f, 100f));
-      AutoShader.Parameters["specularColor"].SetValue(new Vector3(1f, 1f, 1f));
+      AutoShader.Parameters["environmentMap"]?.SetValue(EnvironmentMapRenderTarget);
 
-      AutoShader.Parameters["KAmbient"].SetValue(0.1f);
-      AutoShader.Parameters["KDiffuse"].SetValue(0.1f);
-      AutoShader.Parameters["KSpecular"].SetValue(1f);
-      AutoShader.Parameters["shininess"].SetValue(500f);
+      // iluminacion
+      AutoShader.Parameters["ambientColor"]?.SetValue(new Vector3(255f, 255f, 255f));
+      AutoShader.Parameters["diffuseColor"]?.SetValue(new Vector3(100f, 100f, 100f));
+      AutoShader.Parameters["specularColor"]?.SetValue(new Vector3(1f, 1f, 1f));
+
+      AutoShader.Parameters["KAmbient"]?.SetValue(0.1f);
+      AutoShader.Parameters["KDiffuse"]?.SetValue(0.1f);
+      AutoShader.Parameters["KSpecular"]?.SetValue(1f);
+      AutoShader.Parameters["shininess"]?.SetValue(500f);
 
       //Música y sonido
       BulletSound = Content.Load<SoundEffect>(ContentFolderSounds + "bullet-ametralladora");
@@ -339,8 +350,8 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
 
             // Set the light position and camera position
             // These change every update so we need to set them on every update call
-            AutoShader.Parameters["lightPosition"].SetValue(lightPosition);
-            AutoShader.Parameters["eyePosition"].SetValue(posicionCamara + autos.posAutoPrincipal());
+            AutoShader.Parameters["lightPosition"]?.SetValue(lightPosition);
+            AutoShader.Parameters["eyePosition"]?.SetValue(posicionCamara + autos.posAutoPrincipal());
 
           break;
 
@@ -420,11 +431,51 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
             SpriteBatch.DrawString(font, autos.getVidaProtagonista().ToString(), autoPos, Color.Red);
           }
 
+          #region Pass 1-6
+            // Draw to our cubemap from the robot position
+          for (var face = CubeMapFace.PositiveX; face <= CubeMapFace.NegativeZ; face++)
+          {
+                // Set the render target as our cubemap face, we are drawing the scene in this texture
+                GraphicsDevice.SetRenderTarget(EnvironmentMapRenderTarget, face);
+                GraphicsDevice.Clear(ClearOptions.Target | ClearOptions.DepthBuffer, Color.Black, 1f, 0);
 
-          escenario.dibujarEscenario(View, Projection, AutoShader);
+                //SetCubemapCameraForOrientation(face);
+                //CubeMapCamera.BuildView();
+
+                // Draw our scene.
+                //AutoShader.CurrentTechnique = Effect.Techniques["VariosLuz"];
+                
+                
+                escenario.dibujarEscenario(View, Projection, AutoShader, false);
+                //detalles.dibujarDetalles(View, Projection, AutoShader);
+                powerUps.dibujarPowerUps(View, Projection, AutoShader);
+                //autos.dibujarAutos(View, Projection, AutoShader); si agregas los detalles o los autos al reflejo la perfomance empeora
+          }
+          #endregion
+
+          #region Pass 7
+
+            // Set the render target as null, we are drawing on the screen!
+            GraphicsDevice.SetRenderTarget(null);
+            GraphicsDevice.Clear(ClearOptions.Target | ClearOptions.DepthBuffer, Color.Black, 1f, 0);
+
+            //AutoShader.CurrentTechnique = Effect.Techniques["VariosLuz"];
+            
+            // Draw our scene with the default effect
+            escenario.dibujarEscenario(View, Projection, AutoShader, true);
+            detalles.dibujarDetalles(View, Projection, AutoShader);
+            powerUps.dibujarPowerUps(View, Projection, AutoShader);
+
+            #region Autos
+            
+            autos.dibujarAutos(View, Projection, AutoShader);
+
+            #endregion
+          #endregion
+          /*escenario.dibujarEscenario(View, Projection, AutoShader);
           detalles.dibujarDetalles(View, Projection, AutoShader);
           powerUps.dibujarPowerUps(View, Projection, AutoShader);
-          autos.dibujarAutos(View, Projection, AutoShader);
+          autos.dibujarAutos(View, Projection, AutoShader);*/
 
           autos.dibujarBoundingBoxes(gizmos); //OBB de autos deportivos bien ubicadas
           detalles.dibujarBoundingBoxes(gizmos); //BB de arboles bien ubicadas

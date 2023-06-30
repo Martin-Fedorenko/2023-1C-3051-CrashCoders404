@@ -399,18 +399,21 @@ public void dibujar(Matrix view, Matrix projection, Effect effect, Matrix matriz
 
     public void dibujar(Matrix view, Matrix projection, Effect effect, Matrix matrizMundo, QuadPrimitive quad, Texture2D textura)
     {
-        effect.Parameters["View"].SetValue(view);
-        effect.Parameters["Projection"].SetValue(projection);
-        effect.Parameters["ModelTexture"].SetValue(textura);
-        effect.Parameters["World"].SetValue(matrizMundo);
+        effect.Parameters["View"]?.SetValue(view);
+        effect.Parameters["Projection"]?.SetValue(projection);
+        effect.Parameters["ModelTexture"]?.SetValue(textura);
+        effect.Parameters["World"]?.SetValue(matrizMundo);
         effect.Parameters["InverseTransposeWorld"]?.SetValue(Matrix.Invert(Matrix.Transpose(matrizMundo)));
         quad.Draw(effect);
     }
 
-    public void dibujarEscenario(Matrix view, Matrix projection, Effect effect)
+    public void dibujarEscenario(Matrix view, Matrix projection, Effect effect, Boolean pisoOn)
     {
+
+      effect.CurrentTechnique = effect.Techniques["Luz"];
       //Arena
-      dibujar(view, projection, effect, PisoWorld, Piso, TexturaPiso);
+      if(pisoOn)
+        dibujar(view, projection, effect, PisoWorld, Piso, TexturaPiso);
       
       //Paredes
       for(int index = 0; index < ParedWorld.Length; index++)

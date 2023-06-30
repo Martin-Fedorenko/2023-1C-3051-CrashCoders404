@@ -47,6 +47,16 @@ sampler2D textureSampler = sampler_state
     AddressV = Clamp;
 };
 
+texture environmentMap;
+samplerCUBE environmentMapSampler = sampler_state
+{
+    Texture = (environmentMap);
+    MagFilter = Linear;
+    MinFilter = Linear;
+    AddressU = Clamp;
+    AddressV = Clamp;
+};
+
 float Time = 0;
 
 VertexShaderOutput MainVS(in VertexShaderInput input)
@@ -61,13 +71,14 @@ VertexShaderOutput MainVS(in VertexShaderInput input)
 
     //output.Position = mul(input.Position, WorldViewProjection);
     output.WorldPosition = mul(input.Position, World);
-    output.Normal = mul(input.Normal, InverseTransposeWorld);
+    //output.Normal = mul(input.Normal, InverseTransposeWorld);
+    output.Normal = mul(float4(normalize(input.Normal.xyz), 1.0), InverseTransposeWorld);
     output.TextureCoordinate = input.TextureCoordinate;
 	
 	return output;
 }
 
-float4 MainPS(VertexShaderOutput input) : COLOR
+float4 LuzPS(VertexShaderOutput input) : COLOR
 {
     // Base vectors
     float3 lightDirection = normalize(lightPosition - input.WorldPosition.xyz);
@@ -88,14 +99,44 @@ float4 MainPS(VertexShaderOutput input) : COLOR
     // Final calculation
     float4 finalColor = float4(saturate(ambientColor * KAmbient + diffuseLight) * texelColor.rgb + specularLight, texelColor.a);
     return finalColor*texelColor;
-
 }
 
-technique BasicColorDrawing
+float4 EnvironmentMapPS(VertexShaderOutput input) : COLOR
+{
+	//Normalizar vectores
+	float3 normal = normalize(input.Normal.xyz);
+    
+    float3 baseColor = LuzPS(input);
+	// Get the texel from the texture
+	//float3 baseColor = tex2D(textureSampler, input.TextureCoordinate).rgb;
+	
+    // Not part of the mapping, just adjusting color
+    baseColor = lerp(baseColor, float3(1, 1, 1), step(length(baseColor), 0.01));
+    
+	//Obtener texel de CubeMap
+	float3 view = normalize(eyePosition.xyz - input.WorldPosition.xyz);
+	float3 reflection = reflect(view, normal);
+	float3 reflectionColor = texCUBE(environmentMapSampler, reflection).rgb;
+
+    float fresnel = saturate((1.0 - dot(normal, view)));
+
+    return float4(lerp(baseColor, reflectionColor, fresnel), 1);
+}
+
+technique Luz
 {
 	pass P0
 	{
 		VertexShader = compile VS_SHADERMODEL MainVS();
-		PixelShader = compile PS_SHADERMODEL MainPS();
+		PixelShader = compile PS_SHADERMODEL LuzPS();
+	}
+};
+
+technique Reflejo
+{
+	pass P0
+	{
+		VertexShader = compile VS_SHADERMODEL MainVS();
+		PixelShader = compile PS_SHADERMODEL EnvironmentMapPS();
 	}
 };

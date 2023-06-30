@@ -635,7 +635,7 @@ namespace TGC.MonoGame.TP
 
     public void dibujarPowerUps(Matrix view, Matrix projection, Effect effect)
     {
-
+      effect.CurrentTechnique = effect.Techniques["Luz"];
       for (int index = 0; index < AmetralladorasWorld.Length; index++)
       {
         if (!collidedindexAmetralladora.Contains(index))
