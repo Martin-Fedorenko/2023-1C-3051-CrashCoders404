@@ -124,6 +124,10 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
     //efectos
     private RenderTargetCube EnvironmentMapRenderTarget { get; set; }
 
+    private RenderTarget2D FirstPassBloomRenderTarget;
+    private RenderTarget2D MainSceneRenderTarget;
+    private FullScreenQuad FullScreenQuad;
+
 
     //HUD
     private float totalGameTime;
@@ -169,6 +173,15 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
       EnvironmentMapRenderTarget = new RenderTargetCube(GraphicsDevice, 2048, false,
       SurfaceFormat.Color, DepthFormat.Depth24, 0, RenderTargetUsage.DiscardContents);
       GraphicsDevice.BlendState = BlendState.Opaque;
+
+      FullScreenQuad = new FullScreenQuad(GraphicsDevice);
+
+      MainSceneRenderTarget = new RenderTarget2D(GraphicsDevice, GraphicsDevice.Viewport.Width,
+        GraphicsDevice.Viewport.Height, false, SurfaceFormat.Color, DepthFormat.Depth24Stencil8, 0,
+        RenderTargetUsage.DiscardContents);
+      FirstPassBloomRenderTarget = new RenderTarget2D(GraphicsDevice, GraphicsDevice.Viewport.Width,
+        GraphicsDevice.Viewport.Height, false, SurfaceFormat.Color, DepthFormat.Depth24Stencil8, 0,
+        RenderTargetUsage.DiscardContents);
 
       gizmos.LoadContent(GraphicsDevice, Content);
       SpriteBatch = new SpriteBatch(GraphicsDevice);
@@ -438,14 +451,8 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
                 // Set the render target as our cubemap face, we are drawing the scene in this texture
                 GraphicsDevice.SetRenderTarget(EnvironmentMapRenderTarget, face);
                 GraphicsDevice.Clear(ClearOptions.Target | ClearOptions.DepthBuffer, Color.Black, 1f, 0);
-
-                //SetCubemapCameraForOrientation(face);
-                //CubeMapCamera.BuildView();
-
-                // Draw our scene.
-                //AutoShader.CurrentTechnique = Effect.Techniques["VariosLuz"];
                 
-                
+            
                 escenario.dibujarEscenario(View, Projection, AutoShader, false);
                 //detalles.dibujarDetalles(View, Projection, AutoShader);
                 powerUps.dibujarPowerUps(View, Projection, AutoShader);
@@ -456,22 +463,42 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
           #region Pass 7
 
             // Set the render target as null, we are drawing on the screen!
-            GraphicsDevice.SetRenderTarget(null);
+            GraphicsDevice.SetRenderTarget(MainSceneRenderTarget);
             GraphicsDevice.Clear(ClearOptions.Target | ClearOptions.DepthBuffer, Color.Black, 1f, 0);
-
-            //AutoShader.CurrentTechnique = Effect.Techniques["VariosLuz"];
             
             // Draw our scene with the default effect
             escenario.dibujarEscenario(View, Projection, AutoShader, true);
             detalles.dibujarDetalles(View, Projection, AutoShader);
             powerUps.dibujarPowerUps(View, Projection, AutoShader);
-
-            #region Autos
             
-            autos.dibujarAutos(View, Projection, AutoShader);
+            autos.dibujarAutos(View, Projection, AutoShader, "Reflejo");
 
-            #endregion
           #endregion
+
+          #region Pass 8
+            GraphicsDevice.SetRenderTarget(FirstPassBloomRenderTarget);
+            GraphicsDevice.Clear(ClearOptions.Target | ClearOptions.DepthBuffer, Color.Black, 1f, 0);
+            //hay que mandarle alguna textura?
+            //creo que hay que hacer blur
+            //AutoShader.Parameters["baseTexture"]?.SetValue();
+            autos.dibujarAutos(View, Projection, AutoShader, "Bloom");
+
+          #endregion
+
+          #region Pass 9
+            GraphicsDevice.DepthStencilState = DepthStencilState.None;
+            GraphicsDevice.SetRenderTarget(null);
+            GraphicsDevice.Clear(Color.Black);
+
+            
+            AutoShader.Parameters["baseTexture"]?.SetValue(MainSceneRenderTarget);
+            AutoShader.Parameters["bloomTexture"]?.SetValue(FirstPassBloomRenderTarget);
+
+            FullScreenQuad.Draw(AutoShader, "Integrar");
+          #endregion
+
+          
+
           /*escenario.dibujarEscenario(View, Projection, AutoShader);
           detalles.dibujarDetalles(View, Projection, AutoShader);
           powerUps.dibujarPowerUps(View, Projection, AutoShader);

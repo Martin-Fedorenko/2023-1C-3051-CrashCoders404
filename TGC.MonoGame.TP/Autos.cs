@@ -504,13 +504,13 @@ namespace TGC.MonoGame.TP
        dibujarAuto(view, projection, effect, AutoDeCombate, 0, autoMenu2);
        dibujarAuto(view, projection, effect, AutoDeportivo, 0, autoMenu3);
     }
-    public void dibujarAutos(Matrix view, Matrix projection, Effect effect)
+    public void dibujarAutos(Matrix view, Matrix projection, Effect effect, String tecnica)
     {
       Model modeloAuto;
-      effect.CurrentTechnique = effect.Techniques["Reflejo"];
+      effect.CurrentTechnique = effect.Techniques[tecnica];
       dibujarAuto(view, projection, effect, AutoDeportivo, WheelRotationPrincipal, AutoPrincipalWorld);
 
-      dibujarAuto(view, projection, effect, AutoDeportivo, WheelRotationPrincipal, AutoPrincipalWorld);
+      //dibujarAuto(view, projection, effect, AutoDeportivo, WheelRotationPrincipal, AutoPrincipalWorld);
 
       for (int index = 0; index < AutosWorld.Length; index++)
       {

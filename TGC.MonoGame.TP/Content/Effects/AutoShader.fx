@@ -57,6 +57,26 @@ samplerCUBE environmentMapSampler = sampler_state
     AddressV = Clamp;
 };
 
+texture baseTexture;
+sampler2D baseTextureSampler = sampler_state
+{
+    Texture = (baseTexture);
+    MagFilter = Linear;
+    MinFilter = Linear;
+    AddressU = Clamp;
+    AddressV = Clamp;
+};
+
+texture bloomTexture;
+sampler2D bloomTextureSampler = sampler_state
+{
+    Texture = (bloomTexture);
+    MagFilter = Linear;
+    MinFilter = Linear;
+    AddressU = Clamp;
+    AddressV = Clamp;
+};
+
 float Time = 0;
 
 VertexShaderOutput MainVS(in VertexShaderInput input)
@@ -106,12 +126,12 @@ float4 EnvironmentMapPS(VertexShaderOutput input) : COLOR
 	//Normalizar vectores
 	float3 normal = normalize(input.Normal.xyz);
     
-    float3 baseColor = LuzPS(input);
+    float4 baseColor = LuzPS(input);
 	// Get the texel from the texture
 	//float3 baseColor = tex2D(textureSampler, input.TextureCoordinate).rgb;
 	
     // Not part of the mapping, just adjusting color
-    baseColor = lerp(baseColor, float3(1, 1, 1), step(length(baseColor), 0.01));
+    baseColor.xyz = lerp(baseColor.xyz, float3(1, 1, 1), step(length(baseColor), 0.01));
     
 	//Obtener texel de CubeMap
 	float3 view = normalize(eyePosition.xyz - input.WorldPosition.xyz);
@@ -120,7 +140,36 @@ float4 EnvironmentMapPS(VertexShaderOutput input) : COLOR
 
     float fresnel = saturate((1.0 - dot(normal, view)));
 
-    return float4(lerp(baseColor, reflectionColor, fresnel), 1);
+    return float4(lerp(baseColor.xyz, reflectionColor, fresnel), 1);
+}
+
+float4 BloomPS(VertexShaderOutput input) : COLOR
+{
+    float4 color = tex2D(baseTextureSampler, input.TextureCoordinate);
+    
+    float distanceToTargetColor = distance(color.rgb, float3(1.0, 0.0, 0.0));
+    
+    float filter = step(distanceToTargetColor, 0.15);
+    
+    //return float4(color.rgb * filter, 1);
+    return float4(1.0,0.0,0.0,1.0);
+}
+
+VertexShaderOutput IntegrarVS(in VertexShaderInput input)
+{
+    VertexShaderOutput output = (VertexShaderOutput)0;
+    output.Position = input.Position;
+    output.TextureCoordinate = input.TextureCoordinate;
+    return output;
+}
+
+float4 IntegrarPS(in VertexShaderOutput input) : COLOR
+{    
+    float4 bloomColor = tex2D(bloomTextureSampler, input.TextureCoordinate);
+    float4 sceneColor = tex2D(baseTextureSampler, input.TextureCoordinate);
+    
+    return sceneColor * 0.5 + bloomColor;
+    
 }
 
 technique Luz
@@ -139,4 +188,22 @@ technique Reflejo
 		VertexShader = compile VS_SHADERMODEL MainVS();
 		PixelShader = compile PS_SHADERMODEL EnvironmentMapPS();
 	}
+};
+
+technique Bloom
+{
+    pass Pass0
+    {
+        VertexShader = compile VS_SHADERMODEL MainVS();
+        PixelShader = compile PS_SHADERMODEL BloomPS();
+    }
+};
+
+technique Integrar
+{
+    pass Pass0
+    {
+        VertexShader = compile VS_SHADERMODEL IntegrarVS();
+        PixelShader = compile PS_SHADERMODEL IntegrarPS();
+    }
 };
