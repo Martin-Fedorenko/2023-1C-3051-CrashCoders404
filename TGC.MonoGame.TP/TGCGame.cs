@@ -37,6 +37,7 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
     private Effect EscenarioShader { get; set; }
     private Effect DetallesShader { get; set; }
     private Effect AutoShader { get; set; }
+    private Effect BlurShader { get; set; }
     private Effect IluminacionShader { get; set; }
     
 
@@ -125,6 +126,7 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
     private RenderTargetCube EnvironmentMapRenderTarget { get; set; }
 
     private RenderTarget2D FirstPassBloomRenderTarget;
+    private RenderTarget2D SecondPassBloomRenderTarget;
     private RenderTarget2D MainSceneRenderTarget;
     private FullScreenQuad FullScreenQuad;
 
@@ -151,6 +153,8 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
       escenario = new Escenario();
       powerUps = new PowerUps();
       autos = new Autos();
+
+      
 
       escenario.Initialize();
       detalles.Initialize();
@@ -181,6 +185,9 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
         RenderTargetUsage.DiscardContents);
       FirstPassBloomRenderTarget = new RenderTarget2D(GraphicsDevice, GraphicsDevice.Viewport.Width,
         GraphicsDevice.Viewport.Height, false, SurfaceFormat.Color, DepthFormat.Depth24Stencil8, 0,
+        RenderTargetUsage.DiscardContents);
+      SecondPassBloomRenderTarget = new RenderTarget2D(GraphicsDevice, GraphicsDevice.Viewport.Width,
+        GraphicsDevice.Viewport.Height, false, SurfaceFormat.Color, DepthFormat.None, 0,
         RenderTargetUsage.DiscardContents);
 
       gizmos.LoadContent(GraphicsDevice, Content);
@@ -219,6 +226,9 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
       EscenarioShader = Content.Load<Effect>(ContentFolderEffects + "EscenarioShader");
       DetallesShader = Content.Load<Effect>(ContentFolderEffects + "DetallesShader");
       AutoShader = Content.Load<Effect>(ContentFolderEffects + "AutoShader");
+      BlurShader = Content.Load<Effect>(ContentFolderEffects + "GaussianBlur");
+
+      BlurShader.Parameters["screenSize"]?.SetValue(new Vector2(GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height));
 
       AutoShader.Parameters["environmentMap"]?.SetValue(EnvironmentMapRenderTarget);
 
@@ -358,14 +368,16 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
           gizmos.UpdateViewProjection(View, Projection);
 
 
-          var lightPosition = new Vector3(0.0f,50.0f,0.0f); //SOL "FIJO"
+          var lightPosition = new Vector3(0.0f,100.0f,0.0f); //SOL "FIJO"
           //var lightPosition = new Vector3(autos.posAutoPrincipal().X, autos.posAutoPrincipal().Y+20f, autos.posAutoPrincipal().Z);
 
             // Set the light position and camera position
             // These change every update so we need to set them on every update call
-            AutoShader.Parameters["lightPosition"]?.SetValue(lightPosition);
+            AutoShader.Parameters["lightPosition"]?.SetValue(autos.directionAutoPrincipal());
             AutoShader.Parameters["eyePosition"]?.SetValue(posicionCamara + autos.posAutoPrincipal());
+            //Console.WriteLine(autos.directionAutoPrincipal());
 
+            
           break;
 
         case ST_ENDGAME:
@@ -486,13 +498,45 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
           #endregion
 
           #region Pass 9
-            GraphicsDevice.DepthStencilState = DepthStencilState.None;
+
+            // Now we apply a blur effect to the bloom texture
+            // Note that we apply this a number of times and we switch
+            // the render target with the source texture
+            // Basically, this applies the blur effect N times
+
+            var bloomTexture = FirstPassBloomRenderTarget;
+            var finalBloomRenderTarget = SecondPassBloomRenderTarget;
+            var PassCount = 2;
+            for (var index = 0; index < PassCount; index++)
+            {
+                //Exchange(ref SecondaPassBloomRenderTarget, ref FirstPassBloomRenderTarget);
+
+                // Set the render target as null, we are drawing into the screen now!
+                GraphicsDevice.SetRenderTarget(finalBloomRenderTarget);
+                GraphicsDevice.Clear(ClearOptions.Target | ClearOptions.DepthBuffer, Color.Black, 1f, 0);
+
+                BlurShader.Parameters["baseTexture"].SetValue(bloomTexture);
+                FullScreenQuad.Draw(BlurShader, "Blur");
+
+                if (index != PassCount - 1)
+                {
+                    var auxiliar = bloomTexture;
+                    bloomTexture = finalBloomRenderTarget;
+                    finalBloomRenderTarget = auxiliar;
+                }
+            }
+
+            #endregion
+
+
+          #region Pass 10
+            //GraphicsDevice.DepthStencilState = DepthStencilState.None;
             GraphicsDevice.SetRenderTarget(null);
-            GraphicsDevice.Clear(Color.Black);
+            GraphicsDevice.Clear(ClearOptions.Target | ClearOptions.DepthBuffer, Color.Black, 1f, 0);
 
             
             AutoShader.Parameters["baseTexture"]?.SetValue(MainSceneRenderTarget);
-            AutoShader.Parameters["bloomTexture"]?.SetValue(FirstPassBloomRenderTarget);
+            AutoShader.Parameters["bloomTexture"]?.SetValue(finalBloomRenderTarget);
 
             FullScreenQuad.Draw(AutoShader, "Integrar");
           #endregion

@@ -22,6 +22,8 @@ float shininess;
 float3 lightPosition;
 float3 eyePosition; // Camera position
 
+float3 carDirection;
+
 struct VertexShaderInput
 {
 	float4 Position : POSITION0;
@@ -32,6 +34,7 @@ struct VertexShaderInput
 struct VertexShaderOutput
 {
 	float4 Position : SV_POSITION;
+    float4 Mesh : TEXCOORD3;
     float2 TextureCoordinate : TEXCOORD0;
     float4 WorldPosition : TEXCOORD1;
     float4 Normal : TEXCOORD2;    
@@ -82,6 +85,8 @@ float Time = 0;
 VertexShaderOutput MainVS(in VertexShaderInput input)
 {
 	VertexShaderOutput output = (VertexShaderOutput)0;
+
+    output.Mesh = input.Position;
 
     float4 worldPosition = mul(input.Position, World);
     // World space to View space
@@ -146,13 +151,14 @@ float4 EnvironmentMapPS(VertexShaderOutput input) : COLOR
 float4 BloomPS(VertexShaderOutput input) : COLOR
 {
     float4 color = tex2D(baseTextureSampler, input.TextureCoordinate);
-    
-    float distanceToTargetColor = distance(color.rgb, float3(1.0, 0.0, 0.0));
-    
-    float filter = step(distanceToTargetColor, 0.15);
-    
-    //return float4(color.rgb * filter, 1);
-    return float4(1.0,0.0,0.0,1.0);
+
+    if(input.Mesh.z>2.5 && input.Mesh.z<3.0 && input.Mesh.x<0.7 && input.Mesh.x>-0.7){
+        color = float4(1.0,0.0,0.0,1.0);
+    }else{
+        discard;
+    }
+
+    return color;
 }
 
 VertexShaderOutput IntegrarVS(in VertexShaderInput input)
