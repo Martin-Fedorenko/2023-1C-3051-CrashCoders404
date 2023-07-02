@@ -598,6 +598,12 @@
 /processorParam:Quality=Best
 /build:Music/music-menu.mp3
 
+#begin Music/retro-platforming.mp3
+/importer:Mp3Importer
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:Music/retro-platforming.mp3
+
 #begin Music/trap-movement.mp3
 /importer:Mp3Importer
 /processor:SongProcessor

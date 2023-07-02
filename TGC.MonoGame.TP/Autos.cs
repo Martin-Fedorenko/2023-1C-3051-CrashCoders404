@@ -147,7 +147,7 @@ namespace TGC.MonoGame.TP
       CarBrakes = 400f;
       ActiveMovement = false;
       jumpAngle = MathF.PI / 9;
-      jumpSpeed = 20f;
+      jumpSpeed = 30f;
       gravity = 2f;
       onJump = false;
       accelerating = false;
