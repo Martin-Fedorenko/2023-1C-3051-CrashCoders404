@@ -233,14 +233,14 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
       AutoShader.Parameters["environmentMap"]?.SetValue(EnvironmentMapRenderTarget);
 
       // iluminacion
-      AutoShader.Parameters["ambientColor"]?.SetValue(new Vector3(255f, 255f, 255f));
+      AutoShader.Parameters["ambientColor"]?.SetValue(Color.White.ToVector3());
       AutoShader.Parameters["diffuseColor"]?.SetValue(new Vector3(100f, 100f, 100f));
-      AutoShader.Parameters["specularColor"]?.SetValue(new Vector3(1f, 1f, 1f));
+      AutoShader.Parameters["specularColor"]?.SetValue(Color.White.ToVector3());
 
-      AutoShader.Parameters["KAmbient"]?.SetValue(0.1f);
+      AutoShader.Parameters["KAmbient"]?.SetValue(0.5f);
       AutoShader.Parameters["KDiffuse"]?.SetValue(0.1f);
-      AutoShader.Parameters["KSpecular"]?.SetValue(1f);
-      AutoShader.Parameters["shininess"]?.SetValue(500f);
+      AutoShader.Parameters["KSpecular"]?.SetValue(0.5f);
+      AutoShader.Parameters["shininess"]?.SetValue(300f);
 
       //Música y sonido
       BulletSound = Content.Load<SoundEffect>(ContentFolderSounds + "bullet-ametralladora");
@@ -373,7 +373,7 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
 
             // Set the light position and camera position
             // These change every update so we need to set them on every update call
-            AutoShader.Parameters["lightPosition"]?.SetValue(autos.directionAutoPrincipal());
+            AutoShader.Parameters["lightPosition"]?.SetValue(autos.directionAutoPrincipal()+Vector3.UnitY*2f+Vector3.UnitX*2f+Vector3.UnitZ*2f);
             AutoShader.Parameters["eyePosition"]?.SetValue(posicionCamara + autos.posAutoPrincipal());
             //Console.WriteLine(autos.directionAutoPrincipal());
 

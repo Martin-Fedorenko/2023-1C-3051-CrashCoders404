@@ -523,7 +523,7 @@ namespace TGC.MonoGame.TP
     public Vector3 directionAutoPrincipal()
     {
       var martiz = Matrix.CreateRotationY(Rotation * 2f);
-      return Vector3.Transform(Vector3.Forward, martiz) + AutoPrincipalPos;
+      return Vector3.Transform(Vector3.Forward, martiz) + new Vector3(AutoPrincipalPos.X, 0f, AutoPrincipalPos.Z);
     }
 
     public OrientedBoundingBox getAutoPrincipalBox()
