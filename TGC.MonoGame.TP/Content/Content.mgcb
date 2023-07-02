@@ -586,17 +586,29 @@
 /processorParam:Quality=Best
 /build:Music/countdown-start.mp3
 
-#begin Music/retro-platforming.mp3
+#begin Music/gameOver.mp3
 /importer:Mp3Importer
 /processor:SongProcessor
 /processorParam:Quality=Best
-/build:Music/retro-platforming.mp3
+/build:Music/gameOver.mp3
+
+#begin Music/music-menu.mp3
+/importer:Mp3Importer
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:Music/music-menu.mp3
 
 #begin Music/trap-movement.mp3
 /importer:Mp3Importer
 /processor:SongProcessor
 /processorParam:Quality=Best
 /build:Music/trap-movement.mp3
+
+#begin Music/winner.mp3
+/importer:Mp3Importer
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:Music/winner.mp3
 
 #begin Sounds/boost-effect.wav
 /importer:WavImporter

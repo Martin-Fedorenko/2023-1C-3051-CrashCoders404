@@ -755,5 +755,10 @@ namespace TGC.MonoGame.TP
 
       return muertes == 7? true : false;
     }
+
+    public int getVidaProtagonista()
+    {
+      return vidaProtagonista;
+    }
   }
 }

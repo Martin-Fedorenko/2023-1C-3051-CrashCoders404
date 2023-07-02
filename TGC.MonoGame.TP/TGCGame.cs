@@ -89,6 +89,8 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
     public const int ST_COUNTDOWN_1 = 8;
     public const int ST_COUNTDOWN_GO = 9;
     public const int ST_ENDGAME = -1;
+    public const int ST_VICTORIA = 10;
+    public const int ST_DERROTA = 11;
     public SpriteFont font;
     public int status = ST_PRESENTACION;
 
@@ -97,6 +99,8 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
     private Song SongGame { get; set; }
     private Song SongMenu { get; set; }
     private Song SongCountdown { get; set; }
+    private Song Winner { get; set; }
+    private Song GameOver { get; set; }
   
     //Sonidos
     private SoundEffectInstance Instance { get; set; }
@@ -273,8 +277,10 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
 
       //Musica
       SongGame = Content.Load<Song>(ContentFolderMusic + "trap-movement");
-      SongMenu = Content.Load<Song>(ContentFolderMusic + "retro-platforming");
+      SongMenu = Content.Load<Song>(ContentFolderMusic + "music-menu");
       SongCountdown = Content.Load<Song>(ContentFolderMusic + "countdown-start");
+      Winner = Content.Load<Song>(ContentFolderMusic + "winner");
+      GameOver = Content.Load<Song>(ContentFolderMusic + "gameOver");
 
       base.LoadContent();
     }
@@ -345,7 +351,6 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
         if(countdownStart > 4)
         {
           status = ST_JUEGO;
-          //MediaPlayer.Play(SongGame); No se por qué acá no anda, se corta la música
           break;
         }
         break;
@@ -353,7 +358,7 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
         case ST_JUEGO:
           if(!(MediaPlayer.State == MediaState.Playing))
           {
-            //MediaPlayer.Play(SongGame);
+            MediaPlayer.Play(SongGame);
           }
 
           totalGameTime += (float)gameTime.ElapsedGameTime.TotalSeconds;
@@ -379,10 +384,45 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
 
             if(powerUps.todosLosEnemigosMuertos())
             {
-              status = ST_PRESENTACION;
+              MediaPlayer.Stop();
+              MediaPlayer.Play(Winner);
+              status = ST_VICTORIA;
             }
 
-            
+            if(powerUps.getVidaProtagonista() <= 0)
+            {
+              MediaPlayer.Stop();
+              MediaPlayer.Play(GameOver);
+              status = ST_DERROTA;
+            }
+          break;
+
+          case ST_VICTORIA:
+          if(!(MediaPlayer.State == MediaState.Playing))
+          {
+            MediaPlayer.Play(SongMenu);
+          }
+
+          if (Keyboard.GetState().IsKeyDown(Keys.Enter))
+          {
+            status = ST_PRESENTACION;
+            MediaPlayer.Stop();
+            MediaPlayer.Play(SongMenu);
+          }
+          break;
+
+          case ST_DERROTA:
+          if(!(MediaPlayer.State == MediaState.Playing))
+          {
+            MediaPlayer.Play(GameOver);
+          }
+
+          if (Keyboard.GetState().IsKeyDown(Keys.Enter))
+          {
+            status = ST_PRESENTACION;
+            MediaPlayer.Stop();
+            MediaPlayer.Play(SongMenu);
+          }
           break;
 
         case ST_ENDGAME:
@@ -438,7 +478,16 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
           DrawCenterTextY("A -> ROTAR IZQUIERDA", 600, 3);
           DrawCenterTextY("SPACE -> SALTAR", 700, 3);
           DrawRightText("B -> VOLVER AL MENU", 900, 1);
+          break;
 
+        case ST_VICTORIA:          
+          GraphicsDevice.Clear(Color.Black);
+          DrawCenterTextY("YOU WIN", 300, 10);
+          break;
+
+        case ST_DERROTA:          
+          GraphicsDevice.Clear(Color.Black);
+          DrawCenterTextY("GAME OVER", 300, 10);
           break;
 
         case ST_JUEGO:

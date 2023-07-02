@@ -83,6 +83,8 @@ namespace TGC.MonoGame.TP
     private Vector3 Auto8Pos = new Vector3(-80, 0, 180);
     private Vector3 Desplazamiento;
     private Vector3[] DesplazamientoAutos;
+
+    public Vector2[] AutosVelocidades;
     private Boolean enElPiso;
     private Boolean enPlataforma;
     float tiempoEnAire;
@@ -128,6 +130,19 @@ namespace TGC.MonoGame.TP
     {
       //MovimientoAuto
       CarSpeed = new Vector2(0f,0f);
+      AutosVelocidades = new Vector2[]
+      {
+            new Vector2(0f,0f),
+            new Vector2(0f,0f),
+            new Vector2(0f,0f),
+            new Vector2(0f,0f),
+            new Vector2(0f,0f),
+            new Vector2(0f,0f),
+            new Vector2(0f,0f),
+            new Vector2(0f,0f)
+      };
+      
+
       CarAcceleration = 200f;
       CarBrakes = 400f;
       ActiveMovement = false;
@@ -456,6 +471,23 @@ namespace TGC.MonoGame.TP
       AutoPrincipalBox.Rotate(Matrix.CreateRotationX(-jumpRotation) * Matrix.CreateRotationY(Rotation * 2));
 
       if (!choco) {acabaDeChocar = 0;}
+
+
+      //LOGICA IA
+      
+      /*for(int i = 0; i < AutosVelocidades.Length; i++)
+      {
+        if(AutosPosiciones[i].X != AutoPrincipalPos.X)
+        {
+          if (AutosVelocidades[i].X < maxSpeed) 
+          {
+            AutosVelocidades[i].X += CarAcceleration * elapsedTime;
+            DesplazamientoAutos[i] += CarDirection * AutosVelocidades[i].X * elapsedTime + CarDirection * elapsedTime * CarDirection / 2f;
+            
+            AutosPosiciones[i].X += DesplazamientoAutos[i].X;
+          }
+        }
+      }*/
     }
 
     public void dibujarAuto(Matrix view, Matrix projection, Effect effect, Model modelo, float WheelRot, Matrix matrizMundo)
