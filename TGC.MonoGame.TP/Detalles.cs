@@ -181,84 +181,75 @@ namespace TGC.MonoGame.TP
         public Vector3 Rock31Position = new Vector3 (-285, 0, 675);
         public Vector3 Rock32Position = new Vector3 (-315, 0, 700);
 
-        // "Tire" del lado más cerca del origen de la rampa Rampa1Position
-        public Vector3 Tire1Position = new Vector3 (-130, 5, -360);
+        // Curva de ruedas 
+        public Vector3 Tire1Position = new Vector3 (600, 5, 600);
 
-        public Vector3 Tire2Position = new Vector3 (-110, 5, -360);
-        public Vector3 Tire2Position1 = new Vector3 (-110, 10, -360);
+        public Vector3 Tire2Position = new Vector3 (600, 5, 660);
+        public Vector3 Tire2Position1 = new Vector3 (570, 10, 600);
 
-        public Vector3 Tire3Position = new Vector3 (-90, 5, -360);
-        public Vector3 Tire3Position1 = new Vector3 (-90, 10, -360);
-        public Vector3 Tire3Position2 = new Vector3 (-90, 15, -360);
+        public Vector3 Tire3Position = new Vector3 (540, 5, 600);
+        public Vector3 Tire3Position1 = new Vector3 (570, 5, 660);
+        public Vector3 Tire3Position2 = new Vector3 (540, 5, 660);
 
-        public Vector3 Tire4Position = new Vector3 (-70, 5, -360);
-        public Vector3 Tire4Position1 = new Vector3 (-70, 10, -360);
-        public Vector3 Tire4Position2 = new Vector3 (-70, 15, -360);
-        public Vector3 Tire4Position3 = new Vector3 (-70, 20, -360);
+        public Vector3 Tire4Position = new Vector3 (630, 5, 585);
+        public Vector3 Tire4Position1 = new Vector3 (660, 5, 570);
+        public Vector3 Tire4Position2 = new Vector3 (690, 5, 555);
+        public Vector3 Tire4Position3 = new Vector3 (690, 5, 525);
+        public Vector3 Tire5Position = new Vector3 (690, 5, 495);
 
-        // "Tire" del lado más lejos del origen de la rampa Rampa1Position
-        public Vector3 Tire5Position = new Vector3 (-130, 5, -450);
+        
 
-        public Vector3 Tire6Position = new Vector3 (-110, 5, -450);
-        public Vector3 Tire6Position1 = new Vector3 (-110, 10, -450);
+        public Vector3 Tire6Position = new Vector3 (630, 5, 645);
+        public Vector3 Tire6Position1 = new Vector3 (660, 5, 630);
+        public Vector3 Tire7Position = new Vector3 (690, 5, 615);
+        public Vector3 Tire7Position1 = new Vector3 (720, 5, 600);
+        public Vector3 Tire7Position2 = new Vector3 (750, 5, 585);
+        public Vector3 Tire8Position = new Vector3 (750, 5, 555);
+        public Vector3 Tire8Position1 = new Vector3 (750, 5, 525);
+        public Vector3 Tire8Position2 = new Vector3 (750, 5, 495);
 
-        public Vector3 Tire7Position = new Vector3 (-90, 5, -450);
-        public Vector3 Tire7Position1 = new Vector3 (-90, 10, -450);
-        public Vector3 Tire7Position2 = new Vector3 (-90, 15, -450);
-        public Vector3 Tire8Position = new Vector3 (-70, 5, -450);
-        public Vector3 Tire8Position1 = new Vector3 (-70, 10, -450);
-        public Vector3 Tire8Position2 = new Vector3 (-70, 15, -450);
-        public Vector3 Tire8Position3 = new Vector3 (-70, 20, -450);
+        //Circulo de ruedas
+        public Vector3 Tire8Position3 = new Vector3 (-400, 5, -500);
 
-        // "Tire" del lado más lejos del origen de la rampa Rampa2Position
-        public Vector3 Tire9Position = new Vector3 (270, 5, -430);
+        public Vector3 Tire9Position = new Vector3 (-415, 5, -500);
+        public Vector3 Tire10Position = new Vector3 (-430, 5, -500);
+        public Vector3 Tire10Position1 = new Vector3 (-385, 5, -500);
+        public Vector3 Tire11Position = new Vector3 (-370, 5, -500);
+        public Vector3 Tire11Position1 = new Vector3 (-400, 5, -515);
+        public Vector3 Tire11Position2 = new Vector3 (-400, 5, -530);
+        public Vector3 Tire12Position = new Vector3 (-400, 5, -485);
+        public Vector3 Tire12Position1 = new Vector3 (-400, 5, -470);
+        
+        public Vector3 Tire12Position2 = new Vector3 (-415, 5, -515);
+        public Vector3 Tire12Position3 = new Vector3 (-415, 5, -485);
+        public Vector3 Tire13Position = new Vector3 (-385, 5, -515);
+        public Vector3 Tire14Position = new Vector3 (-385, 5, -485);
 
-        public Vector3 Tire10Position = new Vector3 (250, 5, -430);
-        public Vector3 Tire10Position1 = new Vector3 (250, 10, -430);
+        //Circulo de ruedas
+        public Vector3 Tire14Position1 = new Vector3 (30, 5, -600);
+        public Vector3 Tire15Position = new Vector3 (45, 5, -600);
+        public Vector3 Tire15Position1 = new Vector3 (60, 5, -600);
+        public Vector3 Tire15Position2 = new Vector3 (15, 5, -600);
+        public Vector3 Tire16Position = new Vector3 (0, 5, -600);
+        public Vector3 Tire16Position1 = new Vector3 (30, 5, -615);
+        public Vector3 Tire16Position2 = new Vector3 (30, 5, -630);
+        public Vector3 Tire16Position3 = new Vector3 (30, 5, -585);
+        public Vector3 Tire17Position = new Vector3 (30, 5, -570);
+        public Vector3 Tire18Position = new Vector3 (45, 5, -615);
+        public Vector3 Tire18Position1 = new Vector3 (45, 5, -585);
+        public Vector3 Tire19Position = new Vector3 (15, 5, -615);
+        public Vector3 Tire19Position1 = new Vector3 (15, 5, -585);
 
-        public Vector3 Tire11Position = new Vector3 (230, 5, -430);
-        public Vector3 Tire11Position1 = new Vector3 (230, 10, -430);
-        public Vector3 Tire11Position2 = new Vector3 (230, 15, -430);
 
-        public Vector3 Tire12Position = new Vector3 (210, 5, -430);
-        public Vector3 Tire12Position1 = new Vector3 (210, 10, -430);
-        public Vector3 Tire12Position2 = new Vector3 (210, 15, -430);
-        public Vector3 Tire12Position3 = new Vector3 (210, 20, -430);
 
-        // "Tire" del lado más cerca del origen de la rampa Rampa2Position
-        public Vector3 Tire13Position = new Vector3 (270, 5, -340);
-
-        public Vector3 Tire14Position = new Vector3 (250, 5, -340);
-        public Vector3 Tire14Position1 = new Vector3 (250, 10, -340);
-
-        public Vector3 Tire15Position = new Vector3 (230, 5, -340);
-        public Vector3 Tire15Position1 = new Vector3 (230, 10, -340);
-        public Vector3 Tire15Position2 = new Vector3 (230, 15, -340);
-
-        public Vector3 Tire16Position = new Vector3 (210, 5, -340);
-        public Vector3 Tire16Position1 = new Vector3 (210, 10, -340);
-        public Vector3 Tire16Position2 = new Vector3 (210, 15, -340);
-        public Vector3 Tire16Position3 = new Vector3 (210, 20, -340);
-
-        // "Tire" del lado más cerca del lejos de la rampa Rampa3Position
-        public Vector3 Tire17Position = new Vector3 (-280, 5, -35);
-
-        public Vector3 Tire18Position = new Vector3 (-280, 5, -15);
-        public Vector3 Tire18Position1 = new Vector3 (-280, 10, -15);
-
-        public Vector3 Tire19Position = new Vector3 (-280, 5, 5);
-        public Vector3 Tire19Position1 = new Vector3 (-280, 10, 5);
-        public Vector3 Tire19Position2 = new Vector3 (-280, 15, 5);
-
-        // "Tire" del lado más cerca del lejos de la rampa Rampa3Position
-        public Vector3 Tire20Position = new Vector3 (-190, 5, -35);
-
-        public Vector3 Tire21Position = new Vector3 (-190, 5, -15);
-        public Vector3 Tire21Position1 = new Vector3 (-190, 10, -15);
-
-        public Vector3 Tire22Position = new Vector3 (-190, 5, 5);
-        public Vector3 Tire22Position1 = new Vector3 (-190, 10, 5);
-        public Vector3 Tire22Position2 = new Vector3 (-190, 15, 5);
+        //Ruedas dispersadas
+        public Vector3 Tire19Position2 = new Vector3 (550, 5, -600);
+        public Vector3 Tire20Position = new Vector3 (593, 5, -584);
+        public Vector3 Tire21Position = new Vector3 (524, 5, -600);
+        public Vector3 Tire21Position1 = new Vector3 (534, 5, -643);
+        public Vector3 Tire22Position = new Vector3 (579, 5, -530);
+        public Vector3 Tire22Position1 = new Vector3 (587, 5, -605);
+        public Vector3 Tire22Position2 = new Vector3 (591, 5, -564);
 
 
         // Variables
