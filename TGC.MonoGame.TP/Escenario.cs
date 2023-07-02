@@ -134,7 +134,7 @@ namespace TGC.MonoGame.TP
     private float retardoColisionBox;
 
     private Boolean enPisoOPlataforma;
-    public void Initialize()
+    public void Initialize(GraphicsDevice graphicsDevice)
     {
       //Arena
       PisoWorld = Matrix.CreateScale(800, 1, 800);
@@ -174,7 +174,7 @@ namespace TGC.MonoGame.TP
         Matrix.CreateScale(0.6f) * Matrix.CreateTranslation(BrokenColumn2Position),
       };
 
-
+      BoxPrimitive = new BoxPrimitive(graphicsDevice, Vector3.One, TexturaPlataforma);
       PlatformWorld = new Matrix[]
       {
         Matrix.CreateScale(100, 5, 80) * Matrix.CreateTranslation(Platform1Position),

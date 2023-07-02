@@ -160,7 +160,7 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
 
       
 
-      escenario.Initialize();
+      escenario.Initialize(GraphicsDevice);
       detalles.Initialize();
       powerUps.Initialize(GraphicsDevice);
       autos.Initialize();
