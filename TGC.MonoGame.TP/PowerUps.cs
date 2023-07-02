@@ -106,6 +106,11 @@ namespace TGC.MonoGame.TP
     private float cuartoDeVuelta = MathF.PI / 2;
     private float totalGameTime = 0f;
 
+    //Sistema de vidas
+    private int[] vidaAutos;
+    private int vidaProtagonista = 100;
+    private int cantidadEnemigos = 7;
+
     public void Initialize(GraphicsDevice graphicsDevice)
     {
       collidedindexAmetralladora = new List<int>();
@@ -192,6 +197,14 @@ namespace TGC.MonoGame.TP
         new Vector3(0, 0, 0),
         new Vector3(0, 0, 0)
       };
+
+      vidaAutos = new int[cantidadEnemigos];
+
+      for(int index = 0; index < cantidadEnemigos; index++)
+        {
+            vidaAutos[index] = 100;
+        }
+
     }
 
 
@@ -387,7 +400,7 @@ namespace TGC.MonoGame.TP
         if(colliderMisil.Intersects(autos.getAutoPrincipalBox()))
           {
             recorridoMisil = 0f;
-            autos.recibirDanio(autos.getVidaProtagonista(),50);
+            vidaProtagonista -= 50;
           }
         //Colisiones con otros auto
         for (var index = 0; index < autos.getPosAutos().Length; index++)
@@ -395,7 +408,8 @@ namespace TGC.MonoGame.TP
             if(colliderMisil.Intersects(autos.getPosAutos()[index]))
             {
               recorridoMisil = 0f;
-              autos.recibirDanio(autos.getVidaAutos()[index],50);
+              vidaAutos[index] -= 50;
+
             }
           }
 
@@ -481,7 +495,8 @@ namespace TGC.MonoGame.TP
         if(collidersBalas[i].Intersects(autos.getAutoPrincipalBox()))
           {
             recorridoBalas[i] = 0f;
-            autos.recibirDanio(autos.getVidaProtagonista(),10);
+            vidaProtagonista -= 10;
+            
           }
 
           //Colisiones con otros auto
@@ -490,7 +505,12 @@ namespace TGC.MonoGame.TP
             if(collidersBalas[i].Intersects(autos.getPosAutos()[index]))
             {
               recorridoBalas[i] = 0f;
-              autos.recibirDanio(autos.getVidaAutos()[index],10);
+              vidaAutos[index] -= 100;
+
+              if(vidaAutos[index] < 0)
+              {
+                autos.AutosPosiciones[index] = new Vector3(0,-100,0);
+              }
             }
           }
 
@@ -720,6 +740,20 @@ namespace TGC.MonoGame.TP
 
     public String powerUpActual(){
       return currentPowerUp.ToString();
+    }
+
+    public bool todosLosEnemigosMuertos()
+    {
+      int muertes = 0;
+      for(int i = 0; i < cantidadEnemigos; i++)
+      {
+        if(vidaAutos[i] <= 0)
+        {
+          muertes++;
+        }
+      }
+
+      return muertes == 7? true : false;
     }
   }
 }

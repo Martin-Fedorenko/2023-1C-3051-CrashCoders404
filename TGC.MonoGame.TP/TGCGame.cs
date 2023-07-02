@@ -377,6 +377,11 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
             AutoShader.Parameters["eyePosition"]?.SetValue(posicionCamara + autos.posAutoPrincipal());
             //Console.WriteLine(autos.directionAutoPrincipal());
 
+            if(powerUps.todosLosEnemigosMuertos())
+            {
+              status = ST_PRESENTACION;
+            }
+
             
           break;
 
@@ -441,20 +446,6 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
           SpriteBatch.DrawString(font, "Tiempo:" + ((int)totalGameTime).ToString(), new Vector2(10, 10), Color.Black);
           SpriteBatch.DrawString(font, "Velocidad:" + (autos.autoSpeed().ToString()), new Vector2(700, 10), Color.Black);
           SpriteBatch.DrawString(font, "PowerUp:" + (powerUps.powerUpActual()), new Vector2(1250, 900), Color.Black);
-
-          autoPos = new Vector2(GraphicsDevice.Viewport.Width/2, GraphicsDevice.Viewport.Height/2 - 80);
-          if (autos.getVidaProtagonista() > 50)
-          {
-            SpriteBatch.DrawString(font, autos.getVidaProtagonista().ToString(), autoPos, Color.Green);
-          } 
-          else if(autos.getVidaProtagonista() <= 50)
-          {
-            SpriteBatch.DrawString(font, autos.getVidaProtagonista().ToString(), autoPos, Color.Yellow);
-          } 
-          else if(autos.getVidaProtagonista() <= 20)
-          {
-            SpriteBatch.DrawString(font, autos.getVidaProtagonista().ToString(), autoPos, Color.Red);
-          }
 
           #region Pass 1-6
             // Draw to our cubemap from the robot position

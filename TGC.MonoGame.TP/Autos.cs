@@ -66,10 +66,7 @@ namespace TGC.MonoGame.TP
 
     private int cantidadEnemigos = 7;
     private Matrix[] AutosWorld;
-    private Vector3[] AutosPosiciones;
-
-    private int[] vidaAutos; //Para el sistema de vida
-    private int vidaProtagonista = 100;
+    public Vector3[] AutosPosiciones;
 
     private float[] CarsSpeeds;
     // Variables
@@ -217,12 +214,6 @@ namespace TGC.MonoGame.TP
             Matrix.CreateScale(0.007f) * Matrix.CreateRotationY(cuartoDeVuelta) * Matrix.CreateTranslation(Auto7Pos),
             Matrix.CreateScale(0.007f) * Matrix.CreateRotationY(cuartoDeVuelta) * Matrix.CreateTranslation(Auto8Pos),
       };
-      
-      vidaAutos = new int[cantidadEnemigos];
-      for(int index = 0; index < cantidadEnemigos; index++)
-      {
-        vidaAutos[index] = 100;
-      }
 
     }
 
@@ -618,19 +609,6 @@ namespace TGC.MonoGame.TP
     {
       return CollideCars;
     }
-
-    public int[] getVidaAutos()
-    {
-      return vidaAutos;
-    }
-
-    public int getVidaProtagonista()
-    {
-      return vidaProtagonista;
-    }
-    public Vector3 direccionAuto(){
-      return CarDirection;
-    }
     public void inicializarBoundingBoxes()
     {
       AutoDeportivoBoxAABB = BoundingVolumesExtensions.CreateAABBFrom(AutoDeportivo);
@@ -664,12 +642,6 @@ namespace TGC.MonoGame.TP
         gizmos.DrawCube(OBBWorld, Color.Red);
       }
     }
-
-    public void recibirDanio(int vidaAuto, int valorDanio)
-    {
-      vidaAuto -= valorDanio;
-    }
-
 
   }
 }
