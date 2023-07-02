@@ -434,7 +434,7 @@ namespace TGC.MonoGame.TP
           AutosPosiciones[index] += DesplazamientoAutos[index];
         }
 
-      AutoPrincipalWorld = Matrix.CreateScale(0.1f) *
+      AutoPrincipalWorld =  Matrix.CreateScale(0.1f) *
                             Matrix.CreateRotationX(-jumpRotation) *
                             Matrix.CreateRotationY(Rotation * 2) *
                             Matrix.CreateTranslation(AutoPrincipalPos);
@@ -474,12 +474,14 @@ namespace TGC.MonoGame.TP
       
 
       relativeMatrices = new Matrix[modelo.Bones.Count];
-      modelo.CopyAbsoluteBoneTransformsTo(relativeMatrices);
+      
       int index = 0;
       foreach (var mesh in modelo.Meshes)
       {
-        relativeMatrices[rightFrontWheelBone.Index] = Matrix.CreateRotationY(WheelRot) * rightFrontWheelTransform;
-        relativeMatrices[leftFrontWheelBone.Index] = Matrix.CreateRotationY(WheelRot) * leftFrontWheelTransform;
+        rightFrontWheelBone.Transform = Matrix.CreateRotationY(WheelRot) * rightFrontWheelTransform;
+        leftFrontWheelBone.Transform = Matrix.CreateRotationY(WheelRot) * leftFrontWheelTransform;
+        modelo.CopyAbsoluteBoneTransformsTo(relativeMatrices);
+
         effect.Parameters["World"].SetValue(relativeMatrices[mesh.ParentBone.Index] * matrizMundo);
         foreach (var meshPart in mesh.MeshParts)
         {
