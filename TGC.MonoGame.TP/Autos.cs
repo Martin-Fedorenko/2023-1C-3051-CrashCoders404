@@ -293,7 +293,7 @@ namespace TGC.MonoGame.TP
           CarSpeed.X += CarBrakes * elapsedTime;
         }
         else if (CarSpeed.X < maxSpeed) CarSpeed.X += CarAcceleration * elapsedTime;
-        Desplazamiento += CarDirection * CarSpeed.X * elapsedTime + CarAcceleration * elapsedTime * CarDirection / 2f;
+        Desplazamiento += CarDirection * CarSpeed.X * elapsedTime + CarAcceleration * elapsedTime * elapsedTime* CarDirection / 2f;
         ActiveMovement = true;
         accelerating = true;
 
@@ -305,7 +305,7 @@ namespace TGC.MonoGame.TP
           CarSpeed.X -= CarBrakes * elapsedTime;
         }
         else if (CarSpeed.X > -maxSpeed) CarSpeed.X -= CarAcceleration * elapsedTime;
-        Desplazamiento += CarDirection * CarSpeed.X * elapsedTime + CarAcceleration * elapsedTime * CarDirection / 2f;
+        Desplazamiento += CarDirection * CarSpeed.X * elapsedTime + CarAcceleration * elapsedTime* elapsedTime * CarDirection / 2f;
         ActiveMovement = true;
         accelerating = true;
       }
@@ -345,7 +345,7 @@ namespace TGC.MonoGame.TP
       }
 
       //saltar
-      if (Keyboard.GetState().IsKeyDown(Keys.Space) && !accelerating && (enElPiso || enPlataforma))
+      if (Keyboard.GetState().IsKeyDown(Keys.Space)  && (enElPiso || enPlataforma))
       {
         CarSpeed.Y = jumpSpeed;
         onJump = true;
@@ -377,15 +377,16 @@ namespace TGC.MonoGame.TP
 
         if(turboTime < 1f)
         {
-          if(CarSpeed.X < 2800 && CarSpeed.X > -2800)
+          if(MathF.Abs(CarSpeed.X) < 2800)
              CarSpeed *= 1.1f;
         }
-
+        else if(turboTime < 2f)
+        {
+          if(MathF.Abs(CarSpeed.X) > PreviousSpeed) 
+          CarSpeed /= 1.1f;
+        }
         else{
-          if(PreviousSpeed < 2800 && PreviousSpeed > -2800)
               CarSpeed.X = PreviousSpeed;
-          else
-              CarSpeed.X = 2800;
           turbo = false;
           turboTime = 0f;
         }

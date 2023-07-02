@@ -109,7 +109,7 @@ namespace TGC.MonoGame.TP
     //Sistema de vidas
     private int[] vidaAutos;
     private int vidaProtagonista = 100;
-    private int cantidadEnemigos = 7;
+    private int cantidadEnemigos = 8;
 
     public void Initialize(GraphicsDevice graphicsDevice)
     {
@@ -363,7 +363,7 @@ namespace TGC.MonoGame.TP
               if (ametralladoraCooldown <= 0f)
               {
                 ametralladoraCounter--;
-                dispararBala(autos.AutoPrincipalPos, autos.Rotation, ametralladoraCounter);
+                dispararBala(autos.posAutoPrincipal()+autos.CarDirection*200f, autos.Rotation, ametralladoraCounter);
                 ametralladoraCooldown = 0.25f;
                 Instance = BulletSound.CreateInstance();
                 Instance.Play();
@@ -381,7 +381,7 @@ namespace TGC.MonoGame.TP
         }
         else if (currentPowerUp == PowerUp.Misil)
         {
-          dispararMisil(autos.AutoPrincipalPos, autos.Rotation);
+          dispararMisil(autos.posAutoPrincipal()+autos.CarDirection*350f , autos.Rotation);
           Instance = PickUpRocketSound.CreateInstance();
           Instance.Play();
           currentPowerUp = PowerUp.None;
