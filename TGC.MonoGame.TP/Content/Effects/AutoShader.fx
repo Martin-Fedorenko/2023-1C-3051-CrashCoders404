@@ -146,7 +146,10 @@ float4 LuzPS(VertexShaderOutput input) : COLOR
     float4 finalColor2 = float4(saturate(ambientColor * KAmbient + diffuseLight) * texelColor.rgb + specularLight, texelColor.a);
 
     if(dot(lightDirection,carDirection) < 0 && length(farosPosition - input.WorldPosition.xyz) < 100)
-         return finalColor*texelColor + finalColor2*texelColor;
+        {
+            float4 color = lerp(finalColor*texelColor + finalColor2*texelColor,finalColor*texelColor,length(farosPosition - input.WorldPosition.xyz)/100);
+            return color;
+        }
     else
         return finalColor*texelColor;
         
