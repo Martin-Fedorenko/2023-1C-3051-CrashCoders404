@@ -80,6 +80,9 @@ namespace TGC.MonoGame.TP
     private List<int> collidedindexAmetralladora;
     private List<int> collidedindexMisil;
     private List<int> collidedindexTurbo;
+    private float[] TimersTurbos;
+    private float[] TimersAmetralladoras;
+    private float[] TimersMisiles;
     //Bones
     private Matrix[] relativeMatrices;
 
@@ -195,6 +198,18 @@ namespace TGC.MonoGame.TP
         new Vector3(0, 0, 0)
       };
 
+      TimersTurbos = new float[TurbosWorld.Length];
+      TimersAmetralladoras = new float[AmetralladorasWorld.Length];
+      TimersMisiles = new float[MisilesWorld.Length];
+      
+      for(int i =0; i < TurbosWorld.Length; i++)
+        TimersTurbos[i] = 0;
+      
+      for(int i =0; i < AmetralladorasWorld.Length; i++)
+        TimersAmetralladoras[i] = 0;
+            
+      for(int i =0; i < MisilesWorld.Length; i++)
+        TimersMisiles[i] = 0;
 
     }
 
@@ -535,39 +550,30 @@ namespace TGC.MonoGame.TP
 
       for (var index = 0; index < collidersAmetralladoras.Length; index++)
       {
-        if (autoCollider.Intersects(collidersAmetralladoras[index]) && !collidedindexAmetralladora.Contains(index))
+        if (autoCollider.Intersects(collidersAmetralladoras[index]) && !collidedindexAmetralladora.Contains(index) && currentPowerUp == PowerUp.None)
         {
-          if (currentPowerUp == PowerUp.None)
-          {
             collidedindexAmetralladora.Add(index);
             currentPowerUp = PowerUp.Ametralladora;
             powerUpTimer = 20f;
             ametralladoraCounter = 20;
-          }
         }
       }
 
       for (var index = 0; index < collidersMisiles.Length; index++)
       {
-        if (autoCollider.Intersects(collidersMisiles[index]) && !collidedindexMisil.Contains(index))
+        if (autoCollider.Intersects(collidersMisiles[index]) && !collidedindexMisil.Contains(index) && currentPowerUp == PowerUp.None)
         {
-          if (currentPowerUp == PowerUp.None)
-          {
             collidedindexMisil.Add(index);
             currentPowerUp = PowerUp.Misil;
-          }
         }
       }
 
       for (var index = 0; index < collidersTurbos.Length; index++)
       {
-        if (autoCollider.Intersects(collidersTurbos[index]) && !collidedindexTurbo.Contains(index))
+        if (autoCollider.Intersects(collidersTurbos[index]) && !collidedindexTurbo.Contains(index) && currentPowerUp == PowerUp.None)
         {
-          if (currentPowerUp == PowerUp.None)
-          {
             collidedindexTurbo.Add(index);
             currentPowerUp = PowerUp.Turbo;
-          }
         }
 
         if (!tieneAmetalladora) {agarrarAmetralladora = 0;}
@@ -575,6 +581,47 @@ namespace TGC.MonoGame.TP
         if (!tieneTurbo) {agarrarTurbo = 0;}
 
       }
+
+      for(int index = 0; index < collidedindexAmetralladora.Count; index++)
+      {
+        if(TimersAmetralladoras[collidedindexAmetralladora[index]] < 20)
+        {
+          TimersAmetralladoras[collidedindexAmetralladora[index]] += elapsedTime;
+        }
+        else
+        {
+          TimersAmetralladoras[collidedindexAmetralladora[index]] = 0f;
+          collidedindexAmetralladora.RemoveAt(index);
+        }
+      }
+
+      for(int index = 0; index < collidedindexMisil.Count; index++)
+      {
+        if(TimersMisiles[collidedindexMisil[index]] < 20)
+        {
+          TimersMisiles[collidedindexMisil[index]] += elapsedTime;
+        }
+        else
+        {
+          TimersMisiles[collidedindexMisil[index]] = 0f;
+          collidedindexMisil.RemoveAt(index);
+        }
+      }
+
+      for(int index = 0; index < collidedindexTurbo.Count; index++)
+      {
+        if(TimersTurbos[collidedindexTurbo[index]] < 20)
+        {
+          TimersTurbos[collidedindexTurbo[index]] += elapsedTime;
+        }
+        else
+        {
+          TimersTurbos[collidedindexTurbo[index]] = 0f;
+          collidedindexTurbo.RemoveAt(index);
+        }
+      }
+
+
     }
 
     public void dibujar(Matrix view, Matrix projection, Effect effect, Matrix matrizMundo, Model modelo, Color color)
