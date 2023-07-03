@@ -27,7 +27,7 @@ namespace TGC.MonoGame.TP
     private Matrix[] TurbosWorld;
     private Matrix[] MisilesWorld;
     private Matrix MisilWorld;
-    private Matrix[] BalasWorld;
+    public Matrix[] BalasWorld;
 
     //Sonido  
     private SoundEffectInstance Instance { get; set; }
@@ -72,9 +72,9 @@ namespace TGC.MonoGame.TP
     private BoundingBox[] collidersMisiles;
     private BoundingBox MisilPowerUP;
     private Matrix MisilBBPower;
-    private OrientedBoundingBox colliderMisil;
+    public OrientedBoundingBox colliderMisil;
     private BoundingBox BalasPowerUp;
-    private OrientedBoundingBox[] collidersBalas;
+    public OrientedBoundingBox[] collidersBalas;
     private Matrix BalasBBPower;
     private BoundingBox PowerUpBox;
     private List<int> collidedindexAmetralladora;
@@ -96,8 +96,8 @@ namespace TGC.MonoGame.TP
     private float powerUpTimer = 0f;
     private int ametralladoraCounter = 0;
     private float ametralladoraCooldown = 0f;
-    private float recorridoMisil = 0f;
-    private float[] recorridoBalas = { 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f };
+    public float recorridoMisil = 0f;
+    public float[] recorridoBalas = { 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f };
     private Vector3 misilPos = new Vector3(0, 0, 0);
     private Vector3[] balasPos;
     private float misilRot = 0f;
@@ -106,10 +106,7 @@ namespace TGC.MonoGame.TP
     private float cuartoDeVuelta = MathF.PI / 2;
     private float totalGameTime = 0f;
 
-    //Sistema de vidas
-    private int[] vidaAutos;
-    private int vidaProtagonista = 100;
-    private int cantidadEnemigos = 8;
+    SistemaDeVida vida { get; set; }
 
     public void Initialize(GraphicsDevice graphicsDevice)
     {
@@ -198,12 +195,6 @@ namespace TGC.MonoGame.TP
         new Vector3(0, 0, 0)
       };
 
-      vidaAutos = new int[cantidadEnemigos];
-
-      for(int index = 0; index < cantidadEnemigos; index++)
-        {
-            vidaAutos[index] = 100;
-        }
 
     }
 
@@ -396,23 +387,6 @@ namespace TGC.MonoGame.TP
         colliderMisil = OrientedBoundingBox.FromAABB(new BoundingBox(MisilPowerUP.Min + misilPos + (MisilWorld.Up * 150)  - new Vector3(0f,190f,0f), MisilPowerUP.Max + misilPos + (MisilWorld.Up * 150) - new Vector3(0f,190f,0f)));
         colliderMisil.Rotate(Matrix.CreateRotationY(misilRot));
 
-        //Colisión con el auto principal
-        if(colliderMisil.Intersects(autos.getAutoPrincipalBox()))
-          {
-            recorridoMisil = 0f;
-            vidaProtagonista -= 50;
-          }
-        //Colisiones con otros auto
-        for (var index = 0; index < autos.getPosAutos().Length; index++)
-          {
-            if(colliderMisil.Intersects(autos.getPosAutos()[index]))
-            {
-              recorridoMisil = 0f;
-              vidaAutos[index] -= 50;
-
-            }
-          }
-
           //Colisiones con detalles
           for (var index = 0; index < detalles.getTreeBoxes().Length; index++)
           {
@@ -490,29 +464,6 @@ namespace TGC.MonoGame.TP
           collidersBalas[i] = OrientedBoundingBox.FromAABB(new BoundingBox(BalasPowerUp.Min + balasPos[i] + (BalasWorld[i].Up * 40) - new Vector3(0f,30f,0f), BalasPowerUp.Max + balasPos[i] + (BalasWorld[i].Up * 40) - new Vector3(0f,50f,0f)));
           collidersBalas[i].Rotate(Matrix.CreateRotationZ(-cuartoDeVuelta));
           collidersBalas[i].Rotate(Matrix.CreateRotationY(balasRot[i]));
-
-        //Colisión con el auto principal
-        if(collidersBalas[i].Intersects(autos.getAutoPrincipalBox()))
-          {
-            recorridoBalas[i] = 0f;
-            vidaProtagonista -= 10;
-            
-          }
-
-          //Colisiones con otros auto
-          for (var index = 0; index < autos.getPosAutos().Length; index++)
-          {
-            if(collidersBalas[i].Intersects(autos.getPosAutos()[index]))
-            {
-              recorridoBalas[i] = 0f;
-              vidaAutos[index] -= 100;
-
-              if(vidaAutos[index] < 0)
-              {
-                autos.AutosPosiciones[index] = new Vector3(0,-100,0);
-              }
-            }
-          }
 
           //Colisiones con detalles
           for (var index = 0; index < detalles.getTreeBoxes().Length; index++)
@@ -742,23 +693,8 @@ namespace TGC.MonoGame.TP
       return currentPowerUp.ToString();
     }
 
-    public bool todosLosEnemigosMuertos()
-    {
-      int muertes = 0;
-      for(int i = 0; i < cantidadEnemigos; i++)
-      {
-        if(vidaAutos[i] <= 0)
-        {
-          muertes++;
-        }
-      }
 
-      return muertes == 7? true : false;
-    }
 
-    public int getVidaProtagonista()
-    {
-      return vidaProtagonista;
-    }
+    
   }
 }

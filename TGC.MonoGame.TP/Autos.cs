@@ -15,6 +15,8 @@ namespace TGC.MonoGame.TP
     private Model AutoDeportivo { get; set; }
     private Model AutoDeCombate { get; set; }
 
+    private SistemaDeVida vida { get; set; }
+
     //MovimientoAuto
     public Vector3 CarDirection;
     public Vector2 CarSpeed;
@@ -98,7 +100,7 @@ namespace TGC.MonoGame.TP
     private OrientedBoundingBox AutoPrincipalBox;
     private Matrix AutoPrincipalOBBWorld;
     private Matrix[] AutosOBBWorld;
-    private OrientedBoundingBox[] CollideCars;
+    public OrientedBoundingBox[] CollideCars;
     private Boolean collided;
     private int CollisionIndex;
     private float PreviousSpeed;
@@ -123,7 +125,6 @@ namespace TGC.MonoGame.TP
     //Sonidos
     private SoundEffectInstance Instance { get; set; }
     private SoundEffect CarCrash {get; set;}
-
     private int acabaDeChocar = 0;
     private bool choco;
     public void Initialize()
@@ -421,6 +422,7 @@ namespace TGC.MonoGame.TP
             CarsSpeeds[CollisionIndex] = CarSpeed.X * 0.5f;
             CarSpeed*=-0.5f;
 
+            
           if(acabaDeChocar == 0)
           {
             acabaDeChocar = 1;

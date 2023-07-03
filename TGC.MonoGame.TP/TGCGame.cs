@@ -45,6 +45,7 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
     private Detalles detalles;
     private Escenario escenario;
     private PowerUps powerUps;
+    private SistemaDeVida vida;
 
     // Modelos
     //private Model Piso { get; set; }
@@ -157,6 +158,7 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
       escenario = new Escenario();
       powerUps = new PowerUps();
       autos = new Autos();
+      vida = new SistemaDeVida();
 
       
 
@@ -164,6 +166,7 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
       detalles.Initialize();
       powerUps.Initialize(GraphicsDevice);
       autos.Initialize();
+      vida.Initialize();
 
       //CAMARA
       //Camera = new SimpleCamera(GraphicsDevice.Viewport.AspectRatio, new Vector3(40, 60, 150), 55, 0.4f);
@@ -368,6 +371,8 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
           detalles.Update(gameTime,autos);
           escenario.Update(gameTime, autos);
 
+          vida.Update(autos, powerUps);
+
           View = Matrix.CreateLookAt(posicionCamara + autos.posAutoPrincipal(), autos.posAutoPrincipal(), Vector3.Up);
           //Camera.Update(gameTime);
           gizmos.UpdateViewProjection(View, Projection);
@@ -383,35 +388,13 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
             AutoShader.Parameters["carDirection"]?.SetValue(autos.directionAutoPrincipal());
             //Console.WriteLine(autos.directionAutoPrincipal());
 
-            if(powerUps.todosLosEnemigosMuertos())
-            {
-              MediaPlayer.Stop();
-              MediaPlayer.Play(Winner);
-              status = ST_VICTORIA;
-            }
-
-            if(powerUps.getVidaProtagonista() <= 0)
+            if(vida.muereProta())
             {
               MediaPlayer.Stop();
               MediaPlayer.Play(GameOver);
               status = ST_DERROTA;
             }
           break;
-
-          case ST_VICTORIA:
-          if(!(MediaPlayer.State == MediaState.Playing))
-          {
-            MediaPlayer.Play(SongMenu);
-          }
-
-          if (Keyboard.GetState().IsKeyDown(Keys.Enter))
-          {
-            status = ST_PRESENTACION;
-            MediaPlayer.Stop();
-            MediaPlayer.Play(SongMenu);
-          }
-          break;
-
           case ST_DERROTA:
           if(!(MediaPlayer.State == MediaState.Playing))
           {
@@ -420,9 +403,10 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
 
           if (Keyboard.GetState().IsKeyDown(Keys.Enter))
           {
-            status = ST_PRESENTACION;
+            status = ST_PRESENTACION; // FUNCIONA MAL
             MediaPlayer.Stop();
             MediaPlayer.Play(SongMenu);
+            break;
           }
           break;
 
@@ -481,11 +465,6 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
           DrawRightText("B -> VOLVER AL MENU", 900, 1);
           break;
 
-        case ST_VICTORIA:          
-          GraphicsDevice.Clear(Color.Black);
-          DrawCenterTextY("YOU WIN", 300, 10);
-          break;
-
         case ST_DERROTA:          
           GraphicsDevice.Clear(Color.Black);
           DrawCenterTextY("GAME OVER", 300, 10);
@@ -496,6 +475,7 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
           SpriteBatch.DrawString(font, "Tiempo:" + ((int)totalGameTime).ToString(), new Vector2(10, 10), Color.Black);
           SpriteBatch.DrawString(font, "Velocidad:" + (autos.autoSpeed().ToString()), new Vector2(700, 10), Color.Black);
           SpriteBatch.DrawString(font, "PowerUp:" + (powerUps.powerUpActual()), new Vector2(1250, 900), Color.Black);
+          SpriteBatch.DrawString(font, "Vida:" + (vida.vidaProtagonista), new Vector2(1300, 900), Color.Black);
 
           #region Pass 1-6
             // Draw to our cubemap from the robot position
