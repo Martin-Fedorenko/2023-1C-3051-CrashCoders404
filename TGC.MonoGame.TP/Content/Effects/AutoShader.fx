@@ -123,6 +123,8 @@ float4 LuzPS(VertexShaderOutput input) : COLOR
     
     // Final calculation
     float4 finalColor = float4(saturate(ambientColor * KAmbient + diffuseLight) * texelColor.rgb + specularLight, texelColor.a);
+
+    
     return finalColor*texelColor;
 }
 
