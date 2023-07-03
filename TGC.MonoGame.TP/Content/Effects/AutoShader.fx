@@ -143,15 +143,17 @@ float4 LuzPS(VertexShaderOutput input) : COLOR
     specularLight = sign(NdotL) * KSpecular * specularColor * pow(saturate(NdotH), shininess);
     
     // Final calculation
-    float4 finalColor2 = float4(saturate(ambientColor * KAmbient + diffuseLight) * texelColor.rgb + specularLight, texelColor.a);
+    float4 finalColor2 = float4(saturate(ambientColor * KAmbient + diffuseLight) + specularLight, texelColor.a);
 
-    if(dot(lightDirection,carDirection) < 0 && length(farosPosition - input.WorldPosition.xyz) < 100)
-        {
-            float4 color = lerp(finalColor*texelColor + finalColor2*texelColor,finalColor*texelColor,length(farosPosition - input.WorldPosition.xyz)/100);
+            float alcance = smoothstep(0, length(farosPosition - input.WorldPosition.xyz), 50.0);
+        
+            float LdotD = (dot(lightDirection, normalize(-carDirection)));
+            float rango = smoothstep(0.707, 1.0 , LdotD);
+            
+            float4 color = lerp(finalColor*texelColor,finalColor*texelColor + finalColor2*texelColor,rango*alcance);
             return color;
-        }
-    else
-        return finalColor*texelColor;
+    
+
         
 
     

@@ -383,7 +383,7 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
 
             // Set the light position and camera position
             // These change every update so we need to set them on every update call
-            AutoShader.Parameters["farosPosition"]?.SetValue(autos.posAutoPrincipal() + autos.CarDirection * 250f + Vector3.UnitY * 50f);
+            AutoShader.Parameters["farosPosition"]?.SetValue(autos.posAutoPrincipal() + autos.CarDirection * 250f ); //+ Vector3.UnitY * 50f
             AutoShader.Parameters["lightPosition"]?.SetValue(lightPosition);
             AutoShader.Parameters["eyePosition"]?.SetValue(posicionCamara+autos.posAutoPrincipal());
             AutoShader.Parameters["carDirection"]?.SetValue(autos.directionAutoPrincipal());
