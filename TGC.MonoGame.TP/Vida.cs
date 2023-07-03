@@ -44,6 +44,8 @@ namespace TGC.MonoGame.TP
             if (autos.getAutoPrincipalBox().Intersects(autos.CollideCars[index]))
             {
                 vidaProtagonista -= 25;
+                autos.AutosPosiciones[index] = RandomPosition(unRandom);
+                vidaAutos[index] = 100;
             }
         }
 
@@ -58,9 +60,10 @@ namespace TGC.MonoGame.TP
                         powerUps.recorridoBalas[i] = 0f;
                         vidaAutos[index] -= 100;
 
-                        if(vidaAutos[index] < 0)
+                        if(vidaAutos[index] <= 0)
                         {
                             autos.AutosPosiciones[index] = RandomPosition(unRandom);
+                            vidaAutos[index] = 100;
                         }
                     }
                 }
@@ -79,6 +82,7 @@ namespace TGC.MonoGame.TP
                         if(vidaAutos[index] < 0)
                         {
                             autos.AutosPosiciones[index] = RandomPosition(unRandom);
+                            vidaAutos[index] = 100;
                         }
                     }
                 }
