@@ -20,6 +20,7 @@ float KDiffuse;
 float KSpecular;
 float shininess; 
 float3 lightPosition;
+float3 farosPosition;
 float3 eyePosition; // Camera position
 
 float3 carDirection;
@@ -105,6 +106,7 @@ VertexShaderOutput MainVS(in VertexShaderInput input)
 
 float4 LuzPS(VertexShaderOutput input) : COLOR
 {
+    //LUZ SOL
     // Base vectors
     float3 lightDirection = normalize(lightPosition - input.WorldPosition.xyz);
     float3 viewDirection = normalize(eyePosition - input.WorldPosition.xyz);
@@ -124,8 +126,32 @@ float4 LuzPS(VertexShaderOutput input) : COLOR
     // Final calculation
     float4 finalColor = float4(saturate(ambientColor * KAmbient + diffuseLight) * texelColor.rgb + specularLight, texelColor.a);
 
+    //LUZ FAROS
+    lightDirection = normalize(farosPosition - input.WorldPosition.xyz);
+    viewDirection = normalize(eyePosition - input.WorldPosition.xyz);
+    halfVector = normalize(lightDirection + viewDirection);
+
+	// Get the texture texel
+    texelColor = tex2D(textureSampler, input.TextureCoordinate);
     
-    return finalColor*texelColor;
+	// Calculate the diffuse light
+    NdotL = saturate(dot(input.Normal.xyz, lightDirection));
+    diffuseLight = KDiffuse * diffuseColor * NdotL;
+
+	// Calculate the specular light
+    NdotH = dot(input.Normal.xyz, halfVector);
+    specularLight = sign(NdotL) * KSpecular * specularColor * pow(saturate(NdotH), shininess);
+    
+    // Final calculation
+    float4 finalColor2 = float4(saturate(ambientColor * KAmbient + diffuseLight) * texelColor.rgb + specularLight, texelColor.a);
+
+    if(dot(lightDirection,carDirection) < 0 && length(farosPosition - input.WorldPosition.xyz) < 100)
+         return finalColor*texelColor + finalColor2*texelColor;
+    else
+        return finalColor*texelColor;
+        
+
+    
 }
 
 float4 EnvironmentMapPS(VertexShaderOutput input) : COLOR
