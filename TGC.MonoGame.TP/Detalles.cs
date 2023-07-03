@@ -181,6 +181,7 @@ namespace TGC.MonoGame.TP
         public Vector3 Rock31Position = new Vector3 (-285, 0, 675);
         public Vector3 Rock32Position = new Vector3 (-315, 0, 700);
 
+        public Vector3[] posicionRuedas;
         // Curva de ruedas 
         public Vector3 Tire1Position = new Vector3 (600, 5, 600);
 
@@ -272,6 +273,7 @@ namespace TGC.MonoGame.TP
         private BoundingBox[] Rock5Boxes;
         private BoundingBox[] Rock10Boxes;
         private BoundingBox[] TireBoxes;
+        private Vector3 correctorPosicionBoxTires = new Vector3(1f,296f,33f);
 
         //Texturas
         private Texture2D TexturaRoca;
@@ -348,89 +350,81 @@ namespace TGC.MonoGame.TP
             };
 
             //Tires
-            TiresWorld = new Matrix[]
+            posicionRuedas = new Vector3[]
             {
-            // "Tire" del lado más cerca del origen de la rampa Rampa1World
-                Tire1World = Matrix.CreateScale(0.02f) * Matrix.CreateRotationX(cuartoDeVuelta) * Matrix.CreateTranslation(Tire1Position),
+                  new Vector3 (600, 5, 600),
+                  new Vector3 (600, 5, 660),
+                  new Vector3 (570, 10, 600),
 
-                Matrix.CreateScale(0.02f) * Matrix.CreateRotationX(cuartoDeVuelta) * Matrix.CreateTranslation(Tire2Position),
-                Matrix.CreateScale(0.02f) * Matrix.CreateRotationX(cuartoDeVuelta) * Matrix.CreateTranslation(Tire2Position1),
+                  new Vector3 (540, 5, 600),
+                  new Vector3 (570, 5, 660),
+                  new Vector3 (540, 5, 660),
 
-                Matrix.CreateScale(0.02f) * Matrix.CreateRotationX(cuartoDeVuelta) * Matrix.CreateTranslation(Tire3Position),
-                Matrix.CreateScale(0.02f) * Matrix.CreateRotationX(cuartoDeVuelta) * Matrix.CreateTranslation(Tire3Position1),
-                Matrix.CreateScale(0.02f) * Matrix.CreateRotationX(cuartoDeVuelta) * Matrix.CreateTranslation(Tire3Position2),
+                  new Vector3 (630, 5, 585),
+                  new Vector3 (660, 5, 570),
+                  new Vector3 (690, 5, 555),
+                  new Vector3 (690, 5, 525),
+                  new Vector3 (690, 5, 495),
 
-                Matrix.CreateScale(0.02f) * Matrix.CreateRotationX(cuartoDeVuelta) * Matrix.CreateTranslation(Tire4Position),
-                Matrix.CreateScale(0.02f) * Matrix.CreateRotationX(cuartoDeVuelta) * Matrix.CreateTranslation(Tire4Position1),
-                Matrix.CreateScale(0.02f) * Matrix.CreateRotationX(cuartoDeVuelta) * Matrix.CreateTranslation(Tire4Position2),
-                Matrix.CreateScale(0.02f) * Matrix.CreateRotationX(cuartoDeVuelta) * Matrix.CreateTranslation(Tire4Position3),
+                
 
-            // "Tire" del lado más lejos del origen de la rampa Rampa1World
-                Matrix.CreateScale(0.02f) * Matrix.CreateRotationX(cuartoDeVuelta) * Matrix.CreateTranslation(Tire5Position),
+                  new Vector3 (630, 5, 645),
+                  new Vector3 (660, 5, 630),
+                  new Vector3 (690, 5, 615),
+                  new Vector3 (720, 5, 600),
+                  new Vector3 (750, 5, 585),
+                  new Vector3 (750, 5, 555),
+                  new Vector3 (750, 5, 525),
+                  new Vector3 (750, 5, 495),
 
-                Matrix.CreateScale(0.02f) * Matrix.CreateRotationX(cuartoDeVuelta) * Matrix.CreateTranslation(Tire6Position),
-                Matrix.CreateScale(0.02f) * Matrix.CreateRotationX(cuartoDeVuelta) * Matrix.CreateTranslation(Tire6Position1),
+                //Circulo de ruedas
+                  new Vector3 (-400, 5, -500),
 
-                Matrix.CreateScale(0.02f) * Matrix.CreateRotationX(cuartoDeVuelta) * Matrix.CreateTranslation(Tire7Position),
-                Matrix.CreateScale(0.02f) * Matrix.CreateRotationX(cuartoDeVuelta) * Matrix.CreateTranslation(Tire7Position1),
-                Matrix.CreateScale(0.02f) * Matrix.CreateRotationX(cuartoDeVuelta) * Matrix.CreateTranslation(Tire7Position2),
+                  new Vector3 (-415, 5, -500),
+                  new Vector3 (-430, 5, -500),
+                  new Vector3 (-385, 5, -500),
+                  new Vector3 (-370, 5, -500),
+                  new Vector3 (-400, 5, -515),
+                  new Vector3 (-400, 5, -530),
+                  new Vector3 (-400, 5, -485),
+                  new Vector3 (-400, 5, -470),
+                
+                  new Vector3 (-415, 5, -515),
+                  new Vector3 (-415, 5, -485),
+                  new Vector3 (-385, 5, -515),
+                  new Vector3 (-385, 5, -485),
 
-                Matrix.CreateScale(0.02f) * Matrix.CreateRotationX(cuartoDeVuelta) * Matrix.CreateTranslation(Tire8Position),
-                Matrix.CreateScale(0.02f) * Matrix.CreateRotationX(cuartoDeVuelta) * Matrix.CreateTranslation(Tire8Position1),
-                Matrix.CreateScale(0.02f) * Matrix.CreateRotationX(cuartoDeVuelta) * Matrix.CreateTranslation(Tire8Position2),
-                Matrix.CreateScale(0.02f) * Matrix.CreateRotationX(cuartoDeVuelta) * Matrix.CreateTranslation(Tire8Position3),
+                //Circulo de ruedas
+                  new Vector3 (30, 5, -600),
+                  new Vector3 (45, 5, -600),
+                  new Vector3 (60, 5, -600),
+                  new Vector3 (15, 5, -600),
+                  new Vector3 (0, 5, -600),
+                  new Vector3 (30, 5, -615),
+                  new Vector3 (30, 5, -630),
+                  new Vector3 (30, 5, -585),
+                  new Vector3 (30, 5, -570),
+                  new Vector3 (45, 5, -615),
+                  new Vector3 (45, 5, -585),
+                  new Vector3 (15, 5, -615),
+                  new Vector3 (15, 5, -585),
 
-            // "Tire" del lado más lejos del origen de la rampa Rampa2World
-                Matrix.CreateScale(0.02f) * Matrix.CreateRotationX(cuartoDeVuelta) * Matrix.CreateTranslation(Tire9Position),
 
-                Matrix.CreateScale(0.02f) * Matrix.CreateRotationX(cuartoDeVuelta) * Matrix.CreateTranslation(Tire10Position),
-                Matrix.CreateScale(0.02f) * Matrix.CreateRotationX(cuartoDeVuelta) * Matrix.CreateTranslation(Tire10Position1),
 
-                Matrix.CreateScale(0.02f) * Matrix.CreateRotationX(cuartoDeVuelta) * Matrix.CreateTranslation(Tire11Position),
-                Matrix.CreateScale(0.02f) * Matrix.CreateRotationX(cuartoDeVuelta) * Matrix.CreateTranslation(Tire11Position1),
-                Matrix.CreateScale(0.02f) * Matrix.CreateRotationX(cuartoDeVuelta) * Matrix.CreateTranslation(Tire11Position2),
-
-                Matrix.CreateScale(0.02f) * Matrix.CreateRotationX(cuartoDeVuelta) * Matrix.CreateTranslation(Tire12Position),
-                Matrix.CreateScale(0.02f) * Matrix.CreateRotationX(cuartoDeVuelta) * Matrix.CreateTranslation(Tire12Position1),
-                Matrix.CreateScale(0.02f) * Matrix.CreateRotationX(cuartoDeVuelta) * Matrix.CreateTranslation(Tire12Position2),
-                Matrix.CreateScale(0.02f) * Matrix.CreateRotationX(cuartoDeVuelta) * Matrix.CreateTranslation(Tire12Position3),
-
-            // "Tire" del lado más cerca del origen de la rampa Rampa2World
-                Matrix.CreateScale(0.02f) * Matrix.CreateRotationX(cuartoDeVuelta) * Matrix.CreateTranslation(Tire13Position),
-
-                Matrix.CreateScale(0.02f) * Matrix.CreateRotationX(cuartoDeVuelta) * Matrix.CreateTranslation(Tire14Position),
-                Matrix.CreateScale(0.02f) * Matrix.CreateRotationX(cuartoDeVuelta) * Matrix.CreateTranslation(Tire14Position1),
-
-                Matrix.CreateScale(0.02f) * Matrix.CreateRotationX(cuartoDeVuelta) * Matrix.CreateTranslation(Tire15Position),
-                Matrix.CreateScale(0.02f) * Matrix.CreateRotationX(cuartoDeVuelta) * Matrix.CreateTranslation(Tire15Position1),
-                Matrix.CreateScale(0.02f) * Matrix.CreateRotationX(cuartoDeVuelta) * Matrix.CreateTranslation(Tire15Position2),
-
-                Matrix.CreateScale(0.02f) * Matrix.CreateRotationX(cuartoDeVuelta) * Matrix.CreateTranslation(Tire16Position),
-                Matrix.CreateScale(0.02f) * Matrix.CreateRotationX(cuartoDeVuelta) * Matrix.CreateTranslation(Tire16Position1),
-                Matrix.CreateScale(0.02f) * Matrix.CreateRotationX(cuartoDeVuelta) * Matrix.CreateTranslation(Tire16Position2),
-                Matrix.CreateScale(0.02f) * Matrix.CreateRotationX(cuartoDeVuelta) * Matrix.CreateTranslation(Tire16Position3),
-
-            // "Tire" del lado más lejos del origen de la rampa Rampa3World
-                Matrix.CreateScale(0.02f) * Matrix.CreateRotationX(cuartoDeVuelta) * Matrix.CreateTranslation(Tire17Position),
-
-                Matrix.CreateScale(0.02f) * Matrix.CreateRotationX(cuartoDeVuelta) * Matrix.CreateTranslation(Tire18Position),
-                Matrix.CreateScale(0.02f) * Matrix.CreateRotationX(cuartoDeVuelta) * Matrix.CreateTranslation(Tire18Position1),
-
-                Matrix.CreateScale(0.02f) * Matrix.CreateRotationX(cuartoDeVuelta) * Matrix.CreateTranslation(Tire19Position),
-                Matrix.CreateScale(0.02f) * Matrix.CreateRotationX(cuartoDeVuelta) * Matrix.CreateTranslation(Tire19Position1),
-                Matrix.CreateScale(0.02f) * Matrix.CreateRotationX(cuartoDeVuelta) * Matrix.CreateTranslation(Tire19Position2),
-
-            // "Tire" del lado más cerca del origen de la rampa Rampa3World
-                Matrix.CreateScale(0.02f) * Matrix.CreateRotationX(cuartoDeVuelta) * Matrix.CreateTranslation(Tire20Position),
-
-                Matrix.CreateScale(0.02f) * Matrix.CreateRotationX(cuartoDeVuelta) * Matrix.CreateTranslation(Tire21Position),
-                Matrix.CreateScale(0.02f) * Matrix.CreateRotationX(cuartoDeVuelta) * Matrix.CreateTranslation(Tire21Position1),
-
-                Matrix.CreateScale(0.02f) * Matrix.CreateRotationX(cuartoDeVuelta) * Matrix.CreateTranslation(Tire22Position),
-                Matrix.CreateScale(0.02f) * Matrix.CreateRotationX(cuartoDeVuelta) * Matrix.CreateTranslation(Tire22Position1),
-                Matrix.CreateScale(0.02f) * Matrix.CreateRotationX(cuartoDeVuelta) * Matrix.CreateTranslation(Tire22Position2)
+                //Ruedas dispersadas
+                  new Vector3 (550, 5, -600),
+                  new Vector3 (593, 5, -584),
+                  new Vector3 (524, 5, -600),
+                  new Vector3 (534, 5, -643),
+                  new Vector3 (579, 5, -530),
+                  new Vector3 (587, 5, -605),
+                  new Vector3 (591, 5, -564),
             };
 
+            TiresWorld = new Matrix[posicionRuedas.Length];
+
+            for(int i = 0; i < posicionRuedas.Length; i++)
+                TiresWorld[i] = Matrix.CreateScale(0.02f) * Matrix.CreateRotationX(cuartoDeVuelta) * Matrix.CreateTranslation(posicionRuedas[i]);
 
         }
 
@@ -536,66 +530,17 @@ namespace TGC.MonoGame.TP
                 new BoundingBox(Rock10Box.Min + Rock23Position -correctorPosicionBoxRock10, Rock10Box.Max + Rock23Position - correctorPosicionBoxRock10),
             };
 
-            Vector3 correctorPosicionBoxTires = new Vector3(1f,296f,33f);
+            
 
             TireBox = BoundingVolumesExtensions.CreateAABBFrom(Tire);
             TireBox = BoundingVolumesExtensions.Scale(TireBox,new Vector3(0.02f,0.01f,0.04f));
 
-            TireBoxes = new BoundingBox[]
+            TireBoxes = new BoundingBox[posicionRuedas.Length];
+            
+            for(int i = 0; i < posicionRuedas.Length; i++)
             {
-                new BoundingBox(TireBox.Min  , TireBox.Max  ),
-
-                new BoundingBox(TireBox.Min + Tire1Position -correctorPosicionBoxTires, TireBox.Max + Tire1Position - correctorPosicionBoxTires),
-                new BoundingBox(TireBox.Min + Tire2Position -correctorPosicionBoxTires, TireBox.Max + Tire2Position - correctorPosicionBoxTires),
-                new BoundingBox(TireBox.Min + Tire2Position1 -correctorPosicionBoxTires, TireBox.Max + Tire2Position1 - correctorPosicionBoxTires),
-                new BoundingBox(TireBox.Min + Tire3Position -correctorPosicionBoxTires, TireBox.Max + Tire3Position - correctorPosicionBoxTires),
-                new BoundingBox(TireBox.Min + Tire3Position1 -correctorPosicionBoxTires, TireBox.Max + Tire3Position1 - correctorPosicionBoxTires),
-                new BoundingBox(TireBox.Min + Tire3Position2 -correctorPosicionBoxTires, TireBox.Max + Tire3Position2 - correctorPosicionBoxTires),
-                new BoundingBox(TireBox.Min + Tire4Position -correctorPosicionBoxTires, TireBox.Max + Tire4Position - correctorPosicionBoxTires),
-                new BoundingBox(TireBox.Min + Tire4Position1 -correctorPosicionBoxTires, TireBox.Max + Tire4Position1 - correctorPosicionBoxTires),
-                new BoundingBox(TireBox.Min + Tire4Position2 -correctorPosicionBoxTires, TireBox.Max + Tire4Position2 - correctorPosicionBoxTires),
-                new BoundingBox(TireBox.Min + Tire4Position3 -correctorPosicionBoxTires, TireBox.Max + Tire4Position3 - correctorPosicionBoxTires),
-                new BoundingBox(TireBox.Min + Tire5Position -correctorPosicionBoxTires, TireBox.Max + Tire5Position - correctorPosicionBoxTires),
-                new BoundingBox(TireBox.Min + Tire6Position -correctorPosicionBoxTires, TireBox.Max + Tire6Position - correctorPosicionBoxTires),
-                new BoundingBox(TireBox.Min + Tire6Position1 -correctorPosicionBoxTires, TireBox.Max + Tire6Position1 - correctorPosicionBoxTires),
-                new BoundingBox(TireBox.Min + Tire7Position2 -correctorPosicionBoxTires, TireBox.Max + Tire7Position2 - correctorPosicionBoxTires),
-                new BoundingBox(TireBox.Min + Tire8Position -correctorPosicionBoxTires, TireBox.Max + Tire8Position - correctorPosicionBoxTires),
-                new BoundingBox(TireBox.Min + Tire8Position1 -correctorPosicionBoxTires, TireBox.Max + Tire8Position1 - correctorPosicionBoxTires),
-                new BoundingBox(TireBox.Min + Tire8Position2 -correctorPosicionBoxTires, TireBox.Max + Tire8Position2 - correctorPosicionBoxTires),
-                new BoundingBox(TireBox.Min + Tire8Position3 -correctorPosicionBoxTires, TireBox.Max + Tire8Position3 - correctorPosicionBoxTires),
-                new BoundingBox(TireBox.Min + Tire9Position -correctorPosicionBoxTires, TireBox.Max + Tire9Position - correctorPosicionBoxTires),
-                new BoundingBox(TireBox.Min + Tire10Position -correctorPosicionBoxTires, TireBox.Max + Tire10Position - correctorPosicionBoxTires),
-                new BoundingBox(TireBox.Min + Tire10Position1 -correctorPosicionBoxTires, TireBox.Max + Tire10Position1 - correctorPosicionBoxTires),
-                new BoundingBox(TireBox.Min + Tire11Position -correctorPosicionBoxTires, TireBox.Max + Tire11Position - correctorPosicionBoxTires),
-                new BoundingBox(TireBox.Min + Tire11Position1 -correctorPosicionBoxTires, TireBox.Max + Tire11Position1 - correctorPosicionBoxTires),
-                new BoundingBox(TireBox.Min + Tire11Position2 -correctorPosicionBoxTires, TireBox.Max + Tire11Position2 - correctorPosicionBoxTires),
-                new BoundingBox(TireBox.Min + Tire12Position -correctorPosicionBoxTires, TireBox.Max + Tire12Position - correctorPosicionBoxTires),
-                new BoundingBox(TireBox.Min + Tire12Position1 -correctorPosicionBoxTires, TireBox.Max + Tire12Position1 - correctorPosicionBoxTires),
-                new BoundingBox(TireBox.Min + Tire12Position2 -correctorPosicionBoxTires, TireBox.Max + Tire12Position2 - correctorPosicionBoxTires),
-                new BoundingBox(TireBox.Min + Tire12Position3 -correctorPosicionBoxTires, TireBox.Max + Tire12Position3 - correctorPosicionBoxTires),
-                new BoundingBox(TireBox.Min + Tire13Position -correctorPosicionBoxTires, TireBox.Max + Tire13Position - correctorPosicionBoxTires),
-                new BoundingBox(TireBox.Min + Tire14Position -correctorPosicionBoxTires, TireBox.Max + Tire14Position - correctorPosicionBoxTires),
-                new BoundingBox(TireBox.Min + Tire14Position1 -correctorPosicionBoxTires, TireBox.Max + Tire14Position1 - correctorPosicionBoxTires),
-                new BoundingBox(TireBox.Min + Tire15Position -correctorPosicionBoxTires, TireBox.Max + Tire15Position - correctorPosicionBoxTires),
-                new BoundingBox(TireBox.Min + Tire15Position1 -correctorPosicionBoxTires, TireBox.Max + Tire15Position1 - correctorPosicionBoxTires),
-                new BoundingBox(TireBox.Min + Tire15Position2 -correctorPosicionBoxTires, TireBox.Max + Tire15Position2 - correctorPosicionBoxTires),
-                new BoundingBox(TireBox.Min + Tire16Position -correctorPosicionBoxTires, TireBox.Max + Tire16Position - correctorPosicionBoxTires),
-                new BoundingBox(TireBox.Min + Tire16Position1 -correctorPosicionBoxTires, TireBox.Max + Tire16Position1 - correctorPosicionBoxTires),
-                new BoundingBox(TireBox.Min + Tire16Position2 -correctorPosicionBoxTires, TireBox.Max + Tire16Position2 - correctorPosicionBoxTires),
-                new BoundingBox(TireBox.Min + Tire16Position3 -correctorPosicionBoxTires, TireBox.Max + Tire16Position3 - correctorPosicionBoxTires),
-                new BoundingBox(TireBox.Min + Tire17Position -correctorPosicionBoxTires, TireBox.Max + Tire17Position - correctorPosicionBoxTires),
-                new BoundingBox(TireBox.Min + Tire18Position -correctorPosicionBoxTires, TireBox.Max + Tire18Position - correctorPosicionBoxTires),
-                new BoundingBox(TireBox.Min + Tire18Position1 -correctorPosicionBoxTires, TireBox.Max + Tire18Position1 - correctorPosicionBoxTires),
-                new BoundingBox(TireBox.Min + Tire19Position -correctorPosicionBoxTires, TireBox.Max + Tire19Position - correctorPosicionBoxTires),
-                new BoundingBox(TireBox.Min + Tire19Position1 -correctorPosicionBoxTires, TireBox.Max + Tire19Position1 - correctorPosicionBoxTires),
-                new BoundingBox(TireBox.Min + Tire19Position2 -correctorPosicionBoxTires, TireBox.Max + Tire19Position2 - correctorPosicionBoxTires),
-                new BoundingBox(TireBox.Min + Tire20Position -correctorPosicionBoxTires, TireBox.Max + Tire20Position - correctorPosicionBoxTires),
-                new BoundingBox(TireBox.Min + Tire21Position -correctorPosicionBoxTires, TireBox.Max + Tire21Position - correctorPosicionBoxTires),
-                new BoundingBox(TireBox.Min + Tire21Position1 -correctorPosicionBoxTires, TireBox.Max + Tire21Position1 - correctorPosicionBoxTires),
-                new BoundingBox(TireBox.Min + Tire22Position -correctorPosicionBoxTires, TireBox.Max + Tire22Position - correctorPosicionBoxTires),
-                new BoundingBox(TireBox.Min + Tire22Position1 -correctorPosicionBoxTires, TireBox.Max + Tire22Position1 - correctorPosicionBoxTires),
-                new BoundingBox(TireBox.Min + Tire22Position2 -correctorPosicionBoxTires, TireBox.Max + Tire22Position2 - correctorPosicionBoxTires),         
-            };
+                TireBoxes[i] =  new BoundingBox(TireBox.Min + posicionRuedas[i] - correctorPosicionBoxTires, TireBox.Max + posicionRuedas[i] - correctorPosicionBoxTires);
+            }
 
         }
         
@@ -665,11 +610,16 @@ namespace TGC.MonoGame.TP
                     {
                         auto.audioChoque();
                     }
-                    auto.rebotar(vectorChoque,penetration);
-                    auto.FrenarAuto();
+                    posicionRuedas[index] += -vectorChoque * penetration;
                     
                 }
             }
+
+            for(int i = 0; i < posicionRuedas.Length; i++)
+                TiresWorld[i] = Matrix.CreateScale(0.02f) * Matrix.CreateRotationX(cuartoDeVuelta) * Matrix.CreateTranslation(posicionRuedas[i]);
+            for(int i = 0; i < posicionRuedas.Length; i++)
+                TireBoxes[i] =  new BoundingBox(TireBox.Min + posicionRuedas[i] - correctorPosicionBoxTires, TireBox.Max + posicionRuedas[i] - correctorPosicionBoxTires);
+                        
         }
 
         public BoundingBox[] getTireBoxes()
