@@ -45,7 +45,7 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
     private Detalles detalles;
     private Escenario escenario;
     private PowerUps powerUps;
-    private SistemaDeVida vida;
+    //private SistemaDeVida vida;
 
     // Modelos
     //private Model Piso { get; set; }
@@ -158,7 +158,7 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
       escenario = new Escenario();
       powerUps = new PowerUps();
       autos = new Autos();
-      vida = new SistemaDeVida();
+      //vida = new SistemaDeVida();
 
       
 
@@ -166,7 +166,7 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
       detalles.Initialize();
       powerUps.Initialize(GraphicsDevice);
       autos.Initialize();
-      vida.Initialize();
+      //vida.Initialize();
 
       //CAMARA
       //Camera = new SimpleCamera(GraphicsDevice.Viewport.AspectRatio, new Vector3(40, 60, 150), 55, 0.4f);
@@ -365,13 +365,13 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
           }
 
           totalGameTime += (float)gameTime.ElapsedGameTime.TotalSeconds;
-          autos.Update(gameTime);
+          autos.Update(gameTime,powerUps);
           powerUps.Update(gameTime, autos, detalles, escenario);
 
           detalles.Update(gameTime,autos);
           escenario.Update(gameTime, autos);
 
-          vida.Update(autos, powerUps);
+          //vida.Update(autos, powerUps);
 
           View = Matrix.CreateLookAt(posicionCamara + autos.posAutoPrincipal(), autos.posAutoPrincipal(), Vector3.Up);
           //Camera.Update(gameTime);
@@ -389,7 +389,7 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
             AutoShader.Parameters["carDirection"]?.SetValue(autos.directionAutoPrincipal());
             //Console.WriteLine(autos.directionAutoPrincipal());
 
-            if(vida.muereProta())
+            if(autos.muereProta())
             {
               MediaPlayer.Stop();
               MediaPlayer.Play(GameOver);
@@ -476,7 +476,7 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
           SpriteBatch.DrawString(font, "Tiempo:" + ((int)totalGameTime).ToString(), new Vector2(10, 10), Color.Black);
           SpriteBatch.DrawString(font, "Velocidad:" + (autos.autoSpeed().ToString()), new Vector2(700, 10), Color.Black);
           SpriteBatch.DrawString(font, "PowerUp:" + (powerUps.powerUpActual()), new Vector2(1250, 900), Color.Black);
-          SpriteBatch.DrawString(font, "Vida:" + (vida.vidaProtagonista), new Vector2(1300, 900), Color.Black);
+          SpriteBatch.DrawString(font, "Vida:" + (autos.getVidaProta()), new Vector2(1300, 900), Color.Black);
 
           #region Pass 1-6
             // Draw to our cubemap from the robot position

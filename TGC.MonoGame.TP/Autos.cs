@@ -89,7 +89,9 @@ namespace TGC.MonoGame.TP
     public Vector2[] AutosVelocidades;
     private Boolean enElPiso;
     private Boolean enPlataforma;
-    float tiempoEnAire;
+    private float tiempoEnAire;
+    private Random unRandom = new Random();
+    private int vidaProtagonista = 100;
 
     //Texturas
     private List<Texture2D> ColorTextures { get; set; }
@@ -116,6 +118,8 @@ namespace TGC.MonoGame.TP
     Vector3 coreccionAltura = new Vector3(0, 66f, 0); //el centro de la oriented bounding box esta quedando muy arriba
     Vector3 coreccionAlturaAutoCombate = new Vector3(199, 4244f, -443); //(3,-20f,0);
 
+    private Vector3[] objetivo;
+
     //Menu
     private Vector3 autoMenuPos = new Vector3(0,0,-130);
     private Matrix autoMenu;
@@ -127,6 +131,9 @@ namespace TGC.MonoGame.TP
     private SoundEffect CarCrash {get; set;}
     private int acabaDeChocar = 0;
     private bool choco;
+
+    //IA
+    private Vector3[] Spawns;
     public void Initialize()
     {
       //MovimientoAuto
@@ -206,30 +213,32 @@ namespace TGC.MonoGame.TP
 
       AutoPrincipalWorld = Matrix.CreateScale(0.1f) * Matrix.CreateTranslation(AutoPrincipalPos);
 
-      AutosPosiciones = new Vector3[]
-      {
-            Auto1Pos,
-            Auto2Pos,
-            Auto3Pos,
-            Auto4Pos,
-            Auto5Pos,
-            Auto6Pos,
-            Auto7Pos,
-            Auto8Pos
+      Spawns = new Vector3[]{
+        new Vector3(600,0,350),
+        new Vector3(350,0,550)
       };
 
-      AutosWorld = new Matrix[]
+      //Random RR = new Random();
+      AutosPosiciones = new Vector3[DesplazamientoAutos.Length];
+      
+      for(int i = 0; i < AutosPosiciones.Length; i++)
       {
-            Matrix.CreateScale(0.1f) * Matrix.CreateRotationY(mediaVuelta) * Matrix.CreateTranslation(Auto1Pos),
-            Matrix.CreateScale(0.1f) * Matrix.CreateRotationY(mediaVuelta) * Matrix.CreateTranslation(Auto2Pos),
-            Matrix.CreateScale(0.1f) * Matrix.CreateRotationY(mediaVuelta) * Matrix.CreateTranslation(Auto3Pos),
-            Matrix.CreateScale(0.1f) * Matrix.CreateRotationY(mediaVuelta) * Matrix.CreateTranslation(Auto4Pos),
-            Matrix.CreateScale(0.1f) * Matrix.CreateRotationY(mediaVuelta) * Matrix.CreateTranslation(Auto5Pos),
+        AutosPosiciones[i] = obtenerSpawn();
+      }
 
-            Matrix.CreateScale(0.007f) * Matrix.CreateRotationY(cuartoDeVuelta) * Matrix.CreateTranslation(Auto6Pos),
-            Matrix.CreateScale(0.007f) * Matrix.CreateRotationY(cuartoDeVuelta) * Matrix.CreateTranslation(Auto7Pos),
-            Matrix.CreateScale(0.007f) * Matrix.CreateRotationY(cuartoDeVuelta) * Matrix.CreateTranslation(Auto8Pos),
-      };
+      AutosWorld = new Matrix[AutosPosiciones.Length];
+
+      for(int i = 0; i < AutosPosiciones.Length; i++)
+      {
+        if(i < 5)
+          AutosWorld[i] = Matrix.CreateScale(0.1f) * Matrix.CreateRotationY(mediaVuelta) * Matrix.CreateTranslation(AutosPosiciones[i]);
+        else
+          AutosWorld[i] = Matrix.CreateScale(0.007f) * Matrix.CreateRotationY(cuartoDeVuelta) * Matrix.CreateTranslation( AutosPosiciones[i]);
+      }
+
+      objetivo = new Vector3[AutosPosiciones.Length];
+      for(int i = 0; i < objetivo.Length; i++)
+        objetivo[i] = Vector3.Zero;
 
     }
 
@@ -272,7 +281,7 @@ namespace TGC.MonoGame.TP
 
     }
 
-    public void Update(GameTime gameTime)
+    public void Update(GameTime gameTime,PowerUps powerUps)
     {
       var keyboardState = Keyboard.GetState();
       var elapsedTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
@@ -434,14 +443,6 @@ namespace TGC.MonoGame.TP
       }
 
       AutoPrincipalPos += Desplazamiento;
-      if(CarsSpeeds[CollisionIndex] > 3 || CarsSpeeds[CollisionIndex] < -3){
-          DesplazamientoAutos[CollisionIndex] += direccionPostChoque * CarsSpeeds[CollisionIndex] * elapsedTime;
-      }
-
-      for(int index = 0; index < DesplazamientoAutos.Length; index++)
-        {
-          AutosPosiciones[index] += DesplazamientoAutos[index];
-        }
 
       AutoPrincipalWorld =  Matrix.CreateScale(0.1f) *
                             Matrix.CreateRotationX(-jumpRotation) *
@@ -475,21 +476,54 @@ namespace TGC.MonoGame.TP
       if (!choco) {acabaDeChocar = 0;}
 
 
-      //LOGICA IA
-      
-      /*for(int i = 0; i < AutosVelocidades.Length; i++)
+      for(int i = 0; i < AutosPosiciones.Length; i++)
       {
-        if(AutosPosiciones[i].X != AutoPrincipalPos.X)
+        if(objetivo[i] != Vector3.Zero)
+          objetivo[i] = AutoPrincipalPos;
+        atacarAutoPrincipal(i,elapsedTime);
+      }
+        
+
+
+
+
+
+
+        for (var index = 0; index < CollideCars.Length; index++)
         {
-          if (AutosVelocidades[i].X < maxSpeed) 
-          {
-            AutosVelocidades[i].X += CarAcceleration * elapsedTime;
-            DesplazamientoAutos[i] += CarDirection * AutosVelocidades[i].X * elapsedTime + CarDirection * elapsedTime * CarDirection / 2f;
-            
-            AutosPosiciones[i].X += DesplazamientoAutos[i].X;
-          }
+            if (AutoPrincipalBox.Intersects(CollideCars[index]))
+            {
+                vidaProtagonista -= 25;
+                AutosPosiciones[index] = obtenerSpawn();
+            }
         }
-      }*/
+
+        for (int i = 0; i < powerUps.BalasWorld.Length; i++)
+        {
+            if (powerUps.recorridoBalas[i] > 0f)
+            {
+                for (var index = 0; index < AutosPosiciones.Length; index++)
+                {
+                    if(powerUps.collidersBalas[i].Intersects(CollideCars[index]))
+                    {
+                        powerUps.recorridoBalas[i] = 0f;
+                        AutosPosiciones[index] = obtenerSpawn();
+                    }
+                }
+            }
+        }
+
+        if (powerUps.recorridoMisil > 0f)
+            {
+                for (var index = 0; index < AutosPosiciones.Length; index++)
+                {
+                    if(powerUps.colliderMisil.Intersects(CollideCars[index]))
+                    {
+                        powerUps.recorridoMisil = 0f;
+                        AutosPosiciones[index] = obtenerSpawn();
+                    }
+                }
+            }
     }
 
     public void dibujarAuto(Matrix view, Matrix projection, Effect effect, Model modelo, float WheelRot, Matrix matrizMundo)
@@ -680,5 +714,30 @@ namespace TGC.MonoGame.TP
       }
     }
 
+    public void atacarAutoPrincipal(int index,float elapsedTime){
+     Vector3 direccionAtaque = Vector3.Normalize(objetivo[index] - AutosPosiciones[index]);
+     AutosPosiciones[index] += direccionAtaque * 100 * elapsedTime ; 
+    }
+
+    private float RandomPosition(Random random)
+    {
+        return (float)random.NextDouble();
+    }
+
+    public bool muereProta()
+    {
+        return vidaProtagonista <= 0 ? true : false;
+    }
+    public int getVidaProta()
+    {
+        return vidaProtagonista;
+    }
+
+    public Vector3 obtenerSpawn(){
+      if(RandomPosition(unRandom) > 0.5)
+         return Spawns[0];
+        else
+         return Spawns[1];
+    }
   }
 }
