@@ -127,6 +127,8 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
     private Texture2D TexturaTire2;
     private Texture2D TexturaMenu;
     private Texture2D TexturaPowerUp;
+    private Texture2D Noise;
+    private Texture2D TexturaAuxiliar;
 
     //efectos
     private RenderTargetCube EnvironmentMapRenderTarget { get; set; }
@@ -232,6 +234,8 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
       Bala = Content.Load<Model>(ContentFolder3D + "PowerUps/Ametralladora/balaModel");
 
       //Efectos
+      Noise = Content.Load<Texture2D>(ContentFolderTextures + "perlin");
+      TexturaAuxiliar = Content.Load<Texture2D>(ContentFolderTextures + "lava");
       Effect = Content.Load<Effect>(ContentFolderEffects + "BasicShader"); //aca
       EscenarioShader = Content.Load<Effect>(ContentFolderEffects + "EscenarioShader");
       DetallesShader = Content.Load<Effect>(ContentFolderEffects + "DetallesShader");
@@ -241,6 +245,9 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
       BlurShader.Parameters["screenSize"]?.SetValue(new Vector2(GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height));
 
       AutoShader.Parameters["environmentMap"]?.SetValue(EnvironmentMapRenderTarget);
+
+      AutoShader.Parameters["TexturaRuido"]?.SetValue(Noise);
+      AutoShader.Parameters["TexturaAuxiliar"]?.SetValue(TexturaAuxiliar);
 
       // iluminacion
       AutoShader.Parameters["ambientColor"]?.SetValue(Color.White.ToVector3());
@@ -494,10 +501,10 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
           SpriteBatch.DrawString(font, "Vida:" + (autos.getVidaProta()), new Vector2(1300, 900), Color.Black);
 
           #region Pass 1-6
-            // Draw to our cubemap from the robot position
+
           for (var face = CubeMapFace.PositiveX; face <= CubeMapFace.NegativeZ; face++)
           {
-                // Set the render target as our cubemap face, we are drawing the scene in this texture
+               
                 GraphicsDevice.SetRenderTarget(EnvironmentMapRenderTarget, face);
                 GraphicsDevice.Clear(ClearOptions.Target | ClearOptions.DepthBuffer, Color.Black, 1f, 0);
                 
@@ -511,25 +518,21 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
 
           #region Pass 7
 
-            // Set the render target as null, we are drawing on the screen!
+
             GraphicsDevice.SetRenderTarget(MainSceneRenderTarget);
             GraphicsDevice.Clear(ClearOptions.Target | ClearOptions.DepthBuffer, Color.Black, 1f, 0);
             
-            // Draw our scene with the default effect
             escenario.dibujarEscenario(View, Projection, AutoShader, true);
             detalles.dibujarDetalles(View, Projection, AutoShader);
             powerUps.dibujarPowerUps(View, Projection, AutoShader, "Luz");
             
-            autos.dibujarAutos(View, Projection, AutoShader, "Reflejo");
+            autos.dibujarAutos(View, Projection, AutoShader, "Dissolve");
 
           #endregion
 
           #region Pass 8
             GraphicsDevice.SetRenderTarget(FirstPassBloomRenderTarget);
             GraphicsDevice.Clear(ClearOptions.Target | ClearOptions.DepthBuffer, Color.Black, 1f, 0);
-            //hay que mandarle alguna textura?
-            //creo que hay que hacer blur
-            //AutoShader.Parameters["baseTexture"]?.SetValue();
             autos.dibujarAutos(View, Projection, AutoShader, "Bloom");
             powerUps.dibujarPowerUps(View, Projection, AutoShader, "BloomPowerUp");
             
@@ -538,19 +541,11 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
 
           #region Pass 9
 
-            // Now we apply a blur effect to the bloom texture
-            // Note that we apply this a number of times and we switch
-            // the render target with the source texture
-            // Basically, this applies the blur effect N times
-
             var bloomTexture = FirstPassBloomRenderTarget;
             var finalBloomRenderTarget = SecondPassBloomRenderTarget;
             var PassCount = 2;
             for (var index = 0; index < PassCount; index++)
             {
-                //Exchange(ref SecondaPassBloomRenderTarget, ref FirstPassBloomRenderTarget);
-
-                // Set the render target as null, we are drawing into the screen now!
                 GraphicsDevice.SetRenderTarget(finalBloomRenderTarget);
                 GraphicsDevice.Clear(ClearOptions.Target | ClearOptions.DepthBuffer, Color.Black, 1f, 0);
 
@@ -580,8 +575,6 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
             FullScreenQuad.Draw(AutoShader, "Integrar");
           #endregion
 
-          
-
           /*escenario.dibujarEscenario(View, Projection, AutoShader);
           detalles.dibujarDetalles(View, Projection, AutoShader);
           powerUps.dibujarPowerUps(View, Projection, AutoShader);
@@ -593,7 +586,7 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
           powerUps.dibujarBoundingBoxes(gizmos); //BB Bien ubicadas
 
           gizmos.Draw();
-          SpriteBatch.End(); //si lo ponemos antes de dibujar los mdoelos, los autos y el piso se dibujan translucidos 
+          SpriteBatch.End(); //si lo ponemos antes de dibujar los modelos, los autos y el piso se dibujan translucidos 
           break;
       }
     }

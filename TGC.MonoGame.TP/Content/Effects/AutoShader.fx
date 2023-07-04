@@ -85,6 +85,29 @@ sampler2D bloomTextureSampler = sampler_state
     AddressV = Clamp;
 };
 
+texture TexturaRuido;
+sampler2D ruidoSampler = sampler_state
+{
+    Texture = (TexturaRuido);
+    MagFilter = Linear;
+    MinFilter = Linear;
+    AddressU = Clamp;
+    AddressV = Clamp;
+};
+
+texture TexturaAuxiliar;
+sampler2D auxiliarTextureSampler = sampler_state
+{
+    Texture = (TexturaAuxiliar);
+    MagFilter = Linear;
+    MinFilter = Linear;
+    AddressU = Wrap;
+    AddressV = Wrap;
+};
+
+
+#define PI 3.1415926535898
+
 VertexShaderOutput MainVS(in VertexShaderInput input)
 {
 	VertexShaderOutput output = (VertexShaderOutput)0;
@@ -180,6 +203,27 @@ float4 EnvironmentMapPS(VertexShaderOutput input) : COLOR
     return float4(lerp(baseColor.xyz, reflectionColor, fresnel), 1);
 }
 
+float4 DissolvePS(VertexShaderOutput input) : COLOR
+{
+    float4 baseColor = EnvironmentMapPS(input);
+    
+    float4 textureRuido = tex2D(ruidoSampler, input.TextureCoordinate);
+    float4 textureAux = tex2D(auxiliarTextureSampler, input.TextureCoordinate+Time*0.1);
+    //float4 red = float4(1.0, 0.0, 0.0, 1.0);
+
+    float factor1 = step(textureRuido.r, sin(Time));
+    float factor2 = step(textureRuido.r, sin(Time+0.09));
+
+    if(factor2){
+        baseColor = textureAux;
+    }
+
+    if(factor1){
+        discard;
+    }
+    return baseColor;
+}
+
 float4 BloomAutoPS(VertexShaderOutput input) : COLOR
 {
     float4 color = tex2D(baseTextureSampler, input.TextureCoordinate);
@@ -233,6 +277,15 @@ technique Reflejo
 	{
 		VertexShader = compile VS_SHADERMODEL MainVS();
 		PixelShader = compile PS_SHADERMODEL EnvironmentMapPS();
+	}
+};
+
+technique Dissolve
+{
+	pass P0
+	{
+		VertexShader = compile VS_SHADERMODEL MainVS();
+		PixelShader = compile PS_SHADERMODEL DissolvePS();
 	}
 };
 
