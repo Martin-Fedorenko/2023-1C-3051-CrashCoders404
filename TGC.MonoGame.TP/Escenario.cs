@@ -222,10 +222,10 @@ public void LoadContent(QuadPrimitive piso, QuadPrimitive pared, Model column, M
       var minVector = Vector3.One * 0.25f;
       ParedBoxes = new BoundingBox[]
       {
-        new BoundingBox(new Vector3(-800f, 200f, -800f) - minVector, new Vector3(800f, 0f, -800f) + minVector),
-        new BoundingBox(new Vector3(-800f, 200f, 800f) - minVector, new Vector3(800f, 0f, 800f) + minVector),
         new BoundingBox(new Vector3(800f, 200f, -800f) - minVector, new Vector3(800f, 0f, 800f) + minVector),
-        new BoundingBox(new Vector3(-800f, 200f, -800f) - minVector, new Vector3(-800f, 0f, 800f) + minVector)
+        new BoundingBox(new Vector3(-800f, 200f, -800f) - minVector, new Vector3(-800f, 0f, 800f) + minVector),
+        new BoundingBox(new Vector3(-800f, 200f, -800f) - minVector, new Vector3(800f, 0f, -800f) + minVector),
+        new BoundingBox(new Vector3(-800f, 200f, 800f) - minVector, new Vector3(800f, 0f, 800f) + minVector)
       };
 
       Vector3 correctorPosicionBoxColumnas = new Vector3(0,-45,98);
@@ -358,10 +358,10 @@ public void LoadContent(QuadPrimitive piso, QuadPrimitive pared, Model column, M
                   {
                     auto.audioChoque();
                   }
-                  if(index == 1 || index == 2)
-                    auto.rebotar(vectorChoque,penetration);
-                  else
+                  if(index == 1 || index == 2) //para evitar que el auto traspase dichas paredes
                     auto.rebotar(-vectorChoque,penetration);
+                  else
+                    auto.rebotar(vectorChoque,penetration);
                    auto.FrenarAuto();
                 }
             }
