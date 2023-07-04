@@ -71,6 +71,7 @@ namespace TGC.MonoGame.TP
     //matrices y vectores autos IA
     private Matrix[] AutosWorld;
     public Vector3[] AutosPosiciones;
+    public Boolean[] permitirMovimiento;
     public Vector3[] AutosDirecciones;
     public Vector3[] AutosNormal;
     public float[] AutosRotaciones;
@@ -141,6 +142,7 @@ namespace TGC.MonoGame.TP
     public void Initialize()
     {
       DesplazamientoAutos = new Vector3[cantidadEnemigos];
+      permitirMovimiento = new Boolean[cantidadEnemigos];
       AutosPosiciones = new Vector3[cantidadEnemigos];
       objetivo = new Vector3[cantidadEnemigos];
       AutosWorld = new Matrix[cantidadEnemigos];
@@ -407,8 +409,11 @@ namespace TGC.MonoGame.TP
         {
             if (AutoPrincipalBox.Intersects(CollideCars[index]))
             {
-                vidaProtagonista -= 25;
+              //hay un problema con los colliders, en un muuuy corto periodo de tiempo puedo tocar varias veces un mismo collider y me quita toda la vida de una
+                vidaProtagonista -= 5;
+                permitirMovimiento[index] = false; //acaba tendría que haber alguna logica para que se desintgre el coche cuando queda quieto
                 AutosPosiciones[index] = obtenerSpawn();
+                permitirMovimiento[index] = true;
             }
         }
 
@@ -638,32 +643,30 @@ namespace TGC.MonoGame.TP
       Vector2 b = new Vector2(AutosPosiciones[index].X, AutosPosiciones[index].Z);
       Vector2 c = new Vector2(AutosDirecciones[index].X, AutosDirecciones[index].Z);
 
+      Vector2 posIA_posAuto = Vector2.Normalize(a-b);
+      Vector2 posFrente_posAuto = Vector2.Normalize(c-b);
+      //Vector3 normal = (Vector3.Cross(posIA_posAuto, Vector3.Normalize(AutosDirecciones[index])));
+      double dot = (Vector2.Dot(posIA_posAuto, posFrente_posAuto));
+      double det = posIA_posAuto.X * posFrente_posAuto.Y - posIA_posAuto.Y * posFrente_posAuto.X;
+      float angle = (float) Math.Atan2(det, dot);
 
-    Vector2 posIA_posAuto = Vector2.Normalize(a-b);
-    Vector2 posFrente_posAuto = Vector2.Normalize(c-b);
-    //Vector3 normal = (Vector3.Cross(posIA_posAuto, Vector3.Normalize(AutosDirecciones[index])));
-    double dot = (Vector2.Dot(posIA_posAuto, posFrente_posAuto));
-    double det = posIA_posAuto.X * posFrente_posAuto.Y - posIA_posAuto.Y * posFrente_posAuto.X;
-    float angle = (float) Math.Atan2(det, dot);
+      AutosRotaciones[index] = angle;
 
-    //ACA HAY QUE MODIFICAR AutosRotaciones[index] DE ALGUNA MANERA PARA QUE LA ROTACION CAMBIE EN FUNCION DEL TIEMPO
+      //Console.WriteLine("El angulo es {0}", AutosRotaciones[index]);
+
+      var martiz = Matrix.CreateRotationY(angle * 2f);
     
-    AutosRotaciones[index] = angle;
-    
+      Vector2 direccionFinalXZ = direccionAuto(AutosRotaciones[index], posFrente_posAuto, martiz);
 
-    //Console.WriteLine("El angulo es {0}", AutosRotaciones[index]);
+      AutosDirecciones[index] =  (new Vector3(direccionFinalXZ.X, 0f, direccionFinalXZ.Y));
+      //Console.WriteLine("Direccion hacia el jugador: {0}", posIA_posAutoXYZ);
+      //Console.WriteLine("Direccion del auto: {0}", AutosDirecciones[index]);
 
-    
-    var martiz = Matrix.CreateRotationY(angle * 2f);
-    
+      if(permitirMovimiento[index]){
+        AutosPosiciones[index] +=  posIA_posAutoXYZ * 100f * elapsedTime ; 
+      }
 
-    Vector2 direccionFinalXZ = direccionAuto(AutosRotaciones[index], posFrente_posAuto, martiz);
-
-    AutosDirecciones[index] =  (new Vector3(direccionFinalXZ.X, 0f, direccionFinalXZ.Y));
-    //Console.WriteLine("Direccion hacia el jugador: {0}", posIA_posAutoXYZ);
-    //Console.WriteLine("Direccion del auto: {0}", AutosDirecciones[index]);
-
-    AutosPosiciones[index] +=  posIA_posAutoXYZ * 100f * elapsedTime ; 
+      
     }
 
     public Vector2 direccionAuto(float Rotation, Vector2 direccionInicial, Matrix matriz)
@@ -830,7 +833,10 @@ namespace TGC.MonoGame.TP
         AutosPosiciones[i] = obtenerSpawn();
       }
 
-      
+      for(int i = 0; i < permitirMovimiento.Length; i++)
+      {
+        permitirMovimiento[i] = true;
+      }
 
       for(int i = 0; i < AutosPosiciones.Length; i++)
       {

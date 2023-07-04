@@ -424,7 +424,7 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
             autos.iniciarPartida();
             View = Matrix.CreateLookAt(posicionCamara, autos.posAutoPrincipal(), Vector3.Up);
             Projection = Matrix.CreateOrthographic(400, 300, -80, 1000);
-            
+            totalGameTime = 0;
             status = ST_PRESENTACION;
             
             MediaPlayer.Stop();
@@ -526,7 +526,7 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
             detalles.dibujarDetalles(View, Projection, AutoShader);
             powerUps.dibujarPowerUps(View, Projection, AutoShader, "Luz");
             
-            autos.dibujarAutos(View, Projection, AutoShader, "Dissolve");
+            autos.dibujarAutos(View, Projection, AutoShader, "Reflejo");
 
           #endregion
 
