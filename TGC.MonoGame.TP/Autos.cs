@@ -67,10 +67,17 @@ namespace TGC.MonoGame.TP
     private Matrix AutoCombate3World { get; set; }
 
     private int cantidadEnemigos = 7;
+
+    //matrices y vectores autos IA
     private Matrix[] AutosWorld;
     public Vector3[] AutosPosiciones;
-
+    public Vector3[] AutosDirecciones;
+    public Vector3[] AutosNormal;
+    public float[] AutosRotaciones;
     private float[] CarsSpeeds;
+    private Vector3[] DesplazamientoAutos;
+    public Vector2[] AutosVelocidades;
+    
     // Variables
     private float mediaVuelta = MathF.PI;
     private float cuartoDeVuelta = MathF.PI / 2;
@@ -84,9 +91,6 @@ namespace TGC.MonoGame.TP
     private Vector3 Auto7Pos = new Vector3(80, 0, 180);
     private Vector3 Auto8Pos = new Vector3(-80, 0, 180);
     private Vector3 Desplazamiento;
-    private Vector3[] DesplazamientoAutos;
-
-    public Vector2[] AutosVelocidades;
     private Boolean enElPiso;
     private Boolean enPlataforma;
     private float tiempoEnAire;
@@ -151,7 +155,7 @@ namespace TGC.MonoGame.TP
       };
       
 
-      CarAcceleration = 200f;
+      CarAcceleration = 400f;
       CarBrakes = 400f;
       ActiveMovement = false;
       jumpAngle = MathF.PI / 9;
@@ -204,6 +208,39 @@ namespace TGC.MonoGame.TP
         Vector3.Zero,
         Vector3.Zero
       };
+
+      AutosRotaciones = new float[]{
+                0f,
+                0f,
+                0f,
+                0f,
+                0f,
+                0f,
+                0f,
+                0f
+      };
+
+      AutosDirecciones = new Vector3[]{
+        Vector3.Forward,
+        Vector3.Forward,
+        Vector3.Forward,
+        Vector3.Forward,
+        Vector3.Forward,
+        Vector3.Forward,
+        Vector3.Forward,
+        Vector3.Forward
+      };
+
+      AutosNormal = new Vector3[]{
+        Vector3.Up,
+        Vector3.Up,
+        Vector3.Up,
+        Vector3.Up,
+        Vector3.Up,
+        Vector3.Up,
+        Vector3.Up,
+        Vector3.Up
+      };
       //Listas
       ColorTextures = new List<Texture2D>();
 
@@ -215,7 +252,7 @@ namespace TGC.MonoGame.TP
 
       Spawns = new Vector3[]{
         new Vector3(600,0,350),
-        new Vector3(350,0,550)
+        new Vector3(0,0,600)
       };
 
       //Random RR = new Random();
@@ -238,7 +275,7 @@ namespace TGC.MonoGame.TP
 
       objetivo = new Vector3[AutosPosiciones.Length];
       for(int i = 0; i < objetivo.Length; i++)
-        objetivo[i] = Vector3.Zero;
+        objetivo[i] = AutoPrincipalPos;
 
     }
 
@@ -297,16 +334,16 @@ namespace TGC.MonoGame.TP
         DesplazamientoAutos[index] = Vector3.Zero;
       }
 
-
+      //velocidad autos IA
       for(int index = 0; index < CarsSpeeds.Length; index++)
       {
         if (CarsSpeeds[index] > 3)
         {
-          CarsSpeeds[index] += Rozamiento * elapsedTime;
+          CarsSpeeds[index] =  20f;
         }
         else if (CarsSpeeds[index] < -3) //La velocidad nunca acaba siendo menor al |3|, de esta forma podemos saber si el auto se queda "quieto" y podemos evitar que gire sin avanzar/retroceder
         {
-          CarsSpeeds[index] -= Rozamiento * elapsedTime;
+          CarsSpeeds[index] = 20f;
         }
 
       }
@@ -449,12 +486,19 @@ namespace TGC.MonoGame.TP
                             Matrix.CreateRotationY(Rotation * 2) *
                             Matrix.CreateTranslation(AutoPrincipalPos);
 
+      for(int i = 0; i < AutosPosiciones.Length; i++)
+      {
+        objetivo[i] = AutoPrincipalPos;
+        atacarAutoPrincipal(i,elapsedTime);
+      }
+
+      //ubicacion coches IA
       for (var index = 0; index < CollideCars.Length; index++)
       {
         if (index < 5)
         {
           AutosWorld[index] = Matrix.CreateScale(0.1f) *
-                              Matrix.CreateRotationY(mediaVuelta) *
+                              Matrix.CreateRotationY(AutosRotaciones[index]) *
                               Matrix.CreateTranslation(AutosPosiciones[index]);
 
           CollideCars[index] = OrientedBoundingBox.FromAABB(new BoundingBox(AutoDeportivoBoxAABB.Min + AutosPosiciones[index] - coreccionAltura, AutoDeportivoBoxAABB.Max + AutosPosiciones[index] - coreccionAltura));
@@ -462,7 +506,7 @@ namespace TGC.MonoGame.TP
         else
         {
           AutosWorld[index] = Matrix.CreateScale(0.007f) *
-                              Matrix.CreateRotationY(cuartoDeVuelta) *
+                              Matrix.CreateRotationY(AutosRotaciones[index])  *
                               Matrix.CreateTranslation(AutosPosiciones[index]);
 
           CollideCars[index] = OrientedBoundingBox.FromAABB(new BoundingBox(AutoDeCombateBoxAABB.Min + AutosPosiciones[index] - coreccionAlturaAutoCombate, AutoDeCombateBoxAABB.Max + AutosPosiciones[index] - coreccionAlturaAutoCombate));
@@ -474,14 +518,6 @@ namespace TGC.MonoGame.TP
       AutoPrincipalBox.Rotate(Matrix.CreateRotationX(-jumpRotation) * Matrix.CreateRotationY(Rotation * 2));
 
       if (!choco) {acabaDeChocar = 0;}
-
-
-      for(int i = 0; i < AutosPosiciones.Length; i++)
-      {
-        if(objetivo[i] != Vector3.Zero)
-          objetivo[i] = AutoPrincipalPos;
-        atacarAutoPrincipal(i,elapsedTime);
-      }
         
 
 
@@ -714,9 +750,34 @@ namespace TGC.MonoGame.TP
       }
     }
 
+    //aca esta la magia de la rotiación
     public void atacarAutoPrincipal(int index,float elapsedTime){
-     Vector3 direccionAtaque = Vector3.Normalize(objetivo[index] - AutosPosiciones[index]);
-     AutosPosiciones[index] += direccionAtaque * 100 * elapsedTime ; 
+    Vector3 posIA_posAuto = Vector3.Normalize(objetivo[index] - AutosPosiciones[index]);
+    Vector3 posFrente_posAuto = Vector3.Normalize(AutosDirecciones[index]);
+    //Vector3 normal = (Vector3.Cross(posIA_posAuto, Vector3.Normalize(AutosDirecciones[index])));
+    float angle = (float) (Vector3.Dot(posIA_posAuto, posFrente_posAuto));
+
+    //ACA HAY QUE MODIFICAR AutosRotaciones[index] DE ALGUNA MANERA PARA QUE LA ROTACION CAMBIE EN FUNCION DEL TIEMPO
+    
+    Console.WriteLine(angle);
+    
+     
+
+    AutosDirecciones[index] = direccionAuto(AutosRotaciones[index], AutosDirecciones[index]);
+
+    AutosPosiciones[index] += posIA_posAuto * 100f * elapsedTime ; 
+    }
+
+    public Vector3 direccionAuto(float Rotation, Vector3 direccionInicial)
+    {
+      var martiz = Matrix.CreateRotationY(Rotation * 2f);
+      Vector3 vector2 = Vector3.Transform(direccionInicial, martiz);
+      return Vector3.Normalize(vector2);
+    }
+
+    public double ConvertToRadians(double angle)
+    {
+    return (Math.PI / 180) * angle;
     }
 
     private float RandomPosition(Random random)

@@ -147,7 +147,7 @@ float4 LuzPS(VertexShaderOutput input) : COLOR
 
             float alcance = smoothstep(0, length(farosPosition - input.WorldPosition.xyz), 50.0);
         
-            float LdotD = (dot(lightDirection, normalize(-carDirection)));
+            float LdotD = (dot(lightDirection, (-carDirection)));
             float rango = smoothstep(0.707, 1.0 , LdotD);
             
             float4 color = lerp(finalColor*texelColor,finalColor*texelColor + finalColor2*texelColor,rango*alcance);
