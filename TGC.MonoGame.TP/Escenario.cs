@@ -358,7 +358,10 @@ public void LoadContent(QuadPrimitive piso, QuadPrimitive pared, Model column, M
                   {
                     auto.audioChoque();
                   }
-                   auto.rebotar(vectorChoque,penetration);
+                  if(index == 1 || index == 2)
+                    auto.rebotar(vectorChoque,penetration);
+                  else
+                    auto.rebotar(-vectorChoque,penetration);
                    auto.FrenarAuto();
                 }
             }

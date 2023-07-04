@@ -406,7 +406,8 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
 
           if (Keyboard.GetState().IsKeyDown(Keys.Enter))
           {
-            status = ST_PRESENTACION; // FUNCIONA MAL
+            this.UnloadContent();
+            status = ST_PRESENTACION;
             MediaPlayer.Stop();
             MediaPlayer.Play(SongMenu);
             break;
