@@ -483,7 +483,28 @@ public void dibujar(Matrix view, Matrix projection, Effect effect, Matrix matriz
   {
     return ColumnBoxes;
   }
+  public Boolean IAchoco(OrientedBoundingBox obb){
+      
+      for(int i = 0; i < BrokenColumnBoxes.Length; i++)
+      {
+        if(obb.Intersects(BrokenColumnBoxes[i]))
+          return true;
+      }
 
+      for(int i = 0; i < ColumnBoxes.Length; i++)
+      {
+        if(obb.Intersects(ColumnBoxes[i]))
+          return true;
+      }
+
+      for(int i = 0; i < PlatformBoxes.Length; i++)
+      {
+        if(obb.Intersects(PlatformBoxes[i]))
+          return true;
+      }
+
+      return false;
+  }
 
   }
 }

@@ -376,7 +376,7 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
           }
           var Time = (float)gameTime.TotalGameTime.TotalSeconds;
           totalGameTime += (float)gameTime.ElapsedGameTime.TotalSeconds;
-          autos.Update(gameTime,powerUps);
+          autos.Update(gameTime,powerUps,escenario,detalles);
           powerUps.Update(gameTime, autos, detalles, escenario);
 
           detalles.Update(gameTime,autos);

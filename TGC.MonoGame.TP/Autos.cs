@@ -15,8 +15,6 @@ namespace TGC.MonoGame.TP
     private Model AutoDeportivo { get; set; }
     private Model AutoDeCombate { get; set; }
 
-    private SistemaDeVida vida { get; set; }
-
     //MovimientoAuto
     public Vector3 CarDirection;
     public Vector2 CarSpeed;
@@ -97,6 +95,7 @@ namespace TGC.MonoGame.TP
     private float tiempoEnAire;
     private Random unRandom = new Random();
     public int vidaProtagonista = 100;
+    private int[] vidaAutos;
 
     //Texturas
     private List<Texture2D> ColorTextures { get; set; }
@@ -198,7 +197,7 @@ namespace TGC.MonoGame.TP
 
     }
 
-    public void Update(GameTime gameTime,PowerUps powerUps)
+    public void Update(GameTime gameTime,PowerUps powerUps,Escenario escenario, Detalles detalles)
     {
       var keyboardState = Keyboard.GetState();
       var elapsedTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
@@ -342,12 +341,16 @@ namespace TGC.MonoGame.TP
         else pesoAuto = 450;
         if (AutoPrincipalBox.Intersects(CollideCars[index]))
         {
-            CollisionIndex = index;
-            direccionPostChoque = directionAutoPrincipal();
             Desplazamiento*=-1;
-            CarsSpeeds[CollisionIndex] = CarSpeed.X * 0.5f;
             CarSpeed*=-0.5f;
 
+
+            if(index < 5)
+              vidaProtagonista -= 25;
+            else
+              vidaProtagonista -= 50;
+
+            AutosPosiciones[index] = obtenerSpawn();
             
           if(acabaDeChocar == 0)
           {
@@ -391,6 +394,7 @@ namespace TGC.MonoGame.TP
 
           CollideCars[index] = OrientedBoundingBox.FromAABB(new BoundingBox(AutoDeCombateBoxAABB.Min + AutosPosiciones[index] - coreccionAlturaAutoCombate, AutoDeCombateBoxAABB.Max + AutosPosiciones[index] - coreccionAlturaAutoCombate));
         }
+        CollideCars[index].Rotate(Matrix.CreateRotationY(AutosRotaciones[index]));
       }
 
 
@@ -402,21 +406,6 @@ namespace TGC.MonoGame.TP
 
 
 
-
-
-
-        for (var index = 0; index < CollideCars.Length; index++)
-        {
-            if (AutoPrincipalBox.Intersects(CollideCars[index]))
-            {
-              //hay un problema con los colliders, en un muuuy corto periodo de tiempo puedo tocar varias veces un mismo collider y me quita toda la vida de una
-                vidaProtagonista -= 5;
-                permitirMovimiento[index] = false; //acaba tendría que haber alguna logica para que se desintgre el coche cuando queda quieto
-                AutosPosiciones[index] = obtenerSpawn();
-                permitirMovimiento[index] = true;
-            }
-        }
-
         for (int i = 0; i < powerUps.BalasWorld.Length; i++)
         {
             if (powerUps.recorridoBalas[i] > 0f)
@@ -426,7 +415,7 @@ namespace TGC.MonoGame.TP
                     if(powerUps.collidersBalas[i].Intersects(CollideCars[index]))
                     {
                         powerUps.recorridoBalas[i] = 0f;
-                        AutosPosiciones[index] = obtenerSpawn();
+                        vidaAutos[index] -= 50;
                     }
                 }
             }
@@ -439,10 +428,30 @@ namespace TGC.MonoGame.TP
                     if(powerUps.colliderMisil.Intersects(CollideCars[index]))
                     {
                         powerUps.recorridoMisil = 0f;
-                        AutosPosiciones[index] = obtenerSpawn();
+                        vidaAutos[index] -= 100;
                     }
                 }
             }
+
+         for(int i = 0; i < CollideCars.Length; i++)
+        {
+          if(escenario.IAchoco(CollideCars[i]) || detalles.IAchoco(CollideCars[i]))
+            AutosPosiciones[i] = obtenerSpawn();
+          /*else
+            for(int j = 0; j < CollideCars.Length; j++)
+            {
+              if(CollideCars[i].Intersects(CollideCars[j]) && CollideCars[i] != CollideCars[j])
+              {
+                AutosPosiciones[j] = obtenerSpawn();
+              }
+            }*/
+        }
+
+        for(int i =0; i < vidaAutos.Length; i++)
+        {
+          if(vidaAutos[i] <= 0)
+            AutosPosiciones[i] = obtenerSpawn();
+        }
     }
 
     public void dibujarAuto(Matrix view, Matrix projection, Effect effect, Model modelo, float WheelRot, Matrix matrizMundo)
@@ -850,6 +859,15 @@ namespace TGC.MonoGame.TP
 
       for(int i = 0; i < objetivo.Length; i++)
         objetivo[i] = AutoPrincipalPos;
+
+      vidaAutos = new int[AutosPosiciones.Length];
+      for(int i = 0; i < vidaAutos.Length; i++)
+      {
+        if(i < 6)
+          vidaAutos[i] = 100;
+        else
+          vidaAutos[i] = 200;
+      }  
 
       }
 

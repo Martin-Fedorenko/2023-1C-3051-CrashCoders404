@@ -109,8 +109,6 @@ namespace TGC.MonoGame.TP
     private float cuartoDeVuelta = MathF.PI / 2;
     private float totalGameTime = 0f;
 
-    SistemaDeVida vida { get; set; }
-
     public void Initialize(GraphicsDevice graphicsDevice)
     {
       collidedindexAmetralladora = new List<int>();

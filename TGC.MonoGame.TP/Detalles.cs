@@ -769,6 +769,43 @@ namespace TGC.MonoGame.TP
 
         }
 
+        public Boolean IAchoco(OrientedBoundingBox obb){
+            Vector3 vectorChoque = Vector3.Zero;
+            float penetration = 0f;
+            for (int index = 0; index < TireBoxes.Length; index++)
+            {
+                if(obb.Intersects(TireBoxes[index],out vectorChoque,out penetration))
+                {
+                    posicionRuedas[index] += -vectorChoque * penetration;
+                }
+            }
+
+            for(int i = 0; i < Rock1Boxes.Length; i++)
+                {
+                    if(obb.Intersects(Rock1Boxes[i]))
+                    return true;
+                }
+
+            for(int i = 0; i < Rock5Boxes.Length; i++)
+                {
+                    if(obb.Intersects(Rock5Boxes[i]))
+                    return true;
+                }
+            for(int i = 0; i < Rock10Boxes.Length; i++)
+                {
+                    if(obb.Intersects(Rock10Boxes[i]))
+                    return true;
+                }
+
+            for(int i = 0; i < TreeBoxes.Length; i++)
+                {
+                    if(obb.Intersects(TreeBoxes[i]))
+                    return true;
+                }
+
+            return false;
+        }
+
     }
 
 
