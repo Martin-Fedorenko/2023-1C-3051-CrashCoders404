@@ -13,7 +13,7 @@ namespace TGC.MonoGame.TP
     public Escenario() { }
     //private Model Piso { get; set; }
     private QuadPrimitive Piso { get; set; }
-    private Model Pared { get; set; }
+    private QuadPrimitive Pared { get; set; }
     private Model Column { get; set; }
     private Model Ramp { get; set; }
     private Model Platform { get; set; }
@@ -140,14 +140,14 @@ namespace TGC.MonoGame.TP
       PisoWorld = Matrix.CreateScale(800, 1, 800);
       //ParedWorld = Matrix.CreateScale(30, 0, 30);
 
-      var scale1 = new Vector3(800f, 1f, 200f);
-      var scale2 = new Vector3(200f,1f,800f);
+      var scale1 = new Vector3(100f, 1, 800f);
+      var scale2 = new Vector3(800f,1f,100f);
       ParedWorld = new Matrix[]
       {
-        Matrix.CreateScale(scale1) * Matrix.CreateRotationX(MathHelper.PiOver2) * Matrix.CreateTranslation(-Vector3.UnitZ * 800f),
-        Matrix.CreateScale(scale1) * Matrix.CreateRotationX(-MathHelper.PiOver2) * Matrix.CreateTranslation(Vector3.UnitZ * 800f),
-        Matrix.CreateScale(scale2) * Matrix.CreateRotationZ(MathHelper.PiOver2) * Matrix.CreateTranslation(Vector3.UnitX * 800f),
-        Matrix.CreateScale(scale2) * Matrix.CreateRotationZ(-MathHelper.PiOver2) * Matrix.CreateTranslation(-Vector3.UnitX * 800f)
+        Matrix.CreateScale(scale1) * Matrix.CreateRotationZ(MathHelper.Pi/2) * Matrix.CreateTranslation(800f,100f,0f),
+        Matrix.CreateScale(scale1) * Matrix.CreateRotationZ(MathHelper.Pi/2) * Matrix.CreateTranslation(-800f,100f,0f),
+        Matrix.CreateScale(scale2) * Matrix.CreateRotationX(-MathHelper.Pi/2) * Matrix.CreateTranslation(0f,100f,-800f),
+        Matrix.CreateScale(scale2) * Matrix.CreateRotationX(-MathHelper.Pi/2) * Matrix.CreateTranslation(0f,100f,800f),
       };
       
 
@@ -199,7 +199,7 @@ namespace TGC.MonoGame.TP
     }
 
 
-public void LoadContent(QuadPrimitive piso, Model pared, Model column, Model ramp, Model platform, Texture2D texturaPiso, 
+public void LoadContent(QuadPrimitive piso, QuadPrimitive pared, Model column, Model ramp, Model platform, Texture2D texturaPiso, 
                         Texture2D texturaPared,Texture2D texturaColumna, Texture2D texturaRampa, Texture2D texturaPlataforma)
     {
       Piso = piso;
@@ -414,7 +414,7 @@ public void dibujar(Matrix view, Matrix projection, Effect effect, Matrix matriz
       //Paredes
       for(int index = 0; index < ParedWorld.Length; index++)
       {
-        dibujar(view,projection,effect,ParedWorld[index], Platform, TexturaPared);
+        dibujar(view,projection,effect,ParedWorld[index], Pared, TexturaPared);
       }
 
       //Plataformas

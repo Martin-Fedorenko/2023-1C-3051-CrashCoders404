@@ -50,7 +50,7 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
     // Modelos
     //private Model Piso { get; set; }
     private QuadPrimitive Piso { get; set; }
-    private Model Pared { get; set; }
+    private QuadPrimitive Pared { get; set; }
     private Model Column { get; set; }
     private Model Ramp { get; set; }
     private Model Platform { get; set; }
@@ -200,12 +200,13 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
       gizmos.LoadContent(GraphicsDevice, Content);
       SpriteBatch = new SpriteBatch(GraphicsDevice);
       Piso = new QuadPrimitive(GraphicsDevice);
+      Pared = new QuadPrimitive(GraphicsDevice);
 
       font = Content.Load<SpriteFont>(ContentFolderSpriteFonts + "CascadiaCode/CascadiaCodePL");
 
       //Escenario
       //Piso = Content.Load<Model>(ContentFolder3D + "Arena/Plano"); //No tiene textura incluida
-      Pared = Content.Load<Model>(ContentFolder3D + "Arena/Arena"); //No tiene textura incluida
+      //Pared = Content.Load<Model>(ContentFolder3D + "Arena/Arena"); //No tiene textura incluida
       Column = Content.Load<Model>(ContentFolder3D + "Platforms/Column/Column"); //Tiene textura incluida pero HAY QUE ARREGLAR O CAMBIAR EL MODELO
       Ramp = Content.Load<Model>(ContentFolder3D + "Platforms/Ramps/Ramp"); //No tiene textura incluida
       Platform = Content.Load<Model>(ContentFolder3D + "Platforms/Cubo/Cube"); //No tiene textura incluida
@@ -259,7 +260,7 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
 
       //Textura
       TexturaPiso = Content.Load<Texture2D>(ContentFolderTextures + "sand");
-      TexturaPared = Content.Load<Texture2D>(ContentFolderTextures + "stones");
+      TexturaPared = Content.Load<Texture2D>(ContentFolderTextures + "color");
       TexturaColumna = Content.Load<Texture2D>(ContentFolderTextures + "displacement");
       TexturaRampa = Content.Load<Texture2D>(ContentFolderTextures + "color");
       TexturaPlataforma = Content.Load<Texture2D>(ContentFolderTextures + "colorPlatform");
