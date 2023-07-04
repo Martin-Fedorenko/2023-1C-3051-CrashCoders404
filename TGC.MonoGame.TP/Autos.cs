@@ -66,7 +66,7 @@ namespace TGC.MonoGame.TP
     private Matrix AutoCombate2World { get; set; }
     private Matrix AutoCombate3World { get; set; }
 
-    private int cantidadEnemigos = 7;
+    private int cantidadEnemigos = 8;
 
     //matrices y vectores autos IA
     private Matrix[] AutosWorld;
@@ -140,143 +140,21 @@ namespace TGC.MonoGame.TP
     private Vector3[] Spawns;
     public void Initialize()
     {
-      //MovimientoAuto
-      CarSpeed = new Vector2(0f,0f);
-      AutosVelocidades = new Vector2[]
-      {
-            new Vector2(0f,0f),
-            new Vector2(0f,0f),
-            new Vector2(0f,0f),
-            new Vector2(0f,0f),
-            new Vector2(0f,0f),
-            new Vector2(0f,0f),
-            new Vector2(0f,0f),
-            new Vector2(0f,0f)
-      };
+      DesplazamientoAutos = new Vector3[cantidadEnemigos];
+      AutosPosiciones = new Vector3[cantidadEnemigos];
+      objetivo = new Vector3[cantidadEnemigos];
+      AutosWorld = new Matrix[cantidadEnemigos];
+      ColorTextures = new List<Texture2D>();
       
 
-      CarAcceleration = 50f;
-      CarBrakes = 200f;
-      ActiveMovement = false;
-      jumpAngle = MathF.PI / 9f;
-      jumpSpeed = 30f;
-      gravity = 2f;
-      onJump = false;
-      accelerating = false;
-      jumpHeight = 100f;
-      maxSpeed = 200f;
-      enElPiso = true;
-      enPlataforma = false;
-      tiempoEnAire = 0f;
-      turbo = false;
-      turboTime = 0f;
-      penetration = 0f;
 
-      //Rotaciones de Ruedas
-      WheelRotationWorld = new float[]
-      {
-                0f,
-                0f,
-                0f,
-                0f,
-                0f,
-                0f,
-                0f,
-                0f,
-      };
-      WheelRotationPrincipal = 0f;
-
-      CarsSpeeds = new float[]
-      {
-                0f,
-                0f,
-                0f,
-                0f,
-                0f,
-                0f,
-                0f,
-                0f,
-      };
-
-      DesplazamientoAutos = new Vector3[]{
-        Vector3.Zero,
-        Vector3.Zero,
-        Vector3.Zero,
-        Vector3.Zero,
-        Vector3.Zero,
-        Vector3.Zero,
-        Vector3.Zero,
-        Vector3.Zero
-      };
-
-      AutosRotaciones = new float[]{
-                0f,
-                0f,
-                0f,
-                0f,
-                0f,
-                0f,
-                0f,
-                0f
-      };
-
-      AutosDirecciones = new Vector3[]{
-        Vector3.Backward,
-        Vector3.Backward,
-        Vector3.Backward,
-        Vector3.Backward,
-        Vector3.Backward,
-        Vector3.Backward,
-        Vector3.Backward,
-        Vector3.Backward
-      };
-
-      AutosNormal = new Vector3[]{
-        Vector3.Up,
-        Vector3.Up,
-        Vector3.Up,
-        Vector3.Up,
-        Vector3.Up,
-        Vector3.Up,
-        Vector3.Up,
-        Vector3.Up
-      };
-      //Listas
-      ColorTextures = new List<Texture2D>();
-
-      autoMenu = Matrix.CreateScale(0.3f) * Matrix.CreateRotationY(-MathF.PI/2) *  Matrix.CreateTranslation(autoMenuPos);
-      autoMenu2 = Matrix.CreateScale(0.01f) * Matrix.CreateRotationY(cuartoDeVuelta) * Matrix.CreateTranslation(0,0,130);
-      autoMenu3 = Matrix.CreateScale(0.3f) * Matrix.CreateRotationY(mediaVuelta) *  Matrix.CreateTranslation(0,-100,130);
-
-      AutoPrincipalWorld = Matrix.CreateScale(0.1f) * Matrix.CreateTranslation(AutoPrincipalPos);
-
+      
       Spawns = new Vector3[]{
         new Vector3(600,0,350),
         new Vector3(0,0,600)
       };
 
-      //Random RR = new Random();
-      AutosPosiciones = new Vector3[DesplazamientoAutos.Length];
-      
-      for(int i = 0; i < AutosPosiciones.Length; i++)
-      {
-        AutosPosiciones[i] = obtenerSpawn();
-      }
-
-      AutosWorld = new Matrix[AutosPosiciones.Length];
-
-      for(int i = 0; i < AutosPosiciones.Length; i++)
-      {
-        if(i < 5)
-          AutosWorld[i] = Matrix.CreateScale(0.1f) * Matrix.CreateTranslation(AutosPosiciones[i]);
-        else
-          AutosWorld[i] = Matrix.CreateScale(0.007f)  * Matrix.CreateTranslation( AutosPosiciones[i]);
-      }
-
-      objetivo = new Vector3[AutosPosiciones.Length];
-      for(int i = 0; i < objetivo.Length; i++)
-        objetivo[i] = AutoPrincipalPos;
-
+      iniciarPartida();
     }
 
     public void LoadContent(Model Auto1, Model Auto2, Effect effect, SoundEffect carCrash)
@@ -598,6 +476,7 @@ namespace TGC.MonoGame.TP
     public void dibujarAutosMenu(Matrix view, Matrix projection, Effect effect)
     {
       effect.CurrentTechnique = effect.Techniques["Luz"];
+      effect.Parameters["lightPosition"]?.SetValue(new Vector3(0.0f,100.0f,0.0f));
        dibujarAuto(view, projection, effect, AutoDeportivo, 0, autoMenu);
        dibujarAuto(view, projection, effect, AutoDeCombate, 0, autoMenu2);
        dibujarAuto(view, projection, effect, AutoDeportivo, 0, autoMenu3);
@@ -605,6 +484,7 @@ namespace TGC.MonoGame.TP
     public void dibujarAutos(Matrix view, Matrix projection, Effect effect, String tecnica)
     {
       Model modeloAuto;
+      effect.Parameters["colorBloom"]?.SetValue(Color.White.ToVector3());
       effect.CurrentTechnique = effect.Techniques[tecnica];
       dibujarAuto(view, projection, effect, AutoDeportivo, WheelRotationPrincipal, AutoPrincipalWorld);
 
@@ -780,10 +660,10 @@ namespace TGC.MonoGame.TP
     Vector2 direccionFinalXZ = direccionAuto(AutosRotaciones[index], posFrente_posAuto, martiz);
 
     AutosDirecciones[index] =  (new Vector3(direccionFinalXZ.X, 0f, direccionFinalXZ.Y));
-    Console.WriteLine("Direccion hacia el jugador: {0}", posIA_posAutoXYZ);
-    Console.WriteLine("Direccion del auto: {0}", AutosDirecciones[index]);
+    //Console.WriteLine("Direccion hacia el jugador: {0}", posIA_posAutoXYZ);
+    //Console.WriteLine("Direccion del auto: {0}", AutosDirecciones[index]);
 
-    //AutosPosiciones[index] +=  posIA_posAutoXYZ * 100f * elapsedTime ; 
+    AutosPosiciones[index] +=  posIA_posAutoXYZ * 100f * elapsedTime ; 
     }
 
     public Vector2 direccionAuto(float Rotation, Vector2 direccionInicial, Matrix matriz)
@@ -818,5 +698,154 @@ namespace TGC.MonoGame.TP
         else
          return Spawns[1];
     }
+
+ public void iniciarPartida(){
+        AutoPrincipalPos = new Vector3(0, 0, 0);
+        vidaProtagonista = 100;
+        CarDirection = AutoPrincipalWorld.Backward;
+      Desplazamiento = Vector3.Zero;
+      Rozamiento = CarSpeed.X * 0.5f;
+
+//MovimientoAuto
+      CarSpeed = new Vector2(0f,0f);
+      AutosVelocidades = new Vector2[]
+      {
+            new Vector2(0f,0f),
+            new Vector2(0f,0f),
+            new Vector2(0f,0f),
+            new Vector2(0f,0f),
+            new Vector2(0f,0f),
+            new Vector2(0f,0f),
+            new Vector2(0f,0f),
+            new Vector2(0f,0f)
+      };
+      
+
+      CarAcceleration = 50f;
+      CarBrakes = 200f;
+      ActiveMovement = false;
+      jumpAngle = MathF.PI / 9f;
+      jumpSpeed = 30f;
+      gravity = 2f;
+      onJump = false;
+      accelerating = false;
+      jumpHeight = 100f;
+      maxSpeed = 200f;
+      enElPiso = true;
+      enPlataforma = false;
+      tiempoEnAire = 0f;
+      turbo = false;
+      turboTime = 0f;
+      penetration = 0f;
+      Rotation = 0f;
+
+      //Rotaciones de Ruedas
+      WheelRotationWorld = new float[]
+      {
+                0f,
+                0f,
+                0f,
+                0f,
+                0f,
+                0f,
+                0f,
+                0f,
+      };
+      WheelRotationPrincipal = 0f;
+
+      CarsSpeeds = new float[]
+      {
+                0f,
+                0f,
+                0f,
+                0f,
+                0f,
+                0f,
+                0f,
+                0f,
+      };
+
+      DesplazamientoAutos = new Vector3[]{
+        Vector3.Zero,
+        Vector3.Zero,
+        Vector3.Zero,
+        Vector3.Zero,
+        Vector3.Zero,
+        Vector3.Zero,
+        Vector3.Zero,
+        Vector3.Zero
+      };
+
+      AutosRotaciones = new float[]{
+                0f,
+                0f,
+                0f,
+                0f,
+                0f,
+                0f,
+                0f,
+                0f
+      };
+
+      AutosDirecciones = new Vector3[]{
+        Vector3.Backward,
+        Vector3.Backward,
+        Vector3.Backward,
+        Vector3.Backward,
+        Vector3.Backward,
+        Vector3.Backward,
+        Vector3.Backward,
+        Vector3.Backward
+      };
+
+      AutosNormal = new Vector3[]{
+        Vector3.Up,
+        Vector3.Up,
+        Vector3.Up,
+        Vector3.Up,
+        Vector3.Up,
+        Vector3.Up,
+        Vector3.Up,
+        Vector3.Up
+      };
+      //Listas
+      
+
+      autoMenu = Matrix.CreateScale(0.3f) * Matrix.CreateRotationY(-MathF.PI/2) *  Matrix.CreateTranslation(autoMenuPos);
+      autoMenu2 = Matrix.CreateScale(0.01f) * Matrix.CreateRotationY(cuartoDeVuelta) * Matrix.CreateTranslation(0,0,130);
+      autoMenu3 = Matrix.CreateScale(0.3f) * Matrix.CreateRotationY(mediaVuelta) *  Matrix.CreateTranslation(0,-100,130);
+
+      AutoPrincipalWorld = Matrix.CreateScale(0.1f) * Matrix.CreateTranslation(AutoPrincipalPos);
+
+      Spawns = new Vector3[]{
+        new Vector3(600,0,350),
+        new Vector3(0,0,600)
+      };
+
+      //Random RR = new Random();
+      
+      
+      for(int i = 0; i < AutosPosiciones.Length; i++)
+      {
+        AutosPosiciones[i] = obtenerSpawn();
+      }
+
+      
+
+      for(int i = 0; i < AutosPosiciones.Length; i++)
+      {
+        if(i < 5)
+          AutosWorld[i] = Matrix.CreateScale(0.1f) * Matrix.CreateTranslation(AutosPosiciones[i]);
+        else
+          AutosWorld[i] = Matrix.CreateScale(0.007f)  * Matrix.CreateTranslation( AutosPosiciones[i]);
+      }
+
+      
+
+      for(int i = 0; i < objetivo.Length; i++)
+        objetivo[i] = AutoPrincipalPos;
+
+      }
+
   }
 }

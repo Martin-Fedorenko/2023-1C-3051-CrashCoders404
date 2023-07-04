@@ -142,6 +142,9 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
     private float countdownStart;
     private Vector2 autoPos;
 
+    //Variables
+    private  Vector3 lightPosition = new Vector3(0.0f,100.0f,0.0f);
+
         protected override void Initialize()
     {
       gizmos = new Gizmos();
@@ -160,8 +163,6 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
       powerUps = new PowerUps();
       autos = new Autos();
       //vida = new SistemaDeVida();
-
-      
 
       escenario.Initialize();
       detalles.Initialize();
@@ -366,7 +367,7 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
           {
             MediaPlayer.Play(SongGame);
           }
-
+          var Time = (float)gameTime.TotalGameTime.TotalSeconds;
           totalGameTime += (float)gameTime.ElapsedGameTime.TotalSeconds;
           autos.Update(gameTime,powerUps);
           powerUps.Update(gameTime, autos, detalles, escenario);
@@ -381,7 +382,7 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
           gizmos.UpdateViewProjection(View, Projection);
 
 
-          var lightPosition = new Vector3(0.0f,100.0f,0.0f); //SOL "FIJO"
+          //SOL "FIJO"
           //var lightPosition = new Vector3(autos.posAutoPrincipal().X, autos.posAutoPrincipal().Y+20f, autos.posAutoPrincipal().Z);
 
             // Set the light position and camera position
@@ -390,13 +391,14 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
             AutoShader.Parameters["lightPosition"]?.SetValue(lightPosition);
             AutoShader.Parameters["eyePosition"]?.SetValue(posicionCamara+autos.posAutoPrincipal());
             AutoShader.Parameters["carDirection"]?.SetValue(autos.directionAutoPrincipal());
+            AutoShader.Parameters["Time"]?.SetValue(Time);
             //Console.WriteLine(autos.directionAutoPrincipal());
 
             if(autos.muereProta())
             {
               MediaPlayer.Stop();
               MediaPlayer.Play(GameOver);
-              autos.vidaProtagonista = 100;
+              //autos.vidaProtagonista = 100;
               status = ST_DERROTA;
               break;
             }
@@ -412,6 +414,10 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
             
             //this.UnloadContent();
             Thread.Sleep(500);
+            autos.iniciarPartida();
+            View = Matrix.CreateLookAt(posicionCamara, autos.posAutoPrincipal(), Vector3.Up);
+            Projection = Matrix.CreateOrthographic(400, 300, -80, 1000);
+            
             status = ST_PRESENTACION;
             
             MediaPlayer.Stop();
@@ -456,7 +462,7 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
           DrawCenterTextY("GO!", 300, 10);
           break;
 
-        case ST_PRESENTACION:
+        case ST_PRESENTACION: //NO SE PORQUE LOS COCHES DESAPARECEN CUANDO SE VUELVE A CARGAR LA PRESENTACION
           autos.dibujarAutosMenu(View,Projection,AutoShader);
           DrawCenterTextY("CRASH CODERS 404 ", 100, 4);
           DrawCenterTextY("C -> CONTROLES", 400, 2);
@@ -498,7 +504,7 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
             
                 escenario.dibujarEscenario(View, Projection, AutoShader, false);
                 //detalles.dibujarDetalles(View, Projection, AutoShader);
-                powerUps.dibujarPowerUps(View, Projection, AutoShader);
+                powerUps.dibujarPowerUps(View, Projection, AutoShader,"Luz");
                 //autos.dibujarAutos(View, Projection, AutoShader); si agregas los detalles o los autos al reflejo la perfomance empeora
           }
           #endregion
@@ -512,7 +518,7 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
             // Draw our scene with the default effect
             escenario.dibujarEscenario(View, Projection, AutoShader, true);
             detalles.dibujarDetalles(View, Projection, AutoShader);
-            powerUps.dibujarPowerUps(View, Projection, AutoShader);
+            powerUps.dibujarPowerUps(View, Projection, AutoShader, "Luz");
             
             autos.dibujarAutos(View, Projection, AutoShader, "Reflejo");
 
@@ -525,6 +531,8 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
             //creo que hay que hacer blur
             //AutoShader.Parameters["baseTexture"]?.SetValue();
             autos.dibujarAutos(View, Projection, AutoShader, "Bloom");
+            powerUps.dibujarPowerUps(View, Projection, AutoShader, "BloomPowerUp");
+            
 
           #endregion
 

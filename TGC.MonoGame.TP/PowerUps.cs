@@ -651,13 +651,15 @@ namespace TGC.MonoGame.TP
       }
     }
 
-    public void dibujarPowerUps(Matrix view, Matrix projection, Effect effect)
+    public void dibujarPowerUps(Matrix view, Matrix projection, Effect effect, String tecnica)
     {
-      effect.CurrentTechnique = effect.Techniques["Luz"];
+      //effect.CurrentTechnique = effect.Techniques["Luz"];
+      effect.CurrentTechnique = effect.Techniques[tecnica];
       for (int index = 0; index < AmetralladorasWorld.Length; index++)
       {
         if (!collidedindexAmetralladora.Contains(index))
         {
+          effect.Parameters["colorBloom"]?.SetValue(Color.Red.ToVector3());
           dibujar(view, projection, effect, AmetralladorasWorld[index], CajaAmetralladora, Color.Red);
         }
       }
@@ -666,6 +668,7 @@ namespace TGC.MonoGame.TP
       {
         if (!collidedindexMisil.Contains(index))
         {
+          effect.Parameters["colorBloom"]?.SetValue(Color.Blue.ToVector3());
           dibujar(view, projection, effect, MisilesWorld[index], CajaMisil, Color.Yellow);
         }
       }
@@ -674,6 +677,7 @@ namespace TGC.MonoGame.TP
       {
         if (!collidedindexTurbo.Contains(index))
         {
+          effect.Parameters["colorBloom"]?.SetValue(Color.Green.ToVector3());
           dibujar(view, projection, effect, TurbosWorld[index], CajaTurbo, Color.Blue);
         }
       }

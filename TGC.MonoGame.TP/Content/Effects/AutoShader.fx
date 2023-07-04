@@ -23,6 +23,10 @@ float3 lightPosition;
 float3 farosPosition;
 float3 eyePosition; // Camera position
 
+float Time;
+
+float3 colorBloom;
+
 float3 carDirection;
 
 struct VertexShaderInput
@@ -80,8 +84,6 @@ sampler2D bloomTextureSampler = sampler_state
     AddressU = Clamp;
     AddressV = Clamp;
 };
-
-float Time = 0;
 
 VertexShaderOutput MainVS(in VertexShaderInput input)
 {
@@ -151,15 +153,9 @@ float4 LuzPS(VertexShaderOutput input) : COLOR
             float rango = smoothstep(0.707, 1.0 , LdotD);
             
             float4 color = lerp(finalColor*texelColor,finalColor*texelColor + finalColor2*texelColor,rango*alcance);
-    
-   
-    
-    return color;
-    
-
         
+    return color;
 
-    
 }
 
 float4 EnvironmentMapPS(VertexShaderOutput input) : COLOR
@@ -184,17 +180,25 @@ float4 EnvironmentMapPS(VertexShaderOutput input) : COLOR
     return float4(lerp(baseColor.xyz, reflectionColor, fresnel), 1);
 }
 
-float4 BloomPS(VertexShaderOutput input) : COLOR
+float4 BloomAutoPS(VertexShaderOutput input) : COLOR
 {
     float4 color = tex2D(baseTextureSampler, input.TextureCoordinate);
 
     if(input.Mesh.z>2.5 && input.Mesh.z<3.0 && input.Mesh.x<0.7 && input.Mesh.x>-0.7){
-        color = float4(1.0,0.0,0.0,1.0);
+        color = float4(colorBloom, 1.0);
     }else{
         discard;
     }
 
     return color;
+}
+
+float4 BloomPowerUpPS(VertexShaderOutput input) : COLOR
+{
+    float4 color = tex2D(baseTextureSampler, input.TextureCoordinate);
+    float4 bloom = lerp(float4(colorBloom, 1.0), float4(0.0,0.0,0.0,1.0), (sin(Time)));
+
+    return bloom;
 }
 
 VertexShaderOutput IntegrarVS(in VertexShaderInput input)
@@ -232,12 +236,21 @@ technique Reflejo
 	}
 };
 
+technique BloomPowerUp
+{
+    pass Pass0
+    {
+        VertexShader = compile VS_SHADERMODEL MainVS();
+        PixelShader = compile PS_SHADERMODEL BloomPowerUpPS();
+    }
+};
+
 technique Bloom
 {
     pass Pass0
     {
         VertexShader = compile VS_SHADERMODEL MainVS();
-        PixelShader = compile PS_SHADERMODEL BloomPS();
+        PixelShader = compile PS_SHADERMODEL BloomAutoPS();
     }
 };
 
