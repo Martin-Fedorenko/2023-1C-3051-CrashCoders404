@@ -151,7 +151,10 @@ float4 LuzPS(VertexShaderOutput input) : COLOR
             float rango = smoothstep(0.707, 1.0 , LdotD);
             
             float4 color = lerp(finalColor*texelColor,finalColor*texelColor + finalColor2*texelColor,rango*alcance);
-            return color;
+    
+   
+    
+    return color;
     
 
         

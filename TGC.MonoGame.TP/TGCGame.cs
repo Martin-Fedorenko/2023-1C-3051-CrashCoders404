@@ -393,6 +393,7 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
             {
               MediaPlayer.Stop();
               MediaPlayer.Play(GameOver);
+              autos.vidaProtagonista = 100;
               status = ST_DERROTA;
             }
           break;

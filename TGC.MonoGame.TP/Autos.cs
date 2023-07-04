@@ -95,7 +95,7 @@ namespace TGC.MonoGame.TP
     private Boolean enPlataforma;
     private float tiempoEnAire;
     private Random unRandom = new Random();
-    private int vidaProtagonista = 100;
+    public int vidaProtagonista = 100;
 
     //Texturas
     private List<Texture2D> ColorTextures { get; set; }
@@ -221,14 +221,14 @@ namespace TGC.MonoGame.TP
       };
 
       AutosDirecciones = new Vector3[]{
-        Vector3.Forward,
-        Vector3.Forward,
-        Vector3.Forward,
-        Vector3.Forward,
-        Vector3.Forward,
-        Vector3.Forward,
-        Vector3.Forward,
-        Vector3.Forward
+        Vector3.Backward,
+        Vector3.Backward,
+        Vector3.Backward,
+        Vector3.Backward,
+        Vector3.Backward,
+        Vector3.Backward,
+        Vector3.Backward,
+        Vector3.Backward
       };
 
       AutosNormal = new Vector3[]{
@@ -268,9 +268,9 @@ namespace TGC.MonoGame.TP
       for(int i = 0; i < AutosPosiciones.Length; i++)
       {
         if(i < 5)
-          AutosWorld[i] = Matrix.CreateScale(0.1f) * Matrix.CreateRotationY(mediaVuelta) * Matrix.CreateTranslation(AutosPosiciones[i]);
+          AutosWorld[i] = Matrix.CreateScale(0.1f) * Matrix.CreateTranslation(AutosPosiciones[i]);
         else
-          AutosWorld[i] = Matrix.CreateScale(0.007f) * Matrix.CreateRotationY(cuartoDeVuelta) * Matrix.CreateTranslation( AutosPosiciones[i]);
+          AutosWorld[i] = Matrix.CreateScale(0.007f)  * Matrix.CreateTranslation( AutosPosiciones[i]);
       }
 
       objetivo = new Vector3[AutosPosiciones.Length];
@@ -752,32 +752,50 @@ namespace TGC.MonoGame.TP
 
     //aca esta la magia de la rotiación
     public void atacarAutoPrincipal(int index,float elapsedTime){
-    Vector3 posIA_posAuto = Vector3.Normalize(objetivo[index] - AutosPosiciones[index]);
-    Vector3 posFrente_posAuto = Vector3.Normalize(AutosDirecciones[index]);
+      Vector3 posIA_posAutoXYZ = Vector3.Normalize(objetivo[index] -AutosPosiciones[index]);
+    
+      Vector2 a = new Vector2(objetivo[index].X, objetivo[index].Z);
+      Vector2 b = new Vector2(AutosPosiciones[index].X, AutosPosiciones[index].Z);
+      Vector2 c = new Vector2(AutosDirecciones[index].X, AutosDirecciones[index].Z);
+
+
+    Vector2 posIA_posAuto = Vector2.Normalize(a-b);
+    Vector2 posFrente_posAuto = Vector2.Normalize(c-b);
     //Vector3 normal = (Vector3.Cross(posIA_posAuto, Vector3.Normalize(AutosDirecciones[index])));
-    float angle = (float) (Vector3.Dot(posIA_posAuto, posFrente_posAuto));
+    double dot = (Vector2.Dot(posIA_posAuto, posFrente_posAuto));
+    double det = posIA_posAuto.X * posFrente_posAuto.Y - posIA_posAuto.Y * posFrente_posAuto.X;
+    float angle = (float) Math.Atan2(det, dot);
 
     //ACA HAY QUE MODIFICAR AutosRotaciones[index] DE ALGUNA MANERA PARA QUE LA ROTACION CAMBIE EN FUNCION DEL TIEMPO
     
-    Console.WriteLine(angle);
+    AutosRotaciones[index] = angle;
     
-     
 
-    AutosDirecciones[index] = direccionAuto(AutosRotaciones[index], AutosDirecciones[index]);
+    //Console.WriteLine("El angulo es {0}", AutosRotaciones[index]);
 
-    AutosPosiciones[index] += posIA_posAuto * 100f * elapsedTime ; 
+    
+    var martiz = Matrix.CreateRotationY(angle * 2f);
+    
+
+    Vector2 direccionFinalXZ = direccionAuto(AutosRotaciones[index], posFrente_posAuto, martiz);
+
+    AutosDirecciones[index] =  (new Vector3(direccionFinalXZ.X, 0f, direccionFinalXZ.Y));
+    Console.WriteLine("Direccion hacia el jugador: {0}", posIA_posAutoXYZ);
+    Console.WriteLine("Direccion del auto: {0}", AutosDirecciones[index]);
+
+    //AutosPosiciones[index] +=  posIA_posAutoXYZ * 100f * elapsedTime ; 
     }
 
-    public Vector3 direccionAuto(float Rotation, Vector3 direccionInicial)
+    public Vector2 direccionAuto(float Rotation, Vector2 direccionInicial, Matrix matriz)
     {
-      var martiz = Matrix.CreateRotationY(Rotation * 2f);
-      Vector3 vector2 = Vector3.Transform(direccionInicial, martiz);
-      return Vector3.Normalize(vector2);
+      
+      Vector2 vector2 = Vector2.Transform(direccionInicial, matriz);
+      return (vector2);
     }
 
     public double ConvertToRadians(double angle)
     {
-    return (Math.PI / 180) * angle;
+    return (180/Math.PI) * angle;
     }
 
     private float RandomPosition(Random random)
