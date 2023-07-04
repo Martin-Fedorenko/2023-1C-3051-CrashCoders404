@@ -155,21 +155,21 @@ namespace TGC.MonoGame.TP
       };
       
 
-      CarAcceleration = 400f;
-      CarBrakes = 400f;
+      CarAcceleration = 50f;
+      CarBrakes = 200f;
       ActiveMovement = false;
-      jumpAngle = MathF.PI / 9;
+      jumpAngle = MathF.PI / 9f;
       jumpSpeed = 30f;
       gravity = 2f;
       onJump = false;
       accelerating = false;
       jumpHeight = 100f;
-      maxSpeed = 2800f;
+      maxSpeed = 200f;
       enElPiso = true;
       enPlataforma = false;
       tiempoEnAire = 0f;
       turbo = false;
-      turboTime = 0;
+      turboTime = 0f;
       penetration = 0f;
 
       //Rotaciones de Ruedas
@@ -355,7 +355,7 @@ namespace TGC.MonoGame.TP
           CarSpeed.X += CarBrakes * elapsedTime;
         }
         else if (CarSpeed.X < maxSpeed) CarSpeed.X += CarAcceleration * elapsedTime;
-        Desplazamiento += CarDirection * CarSpeed.X * elapsedTime + CarAcceleration * elapsedTime * elapsedTime* CarDirection / 2f;
+        Desplazamiento += directionAutoPrincipal() * CarSpeed.X * elapsedTime + CarAcceleration * elapsedTime * elapsedTime* directionAutoPrincipal() / 2f;
         ActiveMovement = true;
         accelerating = true;
 
@@ -367,7 +367,7 @@ namespace TGC.MonoGame.TP
           CarSpeed.X -= CarBrakes * elapsedTime;
         }
         else if (CarSpeed.X > -maxSpeed) CarSpeed.X -= CarAcceleration * elapsedTime;
-        Desplazamiento += CarDirection * CarSpeed.X * elapsedTime + CarAcceleration * elapsedTime* elapsedTime * CarDirection / 2f;
+        Desplazamiento += directionAutoPrincipal() * CarSpeed.X * elapsedTime + CarAcceleration * elapsedTime* elapsedTime * directionAutoPrincipal() / 2f;
         ActiveMovement = true;
         accelerating = true;
       }
@@ -384,7 +384,7 @@ namespace TGC.MonoGame.TP
         {
           CarSpeed.X -= Rozamiento * elapsedTime;
         }
-        Desplazamiento += CarDirection * CarSpeed.X * elapsedTime;
+        Desplazamiento += directionAutoPrincipal() * CarSpeed.X * elapsedTime;
       }
 
       if(CarSpeed.X == 0f) ActiveMovement = false;
@@ -439,7 +439,7 @@ namespace TGC.MonoGame.TP
 
         if(turboTime < 1f)
         {
-          if(MathF.Abs(CarSpeed.X) < 2800)
+          if(MathF.Abs(CarSpeed.X) < 500)
              CarSpeed *= 1.1f;
         }
         else if(turboTime < 2f)
@@ -463,7 +463,7 @@ namespace TGC.MonoGame.TP
         if (AutoPrincipalBox.Intersects(CollideCars[index]))
         {
             CollisionIndex = index;
-            direccionPostChoque = CarDirection;
+            direccionPostChoque = directionAutoPrincipal();
             Desplazamiento*=-1;
             CarsSpeeds[CollisionIndex] = CarSpeed.X * 0.5f;
             CarSpeed*=-0.5f;
