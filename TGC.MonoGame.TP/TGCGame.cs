@@ -10,6 +10,7 @@ using Microsoft.Xna.Framework.Audio;
 using TGC.MonoGame.TP.Viewer.Gizmos;
 using TGC.MonoGame.TP.Cameras;
 using TGC.MonoGame.TP.Geometries;
+using System.Threading;
 
 namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
 {
@@ -305,6 +306,7 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
 
           if (Keyboard.GetState().IsKeyDown(Keys.Enter))
           {
+            countdownStart = 0;
             status = ST_COUNTDOWN_3;
             MediaPlayer.Stop();
             MediaPlayer.Play(SongCountdown);
@@ -396,6 +398,7 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
               MediaPlayer.Play(GameOver);
               autos.vidaProtagonista = 100;
               status = ST_DERROTA;
+              break;
             }
           break;
           case ST_DERROTA:
@@ -406,8 +409,11 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
 
           if (Keyboard.GetState().IsKeyDown(Keys.Enter))
           {
-            this.UnloadContent();
+            
+            //this.UnloadContent();
+            Thread.Sleep(500);
             status = ST_PRESENTACION;
+            
             MediaPlayer.Stop();
             MediaPlayer.Play(SongMenu);
             break;
