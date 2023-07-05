@@ -41,6 +41,7 @@ namespace TGC.MonoGame.TP
     private float WheelRotation6;
     private float WheelRotation7;
     private float WheelRotation8;
+    private float frontWheelRotation;
     private ModelBone leftBackWheelBone;
     private ModelBone rightBackWheelBone;
     private ModelBone leftFrontWheelBone;
@@ -234,7 +235,9 @@ namespace TGC.MonoGame.TP
         {
           CarSpeed.X += CarBrakes * elapsedTime;
         }
-        else if (CarSpeed.X < maxSpeed) CarSpeed.X += CarAcceleration * elapsedTime;
+        else if (CarSpeed.X < maxSpeed) 
+          CarSpeed.X += CarAcceleration * elapsedTime;
+        
         Desplazamiento += directionAutoPrincipal() * CarSpeed.X * elapsedTime + CarAcceleration * elapsedTime * elapsedTime* directionAutoPrincipal() / 2f;
         ActiveMovement = true;
         accelerating = true;
@@ -285,6 +288,13 @@ namespace TGC.MonoGame.TP
       {
         WheelRotationPrincipal = 0f;//cuando soltas W o A el auto y las ruedas siguen recto
       }
+
+      if(CarSpeed.X > 0)
+        frontWheelRotation += elapsedTime;
+      else if(CarSpeed.X < 0)
+        frontWheelRotation -= elapsedTime;
+      else
+        frontWheelRotation = 0f;
 
       //saltar
       if (Keyboard.GetState().IsKeyDown(Keys.Space)  && (enElPiso || enPlataforma))
@@ -468,8 +478,8 @@ namespace TGC.MonoGame.TP
       int index = 0;
       foreach (var mesh in modelo.Meshes)
       {
-        rightFrontWheelBone.Transform = Matrix.CreateRotationY(WheelRot) * rightFrontWheelTransform;
-        leftFrontWheelBone.Transform = Matrix.CreateRotationY(WheelRot) * leftFrontWheelTransform;
+        rightFrontWheelBone.Transform = Matrix.CreateRotationX(frontWheelRotation) * Matrix.CreateRotationY(WheelRot) * rightFrontWheelTransform;
+        leftFrontWheelBone.Transform =  Matrix.CreateRotationX(frontWheelRotation) * Matrix.CreateRotationY(WheelRot) * leftFrontWheelTransform;
         modelo.CopyAbsoluteBoneTransformsTo(relativeMatrices);
 
         effect.Parameters["World"].SetValue(relativeMatrices[mesh.ParentBone.Index] * matrizMundo);
@@ -675,7 +685,10 @@ namespace TGC.MonoGame.TP
       //Console.WriteLine("Direccion del auto: {0}", AutosDirecciones[index]);
 
       if(permitirMovimiento[index]){
-        AutosPosiciones[index] +=  posIA_posAutoXYZ * 100f * elapsedTime ; 
+        if(index < 5)
+          AutosPosiciones[index] +=  posIA_posAutoXYZ * 100f * elapsedTime ; 
+        else
+          AutosPosiciones[index] +=  posIA_posAutoXYZ * 75f * elapsedTime ; 
       }
 
       
@@ -718,8 +731,8 @@ namespace TGC.MonoGame.TP
         AutoPrincipalPos = new Vector3(0, 0, 0);
         vidaProtagonista = 100;
         CarDirection = AutoPrincipalWorld.Backward;
-      Desplazamiento = Vector3.Zero;
-      Rozamiento = CarSpeed.X * 0.5f;
+        Desplazamiento = Vector3.Zero;
+        Rozamiento = CarSpeed.X * 0.5f;
 
 //MovimientoAuto
       CarSpeed = new Vector2(0f,0f);
@@ -767,6 +780,7 @@ namespace TGC.MonoGame.TP
                 0f,
       };
       WheelRotationPrincipal = 0f;
+      frontWheelRotation = 0f;
 
       CarsSpeeds = new float[]
       {
