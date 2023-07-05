@@ -147,6 +147,7 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
 
     //Variables
     private  Vector3 lightPosition = new Vector3(0.0f,100.0f,0.0f);
+    private float timerMenu = 0f;
 
         protected override void Initialize()
     {
@@ -311,6 +312,8 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
       switch (status)
       {
         case ST_PRESENTACION:
+        timerMenu = (float)gameTime.TotalGameTime.TotalSeconds;
+
           if(!(MediaPlayer.State == MediaState.Playing))
           {
             MediaPlayer.Play(SongMenu);
@@ -483,7 +486,7 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
           break;
 
         case ST_PRESENTACION: //NO SE PORQUE LOS COCHES DESAPARECEN CUANDO SE VUELVE A CARGAR LA PRESENTACION
-          autos.dibujarAutosMenu(View,Projection,AutoShader);
+          autos.dibujarAutosMenu(View,Projection,AutoShader,timerMenu);
           DrawCenterTextY("CRASH CODERS 404 ", 100, 4);
           DrawCenterTextY("C -> CONTROLES", 400, 2);
           DrawCenterTextY("G -> GOD MODE", 500, 2);
@@ -533,7 +536,7 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
 
             GraphicsDevice.SetRenderTarget(MainSceneRenderTarget);
             GraphicsDevice.Clear(ClearOptions.Target | ClearOptions.DepthBuffer, Color.Black, 1f, 0);
-            
+
             escenario.dibujarEscenario(View, Projection, AutoShader, true, "Luz");
             detalles.dibujarDetalles(View, Projection, AutoShader, "Luz");
             powerUps.dibujarPowerUps(View, Projection, AutoShader, "Luz");
