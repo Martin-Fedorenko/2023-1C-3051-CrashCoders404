@@ -120,7 +120,6 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
     private Texture2D TexturaPared;
     private Texture2D TexturaPlataforma;
     private Texture2D TexturaColumna;
-
     private Texture2D TexturaRoca;
     private Texture2D TexturaArbol;
     private Texture2D TexturaTire1;
@@ -129,6 +128,7 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
     private Texture2D TexturaPowerUp;
     private Texture2D Noise;
     private Texture2D TexturaAuxiliar;
+    private Texture2D VidaCompleta;
 
     //efectos
     private RenderTargetCube EnvironmentMapRenderTarget { get; set; }
@@ -143,6 +143,7 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
     private float totalGameTime;
     private float countdownStart;
     private Vector2 autoPos;
+    private bool dibujarGizmos = false;
 
     //Variables
     private  Vector3 lightPosition = new Vector3(0.0f,100.0f,0.0f);
@@ -249,7 +250,7 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
       AutoShader.Parameters["TexturaRuido"]?.SetValue(Noise);
       AutoShader.Parameters["TexturaAuxiliar"]?.SetValue(TexturaAuxiliar);
 
-      // iluminacion
+      //Iluminacion
       AutoShader.Parameters["ambientColor"]?.SetValue(Color.White.ToVector3());
       AutoShader.Parameters["diffuseColor"]?.SetValue(Color.White.ToVector3());
       AutoShader.Parameters["specularColor"]?.SetValue(Color.White.ToVector3());
@@ -279,6 +280,9 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
       TexturaTire2 = Content.Load<Texture2D>(ContentFolderTextures + "tire2");
       TexturaMenu = Content.Load<Texture2D>(ContentFolderTextures + "backMenu");
       TexturaPowerUp = Content.Load<Texture2D>(ContentFolderTextures + "gold");
+      VidaCompleta = Content.Load<Texture2D>(ContentFolderTextures + "vida completa");
+
+     //AutoShader.Parameters["shininess"]?.SetValue(2f);
       
 
       escenario.LoadContent(Piso, Pared, Column, Ramp, Platform, TexturaPiso, TexturaPared, TexturaColumna, TexturaRampa, TexturaPlataforma);
@@ -319,6 +323,15 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
             MediaPlayer.Stop();
             MediaPlayer.Play(SongCountdown);
             countdownStart += (float)gameTime.ElapsedGameTime.TotalSeconds;
+          }
+          if (Keyboard.GetState().IsKeyDown(Keys.G))
+          {
+            countdownStart = 0;
+            status = ST_COUNTDOWN_3;
+            MediaPlayer.Stop();
+            MediaPlayer.Play(SongCountdown);
+            countdownStart += (float)gameTime.ElapsedGameTime.TotalSeconds;
+            autos.vidaProtagonista = 10000;
           }
           if (Keyboard.GetState().IsKeyDown(Keys.C))
           {
@@ -585,7 +598,10 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
           escenario.dibujarBoundingBoxes(gizmos); //BB de plataformas bien ubicadas
           powerUps.dibujarBoundingBoxes(gizmos); //BB Bien ubicadas
 
-          gizmos.Draw();
+          if(dibujarGizmos)
+          {
+            gizmos.Draw();
+          }
           SpriteBatch.End(); //si lo ponemos antes de dibujar los modelos, los autos y el piso se dibujan translucidos 
           break;
       }

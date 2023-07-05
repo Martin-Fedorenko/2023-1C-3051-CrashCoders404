@@ -105,6 +105,17 @@ sampler2D auxiliarTextureSampler = sampler_state
     AddressV = Wrap;
 };
 
+texture overlayTexture;
+sampler2D overlayTextureSampler = sampler_state
+{
+	Texture = (overlayTexture);
+    MagFilter = Linear;
+    MinFilter = Linear;
+    AddressU = Clamp;
+    AddressV = Clamp;
+};
+
+
 
 #define PI 3.1415926535898
 
@@ -231,7 +242,7 @@ float4 BloomAutoPS(VertexShaderOutput input) : COLOR
     if(input.Mesh.z>2.5 && input.Mesh.z<3.0 && input.Mesh.x<0.7 && input.Mesh.x>-0.7){
         color = float4(colorBloom, 1.0);
     }else{
-        discard;
+        color = float4(0.0,0.0,0.0,1.0);
     }
 
     return color;
@@ -260,6 +271,25 @@ float4 IntegrarPS(in VertexShaderOutput input) : COLOR
     
     return sceneColor * 0.5 + bloomColor;
     
+}
+
+float4 MergePS(VertexShaderOutput input) : COLOR
+{
+    float4 baseColor = tex2D(textureSampler, input.TextureCoordinate);
+	float4 overlayColor = tex2D(overlayTextureSampler, input.TextureCoordinate);
+
+	float4 finalColor = baseColor * overlayColor;
+    
+    return finalColor;
+}
+
+technique Merge
+{
+    pass Pass0
+    {
+		VertexShader = compile VS_SHADERMODEL MainVS();
+		PixelShader = compile PS_SHADERMODEL MergePS();
+	}
 }
 
 technique Luz

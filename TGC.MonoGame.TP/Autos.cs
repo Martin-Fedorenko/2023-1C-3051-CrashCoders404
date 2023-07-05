@@ -71,6 +71,7 @@ namespace TGC.MonoGame.TP
     public Vector3[] AutosPosiciones;
     public Boolean[] permitirMovimiento;
     public Vector3[] AutosDirecciones;
+    public Vector3[] AutosAdelante;
     public Vector3[] AutosNormal;
     public float[] AutosRotaciones;
     private float[] CarsSpeeds;
@@ -378,19 +379,20 @@ namespace TGC.MonoGame.TP
       //ubicacion coches IA
       for (var index = 0; index < CollideCars.Length; index++)
       {
+        var RotationASD = Matrix.CreateWorld(AutosPosiciones[index],AutosAdelante[index],Vector3.Up);
         if (index < 5)
         {
-          AutosWorld[index] = Matrix.CreateScale(0.1f) *
-                              Matrix.CreateRotationY(AutosRotaciones[index]) *
-                              Matrix.CreateTranslation(AutosPosiciones[index]);
+          AutosWorld[index] = Matrix.CreateScale(0.1f) * Matrix.CreateRotationY(mediaVuelta) * RotationASD;
+                              //Matrix.CreateRotationY(AutosRotaciones[index]) *
+                              //Matrix.CreateTranslation(AutosPosiciones[index]);
 
           CollideCars[index] = OrientedBoundingBox.FromAABB(new BoundingBox(AutoDeportivoBoxAABB.Min + AutosPosiciones[index] - coreccionAltura, AutoDeportivoBoxAABB.Max + AutosPosiciones[index] - coreccionAltura));
         }
         else
         {
-          AutosWorld[index] = Matrix.CreateScale(0.007f) *
-                              Matrix.CreateRotationY(AutosRotaciones[index])  *
-                              Matrix.CreateTranslation(AutosPosiciones[index]);
+          AutosWorld[index] = Matrix.CreateScale(0.007f) * Matrix.CreateRotationY(-cuartoDeVuelta) * RotationASD;
+                              //Matrix.CreateRotationY(AutosRotaciones[index])  *
+                             // Matrix.CreateTranslation(AutosPosiciones[index]);
 
           CollideCars[index] = OrientedBoundingBox.FromAABB(new BoundingBox(AutoDeCombateBoxAABB.Min + AutosPosiciones[index] - coreccionAlturaAutoCombate, AutoDeCombateBoxAABB.Max + AutosPosiciones[index] - coreccionAlturaAutoCombate));
         }
@@ -644,7 +646,7 @@ namespace TGC.MonoGame.TP
       }
     }
 
-    //aca esta la magia de la rotiación
+    //aca esta la magia de la rotación
     public void atacarAutoPrincipal(int index,float elapsedTime){
       Vector3 posIA_posAutoXYZ = Vector3.Normalize(objetivo[index] -AutosPosiciones[index]);
     
@@ -663,11 +665,12 @@ namespace TGC.MonoGame.TP
 
       //Console.WriteLine("El angulo es {0}", AutosRotaciones[index]);
 
-      var martiz = Matrix.CreateRotationY(angle * 2f);
+      var martiz = Matrix.CreateRotationY(angle);
     
-      Vector2 direccionFinalXZ = direccionAuto(AutosRotaciones[index], posFrente_posAuto, martiz);
+      Vector2 direccionFinalXZ = direccionAuto(posFrente_posAuto, martiz);
 
       AutosDirecciones[index] =  (new Vector3(direccionFinalXZ.X, 0f, direccionFinalXZ.Y));
+      AutosAdelante[index] = (new Vector3(posIA_posAuto.X,0f,posIA_posAuto.Y));
       //Console.WriteLine("Direccion hacia el jugador: {0}", posIA_posAutoXYZ);
       //Console.WriteLine("Direccion del auto: {0}", AutosDirecciones[index]);
 
@@ -678,7 +681,7 @@ namespace TGC.MonoGame.TP
       
     }
 
-    public Vector2 direccionAuto(float Rotation, Vector2 direccionInicial, Matrix matriz)
+    public Vector2 direccionAuto(Vector2 direccionInicial, Matrix matriz)
     {
       
       Vector2 vector2 = Vector2.Transform(direccionInicial, matriz);
@@ -800,6 +803,17 @@ namespace TGC.MonoGame.TP
       };
 
       AutosDirecciones = new Vector3[]{
+        Vector3.Backward,
+        Vector3.Backward,
+        Vector3.Backward,
+        Vector3.Backward,
+        Vector3.Backward,
+        Vector3.Backward,
+        Vector3.Backward,
+        Vector3.Backward
+      };
+
+      AutosAdelante = new Vector3[]{
         Vector3.Backward,
         Vector3.Backward,
         Vector3.Backward,
