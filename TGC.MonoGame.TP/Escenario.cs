@@ -406,6 +406,12 @@ public void dibujar(Matrix view, Matrix projection, Effect effect, Matrix matriz
         quad.Draw(effect);
     }
 
+    public void dibujarPiso(Matrix view, Matrix projection, Effect effect){
+      effect.CurrentTechnique = effect.Techniques["Luz"];
+      effect.Parameters["lightPosition"]?.SetValue(new Vector3(0.0f,0.0f,0.0f));
+      dibujar(view, projection, effect, Matrix.CreateScale(800, 1, 800)*Matrix.CreateTranslation(0,-100,0), Piso, TexturaPiso);
+    }
+
     public void dibujarEscenario(Matrix view, Matrix projection, Effect effect, Boolean pisoOn, String tecnica)
     {
 

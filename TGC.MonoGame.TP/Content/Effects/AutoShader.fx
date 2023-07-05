@@ -166,9 +166,7 @@ float4 LuzPS(VertexShaderOutput input) : COLOR
     lightDirection = normalize(farosPosition - input.WorldPosition.xyz);
     viewDirection = normalize(eyePosition - input.WorldPosition.xyz);
     halfVector = normalize(lightDirection + viewDirection);
-
-	// Get the texture texel
-    texelColor = tex2D(textureSampler, input.TextureCoordinate);
+    
     
 	// Calculate the diffuse light
     NdotL = saturate(dot(input.Normal.xyz, lightDirection));
@@ -290,7 +288,12 @@ float4 MergePS(VertexShaderOutput input) : COLOR
 
 float4 PintarRuedasPS(VertexShaderOutput input) : COLOR
 {
-    return float4(1.0,0.0,0.0,1.0);
+    float4 texelColor = tex2D(textureSampler, input.TextureCoordinate);
+    if((texelColor.r+texelColor.g+texelColor.b)/3>0.1){
+        texelColor = lerp(float4(1.0, 0.0, 0.0, 1.0), texelColor, 0.4);
+    }
+
+    return texelColor;
 }
 
 technique Merge

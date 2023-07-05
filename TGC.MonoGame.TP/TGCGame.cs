@@ -487,6 +487,7 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
 
         case ST_PRESENTACION: //NO SE PORQUE LOS COCHES DESAPARECEN CUANDO SE VUELVE A CARGAR LA PRESENTACION
           autos.dibujarAutosMenu(View,Projection,AutoShader,timerMenu);
+          escenario.dibujarPiso(View,Projection,AutoShader);
           DrawCenterTextY("CRASH CODERS 404 ", 100, 4);
           DrawCenterTextY("C -> CONTROLES", 400, 2);
           DrawCenterTextY("G -> GOD MODE", 500, 2);
@@ -510,12 +511,14 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
           break;
 
         case ST_JUEGO:
-          SpriteBatch.Begin();
-          SpriteBatch.DrawString(font, "Tiempo:" + ((int)totalGameTime).ToString(), new Vector2(10, 10), Color.Black);
-          SpriteBatch.DrawString(font, "Velocidad:" + (autos.autoSpeed().ToString()), new Vector2(700, 10), Color.Black);
-          SpriteBatch.DrawString(font, "PowerUp:" + (powerUps.powerUpActual()), new Vector2(1250, 900), Color.Black);
-          SpriteBatch.DrawString(font, "Vida:" + (autos.getVidaProta()), new Vector2(1300, 900), Color.Black);
 
+        Vector2 tamanioPantalla = new Vector2(GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height);
+          SpriteBatch.Begin();
+          SpriteBatch.DrawString(font, "Tiempo:" + ((int)totalGameTime).ToString(), new Vector2(tamanioPantalla.X * 0f, tamanioPantalla.Y * 0f), Color.WhiteSmoke);
+          SpriteBatch.DrawString(font, "Velocidad:" + (autos.autoSpeed().ToString()), new Vector2(tamanioPantalla.X * 0.5f, tamanioPantalla.Y * 0f), Color.WhiteSmoke);
+          SpriteBatch.DrawString(font, "PowerUp:" + (powerUps.powerUpActual()), new Vector2(tamanioPantalla.X * 0.85f, tamanioPantalla.Y * 0.9f), Color.WhiteSmoke);
+          SpriteBatch.DrawString(font, "Vida:" + (autos.getVidaProta()), new Vector2(tamanioPantalla.X * 0.9f, tamanioPantalla.Y * 0.95f), Color.WhiteSmoke); 
+          
           #region Pass 1-6
 
           for (var face = CubeMapFace.PositiveX; face <= CubeMapFace.NegativeZ; face++)
