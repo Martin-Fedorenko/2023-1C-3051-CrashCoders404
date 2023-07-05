@@ -46,10 +46,28 @@ namespace TGC.MonoGame.TP
     private ModelBone rightBackWheelBone;
     private ModelBone leftFrontWheelBone;
     private ModelBone rightFrontWheelBone;
+    private ModelBone wheelDerecha1;
+    private ModelBone wheelDerecha2;
+    private ModelBone wheelDerecha3;
+    private ModelBone wheelIzquierda1;
+    private ModelBone wheelIzquierda2;
+    private ModelBone wheelIzquierda3;
+    private ModelBone wheelIzquierda4;
+    private ModelBone wheelDerecha4;
     private Matrix leftBackWheelTransform = Matrix.Identity;
     private Matrix rightBackWheelTransform = Matrix.Identity;
     private Matrix leftFrontWheelTransform = Matrix.Identity;
     private Matrix rightFrontWheelTransform = Matrix.Identity;
+
+    private Matrix wheelDerecha1Transform = Matrix.Identity;
+    private Matrix wheelDerecha2Transform = Matrix.Identity;
+    private Matrix wheelDerecha3Transform = Matrix.Identity;
+    private Matrix wheelDerecha4Transform = Matrix.Identity;
+
+    private Matrix wheelIzquierda1Transform = Matrix.Identity;
+    private Matrix wheelIzquierda2Transform = Matrix.Identity;
+    private Matrix wheelIzquierda3Transform = Matrix.Identity;
+    private Matrix wheelIzquierda4Transform = Matrix.Identity;
 
     private float[] frontWheelRotationIA;
     private Matrix[] relativeMatrices;
@@ -175,6 +193,26 @@ namespace TGC.MonoGame.TP
       rightBackWheelTransform = rightBackWheelBone.Transform;
       leftFrontWheelTransform = leftFrontWheelBone.Transform;
       rightFrontWheelTransform = rightFrontWheelBone.Transform;
+
+      wheelDerecha1 = AutoDeCombate.Bones["Wheel1"];
+      wheelDerecha2 = AutoDeCombate.Bones["Wheel2"];
+      wheelDerecha3 = AutoDeCombate.Bones["Wheel3"];
+      wheelDerecha4 = AutoDeCombate.Bones["Wheel4"];
+      
+      wheelIzquierda1 = AutoDeCombate.Bones["Wheel5"];
+      wheelIzquierda2 = AutoDeCombate.Bones["Wheel6"];
+      wheelIzquierda3 = AutoDeCombate.Bones["Wheel7"];
+      wheelIzquierda4 = AutoDeCombate.Bones["Wheel8"];
+
+      wheelDerecha1Transform = wheelDerecha1.Transform;
+      wheelDerecha2Transform = wheelDerecha2.Transform;
+      wheelDerecha3Transform = wheelDerecha3.Transform;
+      wheelDerecha4Transform = wheelDerecha4.Transform;
+      
+      wheelIzquierda1Transform = wheelIzquierda1.Transform;
+      wheelIzquierda2Transform = wheelIzquierda2.Transform;
+      wheelIzquierda3Transform = wheelIzquierda3.Transform;
+      wheelIzquierda4Transform = wheelIzquierda4.Transform;
 
       //Texturas
       foreach (var mesh in AutoDeportivo.Meshes)
@@ -466,7 +504,7 @@ namespace TGC.MonoGame.TP
         }
     }
 
-    public void dibujarAuto(Matrix view, Matrix projection, Effect effect, Model modelo,float fronRot ,float WheelRot, Matrix matrizMundo)
+    public void dibujarAutoDeportivo(Matrix view, Matrix projection, Effect effect, Model modelo,float fronRot ,float WheelRot, Matrix matrizMundo)
     {
       effect.Parameters["View"].SetValue(view);
       effect.Parameters["Projection"].SetValue(projection);
@@ -500,30 +538,69 @@ namespace TGC.MonoGame.TP
         index++;
       }
     }
+    public void dibujarAutoDeCombate(Matrix view, Matrix projection, Effect effect, Model modelo,float fronRot ,float WheelRot, Matrix matrizMundo)
+    {
+      effect.Parameters["View"].SetValue(view);
+      effect.Parameters["Projection"].SetValue(projection);
+      effect.Parameters["InverseTransposeWorld"]?.SetValue(Matrix.Transpose(Matrix.Invert(matrizMundo)));
+      
+
+      relativeMatrices = new Matrix[modelo.Bones.Count];
+      
+      int index = 0;
+      foreach (var mesh in modelo.Meshes)
+      {
+        wheelDerecha1.Transform = Matrix.CreateRotationZ(-fronRot) * Matrix.CreateRotationY(WheelRot) * wheelDerecha1Transform;
+        wheelDerecha2.Transform =  Matrix.CreateRotationZ(-fronRot) * Matrix.CreateRotationY(WheelRot) * wheelDerecha2Transform;
+        wheelDerecha3.Transform = Matrix.CreateRotationZ(-fronRot) * wheelDerecha3Transform;
+       // wheelDerecha4.Transform = Matrix.CreateRotationZ(-fronRot) * wheelDerecha4Transform;
+        
+        wheelIzquierda1.Transform = Matrix.CreateRotationZ(-fronRot) * Matrix.CreateRotationY(WheelRot) * wheelIzquierda1Transform;
+        wheelIzquierda2.Transform =  Matrix.CreateRotationZ(-fronRot) * Matrix.CreateRotationY(WheelRot) * wheelIzquierda2Transform;
+        wheelIzquierda3.Transform = Matrix.CreateRotationZ(-fronRot);
+       // wheelIzquierda4.Transform = Matrix.CreateRotationZ(-fronRot) * wheelIzquierda4Transform;
+
+        modelo.CopyAbsoluteBoneTransformsTo(relativeMatrices);
+
+        effect.Parameters["World"].SetValue(relativeMatrices[mesh.ParentBone.Index] * matrizMundo);
+        foreach (var meshPart in mesh.MeshParts)
+        {
+          effect.GraphicsDevice.SetVertexBuffer(meshPart.VertexBuffer);
+          effect.GraphicsDevice.Indices = meshPart.IndexBuffer;
+          effect.Parameters["ModelTexture"]?.SetValue(ColorTextures[index]);
+          foreach (var pass in effect.CurrentTechnique.Passes)
+          {
+            pass.Apply();
+            effect.GraphicsDevice.DrawIndexedPrimitives(PrimitiveType.TriangleList, meshPart.VertexOffset, meshPart.StartIndex, meshPart.PrimitiveCount);
+          }
+        }
+        mesh.Draw();
+        index++;
+      }
+    }
 
     public void dibujarAutosMenu(Matrix view, Matrix projection, Effect effect, float timerMenu)
     {
       effect.CurrentTechnique = effect.Techniques["Luz"];
       effect.Parameters["lightPosition"]?.SetValue(new Vector3(0.0f,100.0f,0.0f));
-       dibujarAuto(view, projection, effect, AutoDeportivo, timerMenu, 0, autoMenu);
-       dibujarAuto(view, projection, effect, AutoDeCombate, timerMenu,0, autoMenu2);
-       dibujarAuto(view, projection, effect, AutoDeportivo, timerMenu ,0, autoMenu3);
+       dibujarAutoDeportivo(view, projection, effect, AutoDeportivo, timerMenu, 0, autoMenu);
+       dibujarAutoDeCombate(view, projection, effect, AutoDeCombate, timerMenu,0, autoMenu2);
+       dibujarAutoDeportivo(view, projection, effect, AutoDeportivo, timerMenu ,0, autoMenu3);
     }
     public void dibujarAutos(Matrix view, Matrix projection, Effect effect, String tecnica)
     {
-      Model modeloAuto;
       effect.Parameters["colorBloom"]?.SetValue(Color.White.ToVector3());
       effect.CurrentTechnique = effect.Techniques[tecnica];
-      dibujarAuto(view, projection, effect, AutoDeportivo,frontWheelRotation, WheelRotationPrincipal, AutoPrincipalWorld);
+      dibujarAutoDeportivo(view, projection, effect, AutoDeportivo,frontWheelRotation, WheelRotationPrincipal, AutoPrincipalWorld);
 
       //dibujarAuto(view, projection, effect, AutoDeportivo, WheelRotationPrincipal, AutoPrincipalWorld);
 
       for (int index = 0; index < AutosWorld.Length; index++)
       {
 
-        if (index < 5) modeloAuto = AutoDeportivo;
-        else modeloAuto = AutoDeCombate;
-        dibujarAuto(view, projection, effect, modeloAuto, frontWheelRotationIA[index], 0f,AutosWorld[index]);
+        if (index < 5)  dibujarAutoDeportivo(view, projection, effect, AutoDeportivo, frontWheelRotationIA[index], 0f,AutosWorld[index]);
+        else dibujarAutoDeCombate(view, projection, effect, AutoDeCombate, frontWheelRotationIA[index], 0f,AutosWorld[index]);
+       
 
       }
     }
