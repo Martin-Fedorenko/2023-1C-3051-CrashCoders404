@@ -553,12 +553,12 @@ namespace TGC.MonoGame.TP
         wheelDerecha1.Transform = Matrix.CreateRotationZ(-fronRot) * Matrix.CreateRotationY(WheelRot) * wheelDerecha1Transform;
         wheelDerecha2.Transform =  Matrix.CreateRotationZ(-fronRot) * Matrix.CreateRotationY(WheelRot) * wheelDerecha2Transform;
         wheelDerecha3.Transform = Matrix.CreateRotationZ(-fronRot) * wheelDerecha3Transform;
-       // wheelDerecha4.Transform = Matrix.CreateRotationZ(-fronRot) * wheelDerecha4Transform;
+        //wheelDerecha4.Transform =   Matrix.CreateRotationZ(-fronRot) * wheelDerecha4Transform; por alguna razon no rota sobre su eje
         
         wheelIzquierda1.Transform = Matrix.CreateRotationZ(-fronRot) * Matrix.CreateRotationY(WheelRot) * wheelIzquierda1Transform;
         wheelIzquierda2.Transform =  Matrix.CreateRotationZ(-fronRot) * Matrix.CreateRotationY(WheelRot) * wheelIzquierda2Transform;
-        wheelIzquierda3.Transform = Matrix.CreateRotationZ(-fronRot);
-       // wheelIzquierda4.Transform = Matrix.CreateRotationZ(-fronRot) * wheelIzquierda4Transform;
+        wheelIzquierda3.Transform = Matrix.CreateRotationZ(-fronRot) * wheelIzquierda3Transform;
+        //wheelIzquierda4.Transform = Matrix.CreateRotationZ(-fronRot) * wheelIzquierda4Transform;
 
         modelo.CopyAbsoluteBoneTransformsTo(relativeMatrices);
 
@@ -600,8 +600,6 @@ namespace TGC.MonoGame.TP
 
         if (index < 5)  dibujarAutoDeportivo(view, projection, effect, AutoDeportivo, frontWheelRotationIA[index], 0f,AutosWorld[index]);
         else dibujarAutoDeCombate(view, projection, effect, AutoDeCombate, frontWheelRotationIA[index], 0f,AutosWorld[index]);
-       
-
       }
     }
 
