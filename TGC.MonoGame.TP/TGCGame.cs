@@ -521,11 +521,10 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
                 GraphicsDevice.SetRenderTarget(EnvironmentMapRenderTarget, face);
                 GraphicsDevice.Clear(ClearOptions.Target | ClearOptions.DepthBuffer, Color.Black, 1f, 0);
                 
-            
-                escenario.dibujarEscenario(View, Projection, AutoShader, false);
-                //detalles.dibujarDetalles(View, Projection, AutoShader);
+                escenario.dibujarEscenario(View, Projection, AutoShader, true, "Luz");
+                detalles.dibujarDetalles(View, Projection, AutoShader, "Luz");
                 powerUps.dibujarPowerUps(View, Projection, AutoShader,"Luz");
-                //autos.dibujarAutos(View, Projection, AutoShader); si agregas los detalles o los autos al reflejo la perfomance empeora
+                autos.dibujarAutos(View, Projection, AutoShader, "Luz"); 
           }
           #endregion
 
@@ -535,8 +534,8 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
             GraphicsDevice.SetRenderTarget(MainSceneRenderTarget);
             GraphicsDevice.Clear(ClearOptions.Target | ClearOptions.DepthBuffer, Color.Black, 1f, 0);
             
-            escenario.dibujarEscenario(View, Projection, AutoShader, true);
-            detalles.dibujarDetalles(View, Projection, AutoShader);
+            escenario.dibujarEscenario(View, Projection, AutoShader, true, "Luz");
+            detalles.dibujarDetalles(View, Projection, AutoShader, "Luz");
             powerUps.dibujarPowerUps(View, Projection, AutoShader, "Luz");
             
             autos.dibujarAutos(View, Projection, AutoShader, "Reflejo");
@@ -547,9 +546,10 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
             GraphicsDevice.SetRenderTarget(FirstPassBloomRenderTarget);
             GraphicsDevice.Clear(ClearOptions.Target | ClearOptions.DepthBuffer, Color.Black, 1f, 0);
             autos.dibujarAutos(View, Projection, AutoShader, "Bloom");
+            escenario.dibujarEscenario(View, Projection, AutoShader, true, "BloomNegro");
+            detalles.dibujarDetalles(View, Projection, AutoShader, "BloomNegro");
             powerUps.dibujarPowerUps(View, Projection, AutoShader, "BloomPowerUp");
             
-
           #endregion
 
           #region Pass 9

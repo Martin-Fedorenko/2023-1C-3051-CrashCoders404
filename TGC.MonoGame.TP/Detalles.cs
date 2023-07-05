@@ -698,10 +698,10 @@ namespace TGC.MonoGame.TP
         }
 
         
-        public void dibujarDetalles(Matrix view,Matrix projection,Effect effect)
+        public void dibujarDetalles(Matrix view,Matrix projection,Effect effect, String tecnica)
         {   
 
-            effect.CurrentTechnique = effect.Techniques["Luz"];
+            effect.CurrentTechnique = effect.Techniques[tecnica];
             for(int index = 0; index < TreesWorld.Length; index++)
             {
                 dibujarArboles(view,projection,effect,TreesWorld[index], Tree, TexturaArbol);

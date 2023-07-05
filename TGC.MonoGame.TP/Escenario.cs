@@ -406,10 +406,10 @@ public void dibujar(Matrix view, Matrix projection, Effect effect, Matrix matriz
         quad.Draw(effect);
     }
 
-    public void dibujarEscenario(Matrix view, Matrix projection, Effect effect, Boolean pisoOn)
+    public void dibujarEscenario(Matrix view, Matrix projection, Effect effect, Boolean pisoOn, String tecnica)
     {
 
-      effect.CurrentTechnique = effect.Techniques["Luz"];
+      effect.CurrentTechnique = effect.Techniques[tecnica];
       //Arena
       if(pisoOn)
         dibujar(view, projection, effect, PisoWorld, Piso, TexturaPiso);

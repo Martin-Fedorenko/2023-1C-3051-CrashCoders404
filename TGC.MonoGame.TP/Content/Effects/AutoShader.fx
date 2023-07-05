@@ -256,6 +256,11 @@ float4 BloomPowerUpPS(VertexShaderOutput input) : COLOR
     return bloom;
 }
 
+float4 BloomNegroPS(VertexShaderOutput input) : COLOR
+{
+    return float4(0.0,0.0,0.0,1.0);
+}
+
 VertexShaderOutput IntegrarVS(in VertexShaderInput input)
 {
     VertexShaderOutput output = (VertexShaderOutput)0;
@@ -325,6 +330,15 @@ technique BloomPowerUp
     {
         VertexShader = compile VS_SHADERMODEL MainVS();
         PixelShader = compile PS_SHADERMODEL BloomPowerUpPS();
+    }
+};
+
+technique BloomNegro
+{
+    pass Pass0
+    {
+        VertexShader = compile VS_SHADERMODEL MainVS();
+        PixelShader = compile PS_SHADERMODEL BloomNegroPS();
     }
 };
 
