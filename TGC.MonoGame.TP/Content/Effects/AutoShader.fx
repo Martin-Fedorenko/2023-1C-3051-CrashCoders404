@@ -288,6 +288,11 @@ float4 MergePS(VertexShaderOutput input) : COLOR
     return finalColor;
 }
 
+float4 PintarRuedasPS(VertexShaderOutput input) : COLOR
+{
+    return float4(1.0,0.0,0.0,1.0);
+}
+
 technique Merge
 {
     pass Pass0
@@ -303,6 +308,15 @@ technique Luz
 	{
 		VertexShader = compile VS_SHADERMODEL MainVS();
 		PixelShader = compile PS_SHADERMODEL LuzPS();
+	}
+};
+
+technique PintarRuedas
+{
+	pass P0
+	{
+		VertexShader = compile VS_SHADERMODEL MainVS();
+		PixelShader = compile PS_SHADERMODEL PintarRuedasPS();
 	}
 };
 
