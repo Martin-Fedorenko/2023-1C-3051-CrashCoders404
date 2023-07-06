@@ -68,7 +68,7 @@ float4 BlowingSandPS(in VertexShaderOutput input) : COLOR
     float2 t = input.TextureCoordinate;
     float4 arena = tex2D(auxiliarTextureSampler, t);
     float4 backColor = tex2D(ruidoSampler, float2(t.x+Time*0.1, t.y));
-    float4 frontColor = tex2D(ruidoSampler, float2(t.x-Time*0.2+20, t.y));
+    float4 frontColor = tex2D(ruidoSampler, float2(t.x+Time*0.2+20, t.y));
     
     return backColor*arena*0.7*frontColor*arena;
     
