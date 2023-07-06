@@ -144,14 +144,18 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
     private float countdownStart;
     private Vector2 autoPos;
     private bool dibujarGizmos = false;
+    private Vector2 tamanioPantalla;
 
     //Variables
     private  Vector3 lightPosition = new Vector3(0.0f,100.0f,0.0f);
     private float timerMenu = 0f;
 
-        protected override void Initialize()
+    protected override void Initialize()
     {
       gizmos = new Gizmos();
+
+      SpriteBatch = new SpriteBatch(GraphicsDevice);
+      
 
       // Dimensiones de la pantalla
       Graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width - 100;
@@ -208,7 +212,7 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
       Piso = new QuadPrimitive(GraphicsDevice);
       Pared = new QuadPrimitive(GraphicsDevice);
 
-      font = Content.Load<SpriteFont>(ContentFolderSpriteFonts + "CascadiaCode/CascadiaCodePL");
+      font = Content.Load<SpriteFont>(ContentFolderSpriteFonts + "Mogathe/MogatheSpurs");
 
       //Escenario
       //Piso = Content.Load<Model>(ContentFolder3D + "Arena/Plano"); //No tiene textura incluida
@@ -488,21 +492,24 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
         case ST_PRESENTACION: //NO SE PORQUE LOS COCHES DESAPARECEN CUANDO SE VUELVE A CARGAR LA PRESENTACION
           autos.dibujarAutosMenu(View,Projection,AutoShader,timerMenu);
           escenario.dibujarPiso(View,Projection,AutoShader);
-          DrawCenterTextY("CRASH CODERS 404 ", 100, 4);
-          DrawCenterTextY("C -> CONTROLES", 400, 2);
-          DrawCenterTextY("G -> GOD MODE", 500, 2);
-          DrawCenterTextY("ENTER -> COMENZAR", 600, 2);
-          DrawRightText("ESC -> SALIR", 900, 1);
+          SpriteBatch.Begin();
+          SpriteBatch.DrawString(font, "CRASH CODERS 404", new Vector2(tamanioPantalla.X * 0.9f, tamanioPantalla.Y * 0.95f), Color.WhiteSmoke); 
+          //DrawCenterTextY("CRASH CODERS 404 ", 100, 4);
+          //DrawCenterTextY("C -> CONTROLES", 400, 2);
+          //DrawCenterTextY("G -> GOD MODE", 500, 2);
+          //DrawCenterTextY("ENTER -> COMENZAR", 600, 2);
+          //DrawRightText("ESC -> SALIR", 900, 1);
+          SpriteBatch.End();
           break;
 
         case ST_CONTROLES:
-          DrawCenterTextY("CONTROLES", 100, 4);
+          /*DrawCenterTextY("CONTROLES", 100, 4);
           DrawCenterTextY("W -> AVANZAR", 300, 3);
           DrawCenterTextY("S -> RETROCEDER", 400, 3);
           DrawCenterTextY("D -> ROTAR DERECHA", 500, 3);
           DrawCenterTextY("A -> ROTAR IZQUIERDA", 600, 3);
           DrawCenterTextY("SPACE -> SALTAR", 700, 3);
-          DrawRightText("B -> VOLVER AL MENU", 900, 1);
+          DrawRightText("B -> VOLVER AL MENU", 900, 1);*/
           break;
 
         case ST_DERROTA:          
@@ -512,9 +519,9 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
 
         case ST_JUEGO:
 
-        Vector2 tamanioPantalla = new Vector2(GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height);
+        //Vector2 tamanioPantalla = new Vector2(GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height);
           SpriteBatch.Begin();
-          SpriteBatch.DrawString(font, "Tiempo:" + ((int)totalGameTime).ToString(), new Vector2(tamanioPantalla.X * 0f, tamanioPantalla.Y * 0f), Color.WhiteSmoke);
+          SpriteBatch.DrawString(font, "Tiempo:" + ((int)totalGameTime).ToString(), new Vector2(100f, 100f), Color.WhiteSmoke);
           SpriteBatch.DrawString(font, "Velocidad:" + (autos.autoSpeed().ToString()), new Vector2(tamanioPantalla.X * 0.5f, tamanioPantalla.Y * 0f), Color.WhiteSmoke);
           SpriteBatch.DrawString(font, "PowerUp:" + (powerUps.powerUpActual()), new Vector2(tamanioPantalla.X * 0.85f, tamanioPantalla.Y * 0.9f), Color.WhiteSmoke);
           SpriteBatch.DrawString(font, "Vida:" + (autos.getVidaProta()), new Vector2(tamanioPantalla.X * 0.9f, tamanioPantalla.Y * 0.95f), Color.WhiteSmoke); 
