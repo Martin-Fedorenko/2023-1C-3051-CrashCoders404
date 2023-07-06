@@ -112,6 +112,8 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
     private SoundEffect PickUpRocketSound { get; set; }
     private SoundEffect BoostSound { get; set; }
     private SoundEffect CarCrash { get; set; }
+    private SoundEffect VidaPerdida { get; set; }
+    private SoundEffect ExplosionMisil { get; set; }
 
 
     //Texturas
@@ -275,6 +277,9 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
       PickUpRocketSound = Content.Load<SoundEffect>(ContentFolderSounds + "pickup-rocket");
       BoostSound = Content.Load<SoundEffect>(ContentFolderSounds + "boost-effect");
       CarCrash = Content.Load<SoundEffect>(ContentFolderSounds + "car-crash");
+      VidaPerdida = Content.Load<SoundEffect>(ContentFolderSounds + "damage-received");
+      ExplosionMisil = Content.Load<SoundEffect>(ContentFolderSounds + "explosion-misil");
+      CarCrash = Content.Load<SoundEffect>(ContentFolderSounds + "car-crash");
 
       //Textura
       TexturaPiso = Content.Load<Texture2D>(ContentFolderTextures + "sand");
@@ -297,7 +302,7 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
       escenario.LoadContent(Piso, Pared, Column, Ramp, Platform, TexturaPiso, TexturaPared, TexturaColumna, TexturaRampa, TexturaPlataforma);
       detalles.LoadContent(Tree, Rock1, Rock5, Rock10, Tire, TexturaRoca, TexturaRoca, TexturaTire1, TexturaTire2);
       powerUps.LoadContent(CajaAmetralladora, CajaMisil, CajaTurbo, Misil, Bala, BulletSound, PickUpGunSound, RocketSound, PickUpRocketSound,
-                           BoostSound, TexturaPowerUp);
+                           BoostSound, TexturaPowerUp,ExplosionMisil);
       autos.LoadContent(AutoDeportivo, AutoDeCombate, AutoShader,CarCrash);
 
 
@@ -447,6 +452,9 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
             Thread.Sleep(500);
             autos.iniciarPartida();
             powerUps.iniciarPartida();
+            SpriteBatch.Begin();
+            dibujarCorazones(tamanioPantalla);
+            SpriteBatch.End();
             View = Matrix.CreateLookAt(posicionCamara, autos.posAutoPrincipal(), Vector3.Up);
             Projection = Matrix.CreateOrthographic(400, 300, -80, 1000);
             totalGameTime = 0;
@@ -523,8 +531,9 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
         case ST_JUEGO:
           SpriteBatch.Begin();
           SpriteBatch.DrawString(font, "Tiempo:" + ((int)totalGameTime).ToString(), new Vector2(tamanioPantalla.X * 0f, tamanioPantalla.Y * 0f), Color.WhiteSmoke);
+          SpriteBatch.DrawString(font, "Bajas:" + (autos.getAutoBajas().ToString()), new Vector2(tamanioPantalla.X * 0f, tamanioPantalla.Y * 0.1f), Color.WhiteSmoke);
           SpriteBatch.DrawString(font, "Velocidad:" + (autos.autoSpeed().ToString()), new Vector2(tamanioPantalla.X * 0.5f, tamanioPantalla.Y * 0f), Color.WhiteSmoke);
-          SpriteBatch.DrawString(font, "PowerUp:" + (powerUps.powerUpActual()), new Vector2(tamanioPantalla.X * 0.85f, tamanioPantalla.Y * 0.9f), Color.WhiteSmoke);
+          SpriteBatch.DrawString(font, "PowerUp:" + (powerUps.powerUpActual()), new Vector2(tamanioPantalla.X * 0f, tamanioPantalla.Y * 0.9f), Color.WhiteSmoke);
           dibujarCorazones(tamanioPantalla);
           
           #region Pass 1-6
@@ -666,7 +675,6 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
       SpriteBatch.Draw(Corazon2, new Vector2(tamanioPantalla.X * 0.80f, tamanioPantalla.Y * 0.9f), Color.WhiteSmoke);
       SpriteBatch.Draw(Corazon3, new Vector2(tamanioPantalla.X * 0.85f, tamanioPantalla.Y * 0.9f), Color.WhiteSmoke);
       SpriteBatch.Draw(Corazon4, new Vector2(tamanioPantalla.X * 0.90f, tamanioPantalla.Y * 0.9f), Color.WhiteSmoke);
-      
       //CORREGIR DISPOSE DEJA CUADRADO NEGRO
       if(autos.vidaProtagonista <= 75)
       {

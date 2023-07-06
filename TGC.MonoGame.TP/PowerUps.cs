@@ -36,6 +36,7 @@ namespace TGC.MonoGame.TP
     private SoundEffect RocketSound { get; set; }
     private SoundEffect PickUpRocketSound { get; set; }
     private SoundEffect BoostSound { get; set; }
+    private SoundEffect ExplosionMisil { get; set; }
 
     private int agarrarAmetralladora = 0;
     private bool tieneAmetalladora;
@@ -214,7 +215,7 @@ namespace TGC.MonoGame.TP
 
     public void LoadContent(Model cajaAmetralladora, Model cajaMisil, Model cajaTurbo, Model misil, Model bala, 
                             SoundEffect bulletSound, SoundEffect pickUpGunSound, SoundEffect pickUpRocketSound, SoundEffect rocketSound, 
-                            SoundEffect boostSound, Texture2D texturaPowerUp)
+                            SoundEffect boostSound, Texture2D texturaPowerUp, SoundEffect explosionMisil)
     {
       CajaAmetralladora = cajaAmetralladora;
       CajaMisil = cajaMisil;
@@ -227,6 +228,7 @@ namespace TGC.MonoGame.TP
       RocketSound = rocketSound;
       BoostSound = boostSound;
       TexturaPowerUp = texturaPowerUp;
+      ExplosionMisil = explosionMisil;
 
 
 
@@ -406,6 +408,8 @@ namespace TGC.MonoGame.TP
             if(colliderMisil.Intersects(detalles.getTreeBoxes()[index]))
             {
               recorridoMisil = 0f;
+              Instance = ExplosionMisil.CreateInstance();
+              Instance.Play();
             }
           }
           for (var index = 0; index < detalles.getTireBoxes().Length; index++)
@@ -413,6 +417,8 @@ namespace TGC.MonoGame.TP
             if(colliderMisil.Intersects(detalles.getTireBoxes()[index]))
             {
               recorridoMisil = 0f;
+              Instance = ExplosionMisil.CreateInstance();
+              Instance.Play();
             }
           }
           for (var index = 0; index < detalles.getRock1Boxes().Length; index++)
@@ -420,6 +426,8 @@ namespace TGC.MonoGame.TP
             if(colliderMisil.Intersects(detalles.getRock1Boxes()[index]))
             {
               recorridoMisil = 0f;
+              Instance = ExplosionMisil.CreateInstance();
+              Instance.Play();
             }
           }
           for (var index = 0; index < detalles.getRock5Boxes().Length; index++)
@@ -427,6 +435,8 @@ namespace TGC.MonoGame.TP
             if(colliderMisil.Intersects(detalles.getRock5Boxes()[index]))
             {
               recorridoMisil = 0f;
+              Instance = ExplosionMisil.CreateInstance();
+              Instance.Play();
             }
           }
           for (var index = 0; index < detalles.getRock10Boxes().Length; index++)
@@ -434,6 +444,8 @@ namespace TGC.MonoGame.TP
             if(colliderMisil.Intersects(detalles.getRock10Boxes()[index]))
             {
               recorridoMisil = 0f;
+              Instance = ExplosionMisil.CreateInstance();
+              Instance.Play();
             }
           }
           
@@ -443,6 +455,8 @@ namespace TGC.MonoGame.TP
             if(colliderMisil.Intersects(escenario.getColumnBoxes()[index]))
             {
               recorridoMisil = 0f;
+              Instance = ExplosionMisil.CreateInstance();
+              Instance.Stop();
             }
           }
           for (var index = 0; index < escenario.getParedBoxes().Length; index++)
@@ -450,6 +464,8 @@ namespace TGC.MonoGame.TP
             if(colliderMisil.Intersects(escenario.getParedBoxes()[index]))
             {
               recorridoMisil = 0f;
+              Instance = ExplosionMisil.CreateInstance();
+              Instance.Stop();
             }
           }
           for (var index = 0; index < escenario.getRampBoxes().Length; index++)
@@ -457,6 +473,8 @@ namespace TGC.MonoGame.TP
             if(colliderMisil.Intersects(escenario.getRampBoxes()[index]))
             {
               recorridoMisil = 0f;
+              Instance = ExplosionMisil.CreateInstance();
+              Instance.Stop();
             }
           }
           
@@ -752,6 +770,8 @@ namespace TGC.MonoGame.TP
             
       for(int i =0; i < MisilesWorld.Length; i++)
         TimersMisiles[i] = 0;
+
+      currentPowerUp = PowerUp.None;
     }
 
 

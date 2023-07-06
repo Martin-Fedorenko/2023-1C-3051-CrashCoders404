@@ -640,6 +640,18 @@
 /processorParam:Quality=Best
 /build:Sounds/car-crash.wav
 
+#begin Sounds/damage-received.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/damage-received.wav
+
+#begin Sounds/explosion-misil.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/explosion-misil.wav
+
 #begin Sounds/pickup-ametralladora.wav
 /importer:WavImporter
 /processor:SoundEffectProcessor
@@ -893,18 +905,6 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Textures/Vida/1 Corazon 4.png
-
-#begin Textures/Vida/1 Corazon.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:Textures/Vida/1 Corazon.png
 
 #begin Textures/Vida/1 Corazon.png
 /importer:TextureImporter

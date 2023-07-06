@@ -96,6 +96,9 @@ namespace TGC.MonoGame.TP
     private float[] CarsSpeeds;
     private Vector3[] DesplazamientoAutos;
     public Vector2[] AutosVelocidades;
+
+    private int BajasBalas = 0;
+    private int BajasMisil = 0;
     
     // Variables
     private float mediaVuelta = MathF.PI;
@@ -466,6 +469,7 @@ namespace TGC.MonoGame.TP
                     {
                         powerUps.recorridoBalas[i] = 0f;
                         vidaAutos[index] -= 50;
+                        if(vidaAutos[index] <= 0) BajasBalas++;
                     }
                 }
             }
@@ -479,6 +483,7 @@ namespace TGC.MonoGame.TP
                     {
                         powerUps.recorridoMisil = 0f;
                         vidaAutos[index] -= 100;
+                        if(vidaAutos[index] <= 0) BajasMisil++;
                     }
                 }
             }
@@ -495,8 +500,23 @@ namespace TGC.MonoGame.TP
                 AutosPosiciones[j] = obtenerSpawn();
               }
             }*/
-        }
 
+
+          //NO ANDA AYUDAAA
+          for (int j = 0; j < CollideCars.Length; j++)
+          {
+            if (CollideCars[i].Intersects(CollideCars[j]))
+            {
+              AutosVelocidades[i]*=-0.5f;
+              AutosVelocidades[j]*=-0.5f;
+
+              Vector3 vectorChoqueIA = Vector3.Zero;
+
+              AutosPosiciones[i] += vectorChoqueIA *penetration;
+              AutosPosiciones[j] += vectorChoqueIA *penetration;
+            }
+          }
+        }
         for(int i =0; i < vidaAutos.Length; i++)
         {
           if(vidaAutos[i] <= 0)
@@ -631,11 +651,16 @@ namespace TGC.MonoGame.TP
     {
       CarSpeed.X = 0;
     }
-    public float autoSpeed(){
-      return CarSpeed.X;
+    public int autoSpeed(){
+      return (int)CarSpeed.X;
     }
     public float prevSpeed(){
       return PreviousSpeed;
+    }
+
+    public int getAutoBajas()
+    {
+      return BajasBalas + BajasMisil;
     }
     public void autoEnPiso()
     {   
@@ -818,6 +843,8 @@ namespace TGC.MonoGame.TP
         CarDirection = AutoPrincipalWorld.Backward;
         Desplazamiento = Vector3.Zero;
         Rozamiento = CarSpeed.X * 0.5f;
+        BajasBalas = 0;
+        BajasMisil = 0;
 
 //MovimientoAuto
       CarSpeed = new Vector2(0f,0f);
@@ -983,5 +1010,7 @@ namespace TGC.MonoGame.TP
       }  
 
       }
+
+      
   }
 }
