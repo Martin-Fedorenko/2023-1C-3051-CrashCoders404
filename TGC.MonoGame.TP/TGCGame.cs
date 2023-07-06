@@ -149,11 +149,7 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
     private Vector2 autoPos;
     private bool dibujarGizmos = false;
     private Vector2 tamanioPantalla;
-    private Texture2D Corazon1;
-    private Texture2D Corazon2;
-    private Texture2D Corazon3;
-    private Texture2D Corazon4;
-
+    private Texture2D Corazon;
     //Variables
     private  Vector3 lightPosition = new Vector3(0.0f,100.0f,0.0f);
     private float timerMenu = 0f;
@@ -273,10 +269,7 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
       TexturaTire2 = Content.Load<Texture2D>(ContentFolderTextures + "tire2");
       TexturaMenu = Content.Load<Texture2D>(ContentFolderTextures + "backMenu");
       TexturaPowerUp = Content.Load<Texture2D>(ContentFolderTextures + "gold");
-      Corazon1 = Content.Load<Texture2D>(ContentFolderTextures + "Vida/1 Corazon");
-      Corazon2 = Content.Load<Texture2D>(ContentFolderTextures + "Vida/1 Corazon 2");
-      Corazon3 = Content.Load<Texture2D>(ContentFolderTextures + "Vida/1 Corazon 3");
-      Corazon4 = Content.Load<Texture2D>(ContentFolderTextures + "Vida/1 Corazon 4");
+      Corazon = Content.Load<Texture2D>(ContentFolderTextures + "Vida/1 Corazon");
 
       //Efectos
       Noise = Content.Load<Texture2D>(ContentFolderTextures + "perlin");
@@ -718,25 +711,25 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
       //CORREGIR DISPOSE DEJA CUADRADO NEGRO
       if(autos.vidaProtagonista >= 100){
         
-        SpriteBatch.Draw(Corazon4, new Vector2(tamanioPantalla.X * 0.90f, tamanioPantalla.Y * 0.9f), Color.WhiteSmoke);
+        SpriteBatch.Draw(Corazon, new Vector2(tamanioPantalla.X * 0.90f, tamanioPantalla.Y * 0.9f), Color.WhiteSmoke);
       }
 
       if(autos.vidaProtagonista >= 75)
       {
         //Corazon4.Dispose();
         
-        SpriteBatch.Draw(Corazon3, new Vector2(tamanioPantalla.X * 0.85f, tamanioPantalla.Y * 0.9f), Color.WhiteSmoke);
+        SpriteBatch.Draw(Corazon, new Vector2(tamanioPantalla.X * 0.85f, tamanioPantalla.Y * 0.9f), Color.WhiteSmoke);
       }
       if(autos.vidaProtagonista >= 50)
       {
         //Corazon3.Dispose();
        
-        SpriteBatch.Draw(Corazon2, new Vector2(tamanioPantalla.X * 0.80f, tamanioPantalla.Y * 0.9f), Color.WhiteSmoke);
+        SpriteBatch.Draw(Corazon, new Vector2(tamanioPantalla.X * 0.80f, tamanioPantalla.Y * 0.9f), Color.WhiteSmoke);
       }
       if(autos.vidaProtagonista >= 25)
       {
         //Corazon2.Dispose();
-        SpriteBatch.Draw(Corazon1, new Vector2(tamanioPantalla.X * 0.75f, tamanioPantalla.Y * 0.9f), Color.WhiteSmoke);
+        SpriteBatch.Draw(Corazon, new Vector2(tamanioPantalla.X * 0.75f, tamanioPantalla.Y * 0.9f), Color.WhiteSmoke);
       }
 
       }
