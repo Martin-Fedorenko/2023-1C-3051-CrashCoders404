@@ -622,11 +622,8 @@ namespace TGC.MonoGame.TP
       effect.Parameters["colorBloom"]?.SetValue(Color.White.ToVector3());
       dibujarAutoDeportivo(view, projection, effect, AutoDeportivo,frontWheelRotation, WheelRotationPrincipal, AutoPrincipalWorld, tecnica);
 
-      //dibujarAuto(view, projection, effect, AutoDeportivo, WheelRotationPrincipal, AutoPrincipalWorld);
-
       for (int index = 0; index < AutosWorld.Length; index++)
       {
-
         if (index < 5)  dibujarAutoDeportivo(view, projection, effect, AutoDeportivo, frontWheelRotationIA[index], 0f,AutosWorld[index], tecnica);
         else dibujarAutoDeCombate(view, projection, effect, AutoDeCombate, frontWheelRotationIA[index], 0f,AutosWorld[index], tecnica);
       }

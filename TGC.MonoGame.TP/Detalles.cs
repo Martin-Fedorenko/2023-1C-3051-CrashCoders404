@@ -19,41 +19,12 @@ namespace TGC.MonoGame.TP
         private Model Tire { get; set; }
 
         private Matrix[] TreesWorld;
-        private Matrix[] RocksWorld;
+        private Matrix[] Rocks1World;
+        private Matrix[] Rocks5World;
+        private Matrix[] Rocks10World;
         private Matrix[] TiresWorld;
 
-        private Matrix Rock1World { get; set; }
-        private Matrix Rock2World { get; set; }
-        private Matrix Rock3World { get; set; }
-        private Matrix Rock4World { get; set; }
-        private Matrix Rock5World { get; set; }
-        private Matrix Rock6World { get; set; }
-        private Matrix Rock7World { get; set; }
-        private Matrix Rock8World { get; set; }
-        private Matrix Rock9World { get; set; }
-        private Matrix Rock10World { get; set; }
-        private Matrix Rock11World { get; set; }
-        private Matrix Rock12World { get; set; }
-        private Matrix Rock13World { get; set; }
-        private Matrix Rock14World { get; set; }
-        private Matrix Rock15World { get; set; }
-        private Matrix Rock16World { get; set; }
-        private Matrix Rock17World { get; set; }
-        private Matrix Rock18World { get; set; }
-        private Matrix Rock19World { get; set; }
-        private Matrix Rock20World { get; set; }
-        private Matrix Rock21World { get; set; }
-        private Matrix Rock22World { get; set; }
-        private Matrix Rock23World { get; set; }
-        private Matrix Rock24World { get; set; }
-        private Matrix Rock25World { get; set; }
-        private Matrix Rock26World { get; set; }
-        private Matrix Rock27World { get; set; }
-        private Matrix Rock28World { get; set; }
-        private Matrix Rock29World { get; set; }
-        private Matrix Rock30World { get; set; }
-        private Matrix Rock31World { get; set; }
-        private Matrix Rock32World { get; set; }
+    
 
         // "Tire" del lado más cerca del origen de la rampa Rampa1World
         private Matrix Tire1World { get; set; }
@@ -306,48 +277,51 @@ namespace TGC.MonoGame.TP
 
 
             //Piedras
-            RocksWorld = new Matrix[] //rock 8 no existe
+            Rocks1World = new Matrix[]
             {
-                //Rock1 Model = [0,6]
-                //Roc5 Model = [7,12], 15, 16, 19, 20, [23,31]
-                //Rock10 Model = 13, 14,  17, 18, 21, 22
-            Matrix.CreateScale(0.05f) * Matrix.CreateRotationY(cuartoDeVuelta) * Matrix.CreateTranslation(Rock1Position), 
-            Matrix.CreateScale(0.05f) * Matrix.CreateRotationY(cuartoDeVuelta) * Matrix.CreateTranslation(Rock2Position),
-            Matrix.CreateScale(0.05f) * Matrix.CreateRotationY(cuartoDeVuelta) * Matrix.CreateTranslation(Rock3Position),
-            Matrix.CreateScale(0.05f) * Matrix.CreateRotationY(cuartoDeVuelta) * Matrix.CreateTranslation(Rock4Position),
+                Matrix.CreateScale(0.05f) * Matrix.CreateRotationY(cuartoDeVuelta) * Matrix.CreateTranslation(Rock1Position), 
+                Matrix.CreateScale(0.05f) * Matrix.CreateRotationY(cuartoDeVuelta) * Matrix.CreateTranslation(Rock2Position),
+                Matrix.CreateScale(0.05f) * Matrix.CreateRotationY(cuartoDeVuelta) * Matrix.CreateTranslation(Rock3Position),
+                Matrix.CreateScale(0.05f) * Matrix.CreateRotationY(cuartoDeVuelta) * Matrix.CreateTranslation(Rock4Position),
 
-            Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(Rock5Position),
-            Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(Rock6Position),
-            Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(Rock7Position),
-            Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(Rock8Position),
-
-            Matrix.CreateScale(0.1f) * Matrix.CreateRotationY(MathF.PI / 8) * Matrix.CreateTranslation(Rock9Position),
-            Matrix.CreateScale(0.1f) * Matrix.CreateRotationY(MathF.PI / 8) * Matrix.CreateTranslation(Rock10Position),
-            Matrix.CreateScale(0.1f) * Matrix.CreateRotationY(MathF.PI / 8) * Matrix.CreateTranslation(Rock11Position),
-            Matrix.CreateScale(0.1f) * Matrix.CreateRotationY(MathF.PI / 8) * Matrix.CreateTranslation(Rock12Position),
-
-            Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(Rock13Position),
-            Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(Rock14Position),
-            Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(Rock15Position),
-            Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(Rock16Position),
-            Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(Rock17Position),
-            Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(Rock18Position),
-            Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(Rock19Position),
-            Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(Rock20Position),
-            Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(Rock21Position),
-            Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(Rock22Position),
-            Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(Rock23Position),
-            Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(Rock24Position),
-
-            Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(Rock25Position),
-            Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(Rock26Position),
-            Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(Rock27Position),
-            Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(Rock28Position),
-            Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(Rock29Position),
-            Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(Rock30Position),
-            Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(Rock31Position),
-            Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(Rock32Position)
+                Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(Rock5Position),
+                Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(Rock6Position),
+                Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(Rock7Position)
             };
+
+            Rocks5World = new Matrix[]
+            {
+                Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(Rock8Position),
+                Matrix.CreateScale(0.1f) * Matrix.CreateRotationY(MathF.PI / 8) * Matrix.CreateTranslation(Rock9Position),
+                Matrix.CreateScale(0.1f) * Matrix.CreateRotationY(MathF.PI / 8) * Matrix.CreateTranslation(Rock10Position),
+                Matrix.CreateScale(0.1f) * Matrix.CreateRotationY(MathF.PI / 8) * Matrix.CreateTranslation(Rock11Position),
+                Matrix.CreateScale(0.1f) * Matrix.CreateRotationY(MathF.PI / 8) * Matrix.CreateTranslation(Rock12Position),
+                Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(Rock13Position),
+                Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(Rock16Position),
+                Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(Rock17Position),
+                Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(Rock20Position),
+                Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(Rock21Position),
+                Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(Rock24Position),
+                Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(Rock25Position),
+                Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(Rock26Position),
+                Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(Rock27Position),
+                Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(Rock28Position),
+                Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(Rock29Position),
+                Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(Rock30Position),
+                Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(Rock31Position),
+                Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(Rock32Position)
+            };
+
+            Rocks10World = new Matrix[]
+            {
+                Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(Rock14Position),
+                Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(Rock15Position),
+                Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(Rock18Position),
+                Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(Rock19Position),
+                Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(Rock22Position),
+                Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(Rock23Position)
+            };
+
 
             //Tires
             posicionRuedas = new Vector3[]
@@ -481,10 +455,6 @@ namespace TGC.MonoGame.TP
 
             Rock10Box = BoundingVolumesExtensions.CreateAABBFrom(Rock10);
             Rock10Box = BoundingVolumesExtensions.Scale(Rock10Box, new Vector3(0.05f));
-
-            //Rock1 Model = [0,6]
-            //Roc5 Model = [7,12], 15, 16, 19, 20, [23,31]
-            //Rock10 Model = 13, 14, 17, 18, 21, 22
 
             Rock1Boxes = new BoundingBox[] 
             {
@@ -698,45 +668,41 @@ namespace TGC.MonoGame.TP
         }
 
         
-        public void dibujarDetalles(Matrix view,Matrix projection,Effect effect, String tecnica)
+        public void dibujarDetalles(Matrix view,Matrix projection,Effect effect, String tecnica, BoundingFrustum frustum)
         {   
 
             effect.CurrentTechnique = effect.Techniques[tecnica];
             for(int index = 0; index < TreesWorld.Length; index++)
             {
-                dibujarArboles(view,projection,effect,TreesWorld[index], Tree, TexturaArbol);
+                if(frustum.Intersects(TreeBoxes[index]))
+                    dibujarArboles(view,projection,effect,TreesWorld[index], Tree, TexturaArbol);
             }
 
 
-            for(int index = 0; index < RocksWorld.Length; index++)
+            for(int index = 0; index < Rocks1World.Length; index++)
             {
-                if(index < 7)
-                    dibujar(view,projection,effect,RocksWorld[index], Rock1, TexturaRoca);
-                else if(index < 13 )
-                   dibujar(view,projection,effect,RocksWorld[index], Rock5, TexturaRoca);
-                else if(index < 15)
-                     dibujar(view,projection,effect,RocksWorld[index], Rock10, TexturaRoca);
-                else if(index < 17)
-                   dibujar(view,projection,effect,RocksWorld[index], Rock5, TexturaRoca);
-                else if(index < 19)
-                    dibujar(view,projection,effect,RocksWorld[index], Rock10, TexturaRoca);
-                else if(index < 21)
-                    dibujar(view,projection,effect,RocksWorld[index], Rock5, TexturaRoca);
-                else if(index < 23)
-                    dibujar(view,projection,effect,RocksWorld[index], Rock10, TexturaRoca);
-                else if(index >= 23)
-                    dibujar(view,projection,effect,RocksWorld[index], Rock5, TexturaRoca);
-
-                //Rock1 Model = [0,6]
-                //Roc5 Model = [7,12], 15, 16, 19, 20, [23,31]
-                //Rock10 Model = 13, 14,  17, 18, 21, 22
+                if(frustum.Intersects(Rock1Boxes[index]))
+                        dibujar(view,projection,effect,Rocks1World[index], Rock1, TexturaRoca);
+            }
+            for(int index = 0; index < Rocks5World.Length; index++)
+            {
+                if(frustum.Intersects(Rock5Boxes[index]))
+                    dibujar(view,projection,effect,Rocks5World[index], Rock5, TexturaRoca);
+            }
+            for(int index = 0; index < Rocks10World.Length; index++)
+            {
+                if(frustum.Intersects(Rock10Boxes[index]))
+                    dibujar(view,projection,effect,Rocks10World[index], Rock10, TexturaRoca);
             }
 
             for (int index = 0; index < TiresWorld.Length; index++)
             {
-                dibujar(view,projection,effect,TiresWorld[index], Tire, TexturaTire1);
-                index++;
-                dibujar(view,projection,effect,TiresWorld[index], Tire, TexturaTire2);
+                if(frustum.Intersects(TireBoxes[index]))
+                {
+                    dibujar(view,projection,effect,TiresWorld[index], Tire, TexturaTire1);
+                    index++;
+                    dibujar(view,projection,effect,TiresWorld[index], Tire, TexturaTire2);
+                }
             }
         }
 

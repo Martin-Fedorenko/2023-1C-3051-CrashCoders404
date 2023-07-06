@@ -412,36 +412,41 @@ public void dibujar(Matrix view, Matrix projection, Effect effect, Matrix matriz
       dibujar(view, projection, effect, Matrix.CreateScale(800, 1, 800)*Matrix.CreateTranslation(0,-100,0), Piso, TexturaPiso);
     }
 
-    public void dibujarEscenario(Matrix view, Matrix projection, Effect effect, Boolean pisoOn, String tecnica)
+    public void dibujarEscenario(Matrix view, Matrix projection, Effect effect, Boolean pisoOn, String tecnica, BoundingFrustum frustum)
     {
 
       effect.CurrentTechnique = effect.Techniques[tecnica];
+
       //Arena
-      if(pisoOn)
+      if(frustum.Intersects(PisoBox))
         dibujar(view, projection, effect, PisoWorld, Piso, TexturaPiso);
       
       //Paredes
       for(int index = 0; index < ParedWorld.Length; index++)
       {
-        dibujar(view,projection,effect,ParedWorld[index], Pared, TexturaPared);
+        if(frustum.Intersects(ParedBoxes[index]))
+          dibujar(view,projection,effect,ParedWorld[index], Pared, TexturaPared);
       }
 
       //Plataformas
       for(int index = 0; index < PlatformWorld.Length; index++)
       {
-        dibujar(view,projection,effect,PlatformWorld[index], Platform, TexturaPlataforma);
+        if(frustum.Intersects(PlatformBoxes[index]))
+          dibujar(view,projection,effect,PlatformWorld[index], Platform, TexturaPlataforma);
       }
 
       //Columnas
       for(int index = 0; index < ColumnWorld.Length; index++)
       {
-        dibujar(view,projection,effect,ColumnWorld[index], Column, TexturaColumna);
+        if(frustum.Intersects(ColumnBoxes[index]))
+          dibujar(view,projection,effect,ColumnWorld[index], Column, TexturaColumna);
       }
       
       //ColumnasRotas
       for(int index = 0; index < BrokenColumnWorld.Length; index++)
       {
-        dibujar(view,projection,effect,BrokenColumnWorld[index], Column, TexturaColumna);
+        if(frustum.Intersects(BrokenColumnBoxes[index]))
+          dibujar(view,projection,effect,BrokenColumnWorld[index], Column, TexturaColumna);
       }
 
       //Rampas

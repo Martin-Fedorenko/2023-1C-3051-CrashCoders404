@@ -159,6 +159,9 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
     private  Vector3 lightPosition = new Vector3(0.0f,100.0f,0.0f);
     private float timerMenu = 0f;
 
+    //Optimizaciones
+    BoundingFrustum boundingFrustum;
+
     protected override void Initialize()
     {
       gizmos = new Gizmos();
@@ -192,6 +195,8 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
       // Cámara con vista isométrica
       View = Matrix.CreateLookAt(posicionCamara, autos.posAutoPrincipal(), Vector3.Up);
       Projection = Matrix.CreateOrthographic(400, 300, -80, 1000);
+
+      boundingFrustum = new BoundingFrustum(View * Projection);
       
       base.Initialize();
     }
@@ -445,6 +450,8 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
             AutoShader.Parameters["Time"]?.SetValue(Time);
             //Console.WriteLine(autos.directionAutoPrincipal());
 
+
+            boundingFrustum.Matrix = View * Projection;
             if(autos.muereProta())
             {
               MediaPlayer.Stop();
@@ -629,9 +636,9 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
                 GraphicsDevice.SetRenderTarget(EnvironmentMapRenderTarget, face);
                 GraphicsDevice.Clear(ClearOptions.Target | ClearOptions.DepthBuffer, Color.Black, 1f, 0);
                 
-                escenario.dibujarEscenario(View, Projection, AutoShader, true, "Luz");
-                detalles.dibujarDetalles(View, Projection, AutoShader, "Luz");
-                powerUps.dibujarPowerUps(View, Projection, AutoShader,"Luz");
+                escenario.dibujarEscenario(View, Projection, AutoShader, true, "Luz",boundingFrustum);
+                detalles.dibujarDetalles(View, Projection, AutoShader, "Luz",boundingFrustum);
+                powerUps.dibujarPowerUps(View, Projection, AutoShader,"Luz",boundingFrustum);
                 autos.dibujarAutos(View, Projection, AutoShader, "Luz"); 
           }
           #endregion
@@ -642,9 +649,9 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
             GraphicsDevice.SetRenderTarget(MainSceneRenderTarget);
             GraphicsDevice.Clear(ClearOptions.Target | ClearOptions.DepthBuffer, Color.Black, 1f, 0);
 
-            escenario.dibujarEscenario(View, Projection, AutoShader, true, "Luz");
-            detalles.dibujarDetalles(View, Projection, AutoShader, "Luz");
-            powerUps.dibujarPowerUps(View, Projection, AutoShader, "Luz");
+            escenario.dibujarEscenario(View, Projection, AutoShader, true, "Luz",boundingFrustum);
+            detalles.dibujarDetalles(View, Projection, AutoShader, "Luz",boundingFrustum);
+            powerUps.dibujarPowerUps(View, Projection, AutoShader, "Luz",boundingFrustum);
             
             autos.dibujarAutos(View, Projection, AutoShader, "Reflejo");
 
@@ -654,9 +661,9 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
             GraphicsDevice.SetRenderTarget(FirstPassBloomRenderTarget);
             GraphicsDevice.Clear(ClearOptions.Target | ClearOptions.DepthBuffer, Color.Black, 1f, 0);
             autos.dibujarAutos(View, Projection, AutoShader, "Bloom");
-            escenario.dibujarEscenario(View, Projection, AutoShader, true, "BloomNegro");
-            detalles.dibujarDetalles(View, Projection, AutoShader, "BloomNegro");
-            powerUps.dibujarPowerUps(View, Projection, AutoShader, "BloomPowerUp");
+            escenario.dibujarEscenario(View, Projection, AutoShader, true, "BloomNegro",boundingFrustum);
+            detalles.dibujarDetalles(View, Projection, AutoShader, "BloomNegro",boundingFrustum);
+            powerUps.dibujarPowerUps(View, Projection, AutoShader, "BloomPowerUp",boundingFrustum);
             
           #endregion
 
@@ -701,14 +708,17 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
           powerUps.dibujarPowerUps(View, Projection, AutoShader);
           autos.dibujarAutos(View, Projection, AutoShader);*/
 
+
+          if(dibujarGizmos)
+          {
           autos.dibujarBoundingBoxes(gizmos); //OBB de autos deportivos bien ubicadas
           detalles.dibujarBoundingBoxes(gizmos); //BB de arboles bien ubicadas
           escenario.dibujarBoundingBoxes(gizmos); //BB de plataformas bien ubicadas
           powerUps.dibujarBoundingBoxes(gizmos); //BB Bien ubicadas
 
-          if(dibujarGizmos)
-          {
-            gizmos.Draw();
+          gizmos.DrawFrustum(View * Projection, Color.Red);
+
+          gizmos.Draw();
           }
           SpriteBatch.End(); //si lo ponemos antes de dibujar los modelos, los autos y el piso se dibujan translucidos 
           break;
