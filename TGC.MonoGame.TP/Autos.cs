@@ -612,7 +612,7 @@ namespace TGC.MonoGame.TP
     public void dibujarAutosMenu(Matrix view, Matrix projection, Effect effect, float timerMenu)
     {
       
-       effect.Parameters["lightPosition"]?.SetValue(new Vector3(0.0f,100.0f,0.0f));
+       //effect.Parameters["lightPosition"]?.SetValue(new Vector3(0.0f,100.0f,0.0f));
        dibujarAutoDeportivo(view, projection, effect, AutoDeportivo, timerMenu, 0, autoMenu, "Luz");
        dibujarAutoDeCombate(view, projection, effect, AutoDeCombate, timerMenu,0, autoMenu2, "Luz");
        dibujarAutoDeportivo(view, projection, effect, AutoDeportivo, timerMenu ,0, autoMenu3, "Luz");

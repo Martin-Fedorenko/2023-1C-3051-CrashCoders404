@@ -252,7 +252,7 @@ float4 PintarRuedasPS(VertexShaderOutput input) : COLOR
 {
     float4 texelColor = tex2D(textureSampler, input.TextureCoordinate);
     if((texelColor.r+texelColor.g+texelColor.b)/3>0.1){
-        texelColor = lerp(float4(1.0, 0.0, 0.0, 1.0), texelColor, 0.4);
+        texelColor = lerp(float4(1.0, 0.0, 0.0, 1.0), texelColor, 0.6);
     }
 
     return texelColor;
