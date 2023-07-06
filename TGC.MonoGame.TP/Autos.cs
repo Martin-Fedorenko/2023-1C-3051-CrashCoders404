@@ -576,6 +576,9 @@ namespace TGC.MonoGame.TP
       int index = 0;
       foreach (var mesh in modelo.Meshes)
       {
+        if(mesh.ParentBone.Index>=2){
+          effect.CurrentTechnique = effect.Techniques["PintarRuedas"];
+        }
         wheelDerecha1.Transform = Matrix.CreateRotationZ(-fronRot) * Matrix.CreateRotationY(WheelRot) * wheelDerecha1Transform;
         wheelDerecha2.Transform =  Matrix.CreateRotationZ(-fronRot) * Matrix.CreateRotationY(WheelRot) * wheelDerecha2Transform;
         wheelDerecha3.Transform = Matrix.CreateRotationZ(-fronRot) * wheelDerecha3Transform;
@@ -611,7 +614,7 @@ namespace TGC.MonoGame.TP
       
        effect.Parameters["lightPosition"]?.SetValue(new Vector3(0.0f,100.0f,0.0f));
        dibujarAutoDeportivo(view, projection, effect, AutoDeportivo, timerMenu, 0, autoMenu, "Luz");
-       dibujarAutoDeportivo(view, projection, effect, AutoDeCombate, timerMenu,0, autoMenu2, "Luz");
+       dibujarAutoDeCombate(view, projection, effect, AutoDeCombate, timerMenu,0, autoMenu2, "Luz");
        dibujarAutoDeportivo(view, projection, effect, AutoDeportivo, timerMenu ,0, autoMenu3, "Luz");
     }
     public void dibujarAutos(Matrix view, Matrix projection, Effect effect, String tecnica)
