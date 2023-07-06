@@ -742,6 +742,17 @@ namespace TGC.MonoGame.TP
       return currentPowerUp.ToString();
     }
 
+    public void iniciarPartida()
+    {
+      for(int i =0; i < TurbosWorld.Length; i++)
+        TimersTurbos[i] = 0;
+      
+      for(int i =0; i < AmetralladorasWorld.Length; i++)
+        TimersAmetralladoras[i] = 0;
+            
+      for(int i =0; i < MisilesWorld.Length; i++)
+        TimersMisiles[i] = 0;
+    }
 
 
     

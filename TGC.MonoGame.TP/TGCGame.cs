@@ -128,7 +128,6 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
     private Texture2D TexturaPowerUp;
     private Texture2D Noise;
     private Texture2D TexturaAuxiliar;
-    private Texture2D VidaCompleta;
 
     //efectos
     private RenderTargetCube EnvironmentMapRenderTarget { get; set; }
@@ -145,6 +144,10 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
     private Vector2 autoPos;
     private bool dibujarGizmos = false;
     private Vector2 tamanioPantalla;
+    private Texture2D Corazon1;
+    private Texture2D Corazon2;
+    private Texture2D Corazon3;
+    private Texture2D Corazon4;
 
     //Variables
     private  Vector3 lightPosition = new Vector3(0.0f,100.0f,0.0f);
@@ -170,20 +173,20 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
       escenario = new Escenario();
       powerUps = new PowerUps();
       autos = new Autos();
-      //vida = new SistemaDeVida();
+
 
       escenario.Initialize();
       detalles.Initialize();
       powerUps.Initialize(GraphicsDevice);
       autos.Initialize();
-      //vida.Initialize();
+
 
       //CAMARA
       //Camera = new SimpleCamera(GraphicsDevice.Viewport.AspectRatio, new Vector3(40, 60, 150), 55, 0.4f);
       // Cámara con vista isométrica
       View = Matrix.CreateLookAt(posicionCamara, autos.posAutoPrincipal(), Vector3.Up);
       Projection = Matrix.CreateOrthographic(400, 300, -80, 1000);
-
+      
       base.Initialize();
     }
 
@@ -285,9 +288,10 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
       TexturaTire2 = Content.Load<Texture2D>(ContentFolderTextures + "tire2");
       TexturaMenu = Content.Load<Texture2D>(ContentFolderTextures + "backMenu");
       TexturaPowerUp = Content.Load<Texture2D>(ContentFolderTextures + "gold");
-      VidaCompleta = Content.Load<Texture2D>(ContentFolderTextures + "vida completa");
-
-     //AutoShader.Parameters["shininess"]?.SetValue(2f);
+      Corazon1 = Content.Load<Texture2D>(ContentFolderTextures + "Vida/1 Corazon");
+      Corazon2 = Content.Load<Texture2D>(ContentFolderTextures + "Vida/1 Corazon 2");
+      Corazon3 = Content.Load<Texture2D>(ContentFolderTextures + "Vida/1 Corazon 3");
+      Corazon4 = Content.Load<Texture2D>(ContentFolderTextures + "Vida/1 Corazon 4");
       
 
       escenario.LoadContent(Piso, Pared, Column, Ramp, Platform, TexturaPiso, TexturaPared, TexturaColumna, TexturaRampa, TexturaPlataforma);
@@ -442,6 +446,7 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
             //this.UnloadContent();
             Thread.Sleep(500);
             autos.iniciarPartida();
+            powerUps.iniciarPartida();
             View = Matrix.CreateLookAt(posicionCamara, autos.posAutoPrincipal(), Vector3.Up);
             Projection = Matrix.CreateOrthographic(400, 300, -80, 1000);
             totalGameTime = 0;
@@ -465,66 +470,62 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
     {
       GraphicsDevice.Clear(Color.LightYellow);
       GraphicsDevice.DepthStencilState = DepthStencilState.Default; //sin esto los autos se ven translucidos y el piso tambien
-
+      Vector2 tamanioPantalla = new Vector2(GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height);
 
       switch (status)
       {
         case ST_COUNTDOWN_3:          
           GraphicsDevice.Clear(Color.Black);
-          DrawCenterTextY("3", 300, 10);
+          DrawCenterTextY("3", tamanioPantalla.Y * 0.3f, 10);
           break;
 
         case ST_COUNTDOWN_2:
           GraphicsDevice.Clear(Color.Black);
-          DrawCenterTextY("2", 300, 10);
+          DrawCenterTextY("2", tamanioPantalla.Y * 0.3f, 10);
           break;
 
         case ST_COUNTDOWN_1:
           GraphicsDevice.Clear(Color.Black);
-          DrawCenterTextY("1", 300, 10);
+          DrawCenterTextY("1", tamanioPantalla.Y * 0.3f, 10);
           break;
 
         case ST_COUNTDOWN_GO:
           GraphicsDevice.Clear(Color.Black);
-          DrawCenterTextY("GO!", 300, 10);
+          DrawCenterTextY("GO!", tamanioPantalla.Y * 0.3f, 10);
           break;
 
-        case ST_PRESENTACION: //NO SE PORQUE LOS COCHES DESAPARECEN CUANDO SE VUELVE A CARGAR LA PRESENTACION
+        case ST_PRESENTACION: 
           autos.dibujarAutosMenu(View,Projection,AutoShader,timerMenu);
           escenario.dibujarPiso(View,Projection,AutoShader);
-          SpriteBatch.Begin();
-          SpriteBatch.DrawString(font, "CRASH CODERS 404", new Vector2(tamanioPantalla.X * 0.9f, tamanioPantalla.Y * 0.95f), Color.WhiteSmoke); 
-          //DrawCenterTextY("CRASH CODERS 404 ", 100, 4);
-          //DrawCenterTextY("C -> CONTROLES", 400, 2);
-          //DrawCenterTextY("G -> GOD MODE", 500, 2);
-          //DrawCenterTextY("ENTER -> COMENZAR", 600, 2);
-          //DrawRightText("ESC -> SALIR", 900, 1);
-          SpriteBatch.End();
+          DrawCenterTextY("CRASH CODERS 404 ", tamanioPantalla.X * 0f, 4);
+          DrawCenterTextY("C -> CONTROLES", tamanioPantalla.X * 0.2f, 2);
+          DrawCenterTextY("G -> GOD MODE", tamanioPantalla.X * 0.3f, 2);
+          DrawCenterTextY("ENTER -> COMENZAR", tamanioPantalla.X * 0.4f, 2);
+          DrawRightText("ESC -> SALIR", tamanioPantalla.X * 0.6f, 1);
           break;
 
         case ST_CONTROLES:
-          /*DrawCenterTextY("CONTROLES", 100, 4);
-          DrawCenterTextY("W -> AVANZAR", 300, 3);
-          DrawCenterTextY("S -> RETROCEDER", 400, 3);
-          DrawCenterTextY("D -> ROTAR DERECHA", 500, 3);
-          DrawCenterTextY("A -> ROTAR IZQUIERDA", 600, 3);
-          DrawCenterTextY("SPACE -> SALTAR", 700, 3);
-          DrawRightText("B -> VOLVER AL MENU", 900, 1);*/
+          DrawCenterTextY("CONTROLES", tamanioPantalla.Y * 0f, 4);
+          DrawCenterTextY("W -> AVANZAR", tamanioPantalla.Y * 0.2f, 3);
+          DrawCenterTextY("S -> RETROCEDER", tamanioPantalla.Y * 0.3f, 3);
+          DrawCenterTextY("D -> ROTAR DERECHA", tamanioPantalla.Y * 0.4f, 3);
+          DrawCenterTextY("A -> ROTAR IZQUIERDA", tamanioPantalla.Y * 0.5f, 3);
+          DrawCenterTextY("SPACE -> SALTAR", tamanioPantalla.Y * 0.65f, 3);
+          DrawRightText("B -> VOLVER AL MENU", tamanioPantalla.Y *0.95f, 1);
           break;
 
         case ST_DERROTA:          
           GraphicsDevice.Clear(Color.Black);
-          DrawCenterTextY("GAME OVER", 300, 10);
+          DrawCenterTextY("GAME OVER", tamanioPantalla.Y *0.5f, 10);
+          DrawRightText("Has Sobrevivido " + ((int)totalGameTime).ToString() + " Segundos",tamanioPantalla.Y *0.95f, 1);
           break;
 
         case ST_JUEGO:
-
-        //Vector2 tamanioPantalla = new Vector2(GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height);
           SpriteBatch.Begin();
-          SpriteBatch.DrawString(font, "Tiempo:" + ((int)totalGameTime).ToString(), new Vector2(100f, 100f), Color.WhiteSmoke);
+          SpriteBatch.DrawString(font, "Tiempo:" + ((int)totalGameTime).ToString(), new Vector2(tamanioPantalla.X * 0f, tamanioPantalla.Y * 0f), Color.WhiteSmoke);
           SpriteBatch.DrawString(font, "Velocidad:" + (autos.autoSpeed().ToString()), new Vector2(tamanioPantalla.X * 0.5f, tamanioPantalla.Y * 0f), Color.WhiteSmoke);
           SpriteBatch.DrawString(font, "PowerUp:" + (powerUps.powerUpActual()), new Vector2(tamanioPantalla.X * 0.85f, tamanioPantalla.Y * 0.9f), Color.WhiteSmoke);
-          SpriteBatch.DrawString(font, "Vida:" + (autos.getVidaProta()), new Vector2(tamanioPantalla.X * 0.9f, tamanioPantalla.Y * 0.95f), Color.WhiteSmoke); 
+          dibujarCorazones(tamanioPantalla);
           
           #region Pass 1-6
 
@@ -658,5 +659,30 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
       SpriteBatch.DrawString(font, msg, new Vector2(0, 0), Color.YellowGreen);
       SpriteBatch.End();
     }
+
+    public void dibujarCorazones(Vector2 tamanioPantalla)
+    {
+      SpriteBatch.Draw(Corazon1, new Vector2(tamanioPantalla.X * 0.75f, tamanioPantalla.Y * 0.9f), Color.WhiteSmoke);
+      SpriteBatch.Draw(Corazon2, new Vector2(tamanioPantalla.X * 0.80f, tamanioPantalla.Y * 0.9f), Color.WhiteSmoke);
+      SpriteBatch.Draw(Corazon3, new Vector2(tamanioPantalla.X * 0.85f, tamanioPantalla.Y * 0.9f), Color.WhiteSmoke);
+      SpriteBatch.Draw(Corazon4, new Vector2(tamanioPantalla.X * 0.90f, tamanioPantalla.Y * 0.9f), Color.WhiteSmoke);
+      
+      //CORREGIR DISPOSE DEJA CUADRADO NEGRO
+      if(autos.vidaProtagonista <= 75)
+      {
+        Corazon4.Dispose();
+      }
+      if(autos.vidaProtagonista <= 50)
+      {
+        Corazon3.Dispose();
+      }
+      if(autos.vidaProtagonista <= 25)
+      {
+        Corazon2.Dispose();
+      }
+
+      }
+
+
   }
 }

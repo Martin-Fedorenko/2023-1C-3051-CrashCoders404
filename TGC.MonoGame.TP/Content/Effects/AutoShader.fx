@@ -105,17 +105,6 @@ sampler2D auxiliarTextureSampler = sampler_state
     AddressV = Wrap;
 };
 
-texture overlayTexture;
-sampler2D overlayTextureSampler = sampler_state
-{
-	Texture = (overlayTexture);
-    MagFilter = Linear;
-    MinFilter = Linear;
-    AddressU = Clamp;
-    AddressV = Clamp;
-};
-
-
 
 #define PI 3.1415926535898
 
@@ -276,15 +265,6 @@ float4 IntegrarPS(in VertexShaderOutput input) : COLOR
     
 }
 
-float4 MergePS(VertexShaderOutput input) : COLOR
-{
-    float4 baseColor = tex2D(textureSampler, input.TextureCoordinate);
-	float4 overlayColor = tex2D(overlayTextureSampler, input.TextureCoordinate);
-
-	float4 finalColor = baseColor * overlayColor;
-    
-    return finalColor;
-}
 
 float4 PintarRuedasPS(VertexShaderOutput input) : COLOR
 {
@@ -296,14 +276,7 @@ float4 PintarRuedasPS(VertexShaderOutput input) : COLOR
     return texelColor;
 }
 
-technique Merge
-{
-    pass Pass0
-    {
-		VertexShader = compile VS_SHADERMODEL MainVS();
-		PixelShader = compile PS_SHADERMODEL MergePS();
-	}
-}
+
 
 technique Luz
 {
