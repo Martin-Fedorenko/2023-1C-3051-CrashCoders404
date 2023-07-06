@@ -700,9 +700,14 @@ namespace TGC.MonoGame.TP
                 if(frustum.Intersects(TireBoxes[index]))
                 {
                     dibujar(view,projection,effect,TiresWorld[index], Tire, TexturaTire1);
+                }
                     index++;
+                
+                if(frustum.Intersects(TireBoxes[index]))
+                {
                     dibujar(view,projection,effect,TiresWorld[index], Tire, TexturaTire2);
                 }
+                
             }
         }
 
