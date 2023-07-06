@@ -671,22 +671,29 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
 
     public void dibujarCorazones(Vector2 tamanioPantalla)
     {
-      SpriteBatch.Draw(Corazon1, new Vector2(tamanioPantalla.X * 0.75f, tamanioPantalla.Y * 0.9f), Color.WhiteSmoke);
-      SpriteBatch.Draw(Corazon2, new Vector2(tamanioPantalla.X * 0.80f, tamanioPantalla.Y * 0.9f), Color.WhiteSmoke);
-      SpriteBatch.Draw(Corazon3, new Vector2(tamanioPantalla.X * 0.85f, tamanioPantalla.Y * 0.9f), Color.WhiteSmoke);
-      SpriteBatch.Draw(Corazon4, new Vector2(tamanioPantalla.X * 0.90f, tamanioPantalla.Y * 0.9f), Color.WhiteSmoke);
+      
       //CORREGIR DISPOSE DEJA CUADRADO NEGRO
-      if(autos.vidaProtagonista <= 75)
-      {
-        Corazon4.Dispose();
+      if(autos.vidaProtagonista >= 100){
+        
+        SpriteBatch.Draw(Corazon4, new Vector2(tamanioPantalla.X * 0.90f, tamanioPantalla.Y * 0.9f), Color.WhiteSmoke);
       }
-      if(autos.vidaProtagonista <= 50)
+
+      if(autos.vidaProtagonista >= 75)
       {
-        Corazon3.Dispose();
+        //Corazon4.Dispose();
+        
+        SpriteBatch.Draw(Corazon3, new Vector2(tamanioPantalla.X * 0.85f, tamanioPantalla.Y * 0.9f), Color.WhiteSmoke);
       }
-      if(autos.vidaProtagonista <= 25)
+      if(autos.vidaProtagonista >= 50)
       {
-        Corazon2.Dispose();
+        //Corazon3.Dispose();
+       
+        SpriteBatch.Draw(Corazon2, new Vector2(tamanioPantalla.X * 0.80f, tamanioPantalla.Y * 0.9f), Color.WhiteSmoke);
+      }
+      if(autos.vidaProtagonista >= 25)
+      {
+        //Corazon2.Dispose();
+        SpriteBatch.Draw(Corazon1, new Vector2(tamanioPantalla.X * 0.75f, tamanioPantalla.Y * 0.9f), Color.WhiteSmoke);
       }
 
       }
