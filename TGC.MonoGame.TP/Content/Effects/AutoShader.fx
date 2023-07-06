@@ -95,10 +95,10 @@ sampler2D ruidoSampler = sampler_state
     AddressV = Clamp;
 };
 
-texture TexturaAuxiliar;
+texture texturaAuxiliar;
 sampler2D auxiliarTextureSampler = sampler_state
 {
-    Texture = (TexturaAuxiliar);
+    Texture = (texturaAuxiliar);
     MagFilter = Linear;
     MinFilter = Linear;
     AddressU = Wrap;
@@ -248,6 +248,16 @@ float4 BloomNegroPS(VertexShaderOutput input) : COLOR
     return float4(0.0,0.0,0.0,1.0);
 }
 
+float4 PintarRuedasPS(VertexShaderOutput input) : COLOR
+{
+    float4 texelColor = tex2D(textureSampler, input.TextureCoordinate);
+    if((texelColor.r+texelColor.g+texelColor.b)/3>0.1){
+        texelColor = lerp(float4(1.0, 0.0, 0.0, 1.0), texelColor, 0.4);
+    }
+
+    return texelColor;
+}
+
 VertexShaderOutput IntegrarVS(in VertexShaderInput input)
 {
     VertexShaderOutput output = (VertexShaderOutput)0;
@@ -265,18 +275,14 @@ float4 IntegrarPS(in VertexShaderOutput input) : COLOR
     
 }
 
-
-float4 PintarRuedasPS(VertexShaderOutput input) : COLOR
-{
-    float4 texelColor = tex2D(textureSampler, input.TextureCoordinate);
-    if((texelColor.r+texelColor.g+texelColor.b)/3>0.1){
-        texelColor = lerp(float4(1.0, 0.0, 0.0, 1.0), texelColor, 0.4);
-    }
-
-    return texelColor;
+float4 IntegrarPresentacionPS(in VertexShaderOutput input) : COLOR
+{    
+    float4 auxiliarColor = tex2D(auxiliarTextureSampler, input.TextureCoordinate);
+    float4 sceneColor = tex2D(baseTextureSampler, input.TextureCoordinate);
+    
+    return auxiliarColor*0.9+sceneColor;
+    
 }
-
-
 
 technique Luz
 {
@@ -347,5 +353,14 @@ technique Integrar
     {
         VertexShader = compile VS_SHADERMODEL IntegrarVS();
         PixelShader = compile PS_SHADERMODEL IntegrarPS();
+    }
+};
+
+technique IntegrarPresentacion
+{
+    pass Pass0
+    {
+        VertexShader = compile VS_SHADERMODEL IntegrarVS();
+        PixelShader = compile PS_SHADERMODEL IntegrarPresentacionPS();
     }
 };

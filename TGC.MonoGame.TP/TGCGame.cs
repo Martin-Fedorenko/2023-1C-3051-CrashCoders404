@@ -38,6 +38,7 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
     private Effect EscenarioShader { get; set; }
     private Effect DetallesShader { get; set; }
     private Effect AutoShader { get; set; }
+    private Effect SandShader { get; set; }
     private Effect BlurShader { get; set; }
     private Effect IluminacionShader { get; set; }
     
@@ -129,6 +130,7 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
     private Texture2D TexturaMenu;
     private Texture2D TexturaPowerUp;
     private Texture2D Noise;
+    private Texture2D NoiseSand;
     private Texture2D TexturaAuxiliar;
 
     //efectos
@@ -137,6 +139,7 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
     private RenderTarget2D FirstPassBloomRenderTarget;
     private RenderTarget2D SecondPassBloomRenderTarget;
     private RenderTarget2D MainSceneRenderTarget;
+    private RenderTarget2D PresentacionRenderTarget;
     private FullScreenQuad FullScreenQuad;
 
 
@@ -205,6 +208,9 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
       MainSceneRenderTarget = new RenderTarget2D(GraphicsDevice, GraphicsDevice.Viewport.Width,
         GraphicsDevice.Viewport.Height, false, SurfaceFormat.Color, DepthFormat.Depth24Stencil8, 0,
         RenderTargetUsage.DiscardContents);
+      PresentacionRenderTarget = new RenderTarget2D(GraphicsDevice, GraphicsDevice.Viewport.Width,
+        GraphicsDevice.Viewport.Height, false, SurfaceFormat.Color, DepthFormat.Depth24Stencil8, 0,
+        RenderTargetUsage.DiscardContents);
       FirstPassBloomRenderTarget = new RenderTarget2D(GraphicsDevice, GraphicsDevice.Viewport.Width,
         GraphicsDevice.Viewport.Height, false, SurfaceFormat.Color, DepthFormat.Depth24Stencil8, 0,
         RenderTargetUsage.DiscardContents);
@@ -244,32 +250,6 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
       Misil = Content.Load<Model>(ContentFolder3D + "PowerUps/Misil/misilModel");
       Bala = Content.Load<Model>(ContentFolder3D + "PowerUps/Ametralladora/balaModel");
 
-      //Efectos
-      Noise = Content.Load<Texture2D>(ContentFolderTextures + "perlin");
-      TexturaAuxiliar = Content.Load<Texture2D>(ContentFolderTextures + "lava");
-      Effect = Content.Load<Effect>(ContentFolderEffects + "BasicShader"); //aca
-      EscenarioShader = Content.Load<Effect>(ContentFolderEffects + "EscenarioShader");
-      DetallesShader = Content.Load<Effect>(ContentFolderEffects + "DetallesShader");
-      AutoShader = Content.Load<Effect>(ContentFolderEffects + "AutoShader");
-      BlurShader = Content.Load<Effect>(ContentFolderEffects + "GaussianBlur");
-
-      BlurShader.Parameters["screenSize"]?.SetValue(new Vector2(GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height));
-
-      AutoShader.Parameters["environmentMap"]?.SetValue(EnvironmentMapRenderTarget);
-
-      AutoShader.Parameters["TexturaRuido"]?.SetValue(Noise);
-      AutoShader.Parameters["TexturaAuxiliar"]?.SetValue(TexturaAuxiliar);
-
-      //Iluminacion
-      AutoShader.Parameters["ambientColor"]?.SetValue(Color.White.ToVector3());
-      AutoShader.Parameters["diffuseColor"]?.SetValue(Color.White.ToVector3());
-      AutoShader.Parameters["specularColor"]?.SetValue(Color.White.ToVector3());
-
-      AutoShader.Parameters["KAmbient"]?.SetValue(0.1f);
-      AutoShader.Parameters["KDiffuse"]?.SetValue(0.5f);
-      AutoShader.Parameters["KSpecular"]?.SetValue(0.5f);
-      AutoShader.Parameters["shininess"]?.SetValue(2f);
-
       //Música y sonido
       BulletSound = Content.Load<SoundEffect>(ContentFolderSounds + "bullet-ametralladora");
       PickUpGunSound = Content.Load<SoundEffect>(ContentFolderSounds + "pickup-ametralladora");
@@ -297,6 +277,38 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
       Corazon2 = Content.Load<Texture2D>(ContentFolderTextures + "Vida/1 Corazon 2");
       Corazon3 = Content.Load<Texture2D>(ContentFolderTextures + "Vida/1 Corazon 3");
       Corazon4 = Content.Load<Texture2D>(ContentFolderTextures + "Vida/1 Corazon 4");
+
+      //Efectos
+      Noise = Content.Load<Texture2D>(ContentFolderTextures + "perlin");
+      NoiseSand = Content.Load<Texture2D>(ContentFolderTextures + "perlinSand");
+      TexturaAuxiliar = Content.Load<Texture2D>(ContentFolderTextures + "lava");
+      Effect = Content.Load<Effect>(ContentFolderEffects + "BasicShader"); //aca
+      EscenarioShader = Content.Load<Effect>(ContentFolderEffects + "EscenarioShader");
+      DetallesShader = Content.Load<Effect>(ContentFolderEffects + "DetallesShader");
+      AutoShader = Content.Load<Effect>(ContentFolderEffects + "AutoShader");
+      SandShader = Content.Load<Effect>(ContentFolderEffects + "SandShader");
+      BlurShader = Content.Load<Effect>(ContentFolderEffects + "GaussianBlur");
+
+      BlurShader.Parameters["screenSize"]?.SetValue(new Vector2(GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height));
+      
+      SandShader.Parameters["screenSize"]?.SetValue(new Vector2(GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height));
+      SandShader.Parameters["TexturaRuido"]?.SetValue(NoiseSand);
+      SandShader.Parameters["texturaAuxiliar"]?.SetValue(TexturaPiso);
+
+      AutoShader.Parameters["environmentMap"]?.SetValue(EnvironmentMapRenderTarget);
+
+      AutoShader.Parameters["TexturaRuido"]?.SetValue(Noise);
+      AutoShader.Parameters["texturaAuxiliar"]?.SetValue(TexturaAuxiliar);
+
+      //Iluminacion
+      AutoShader.Parameters["ambientColor"]?.SetValue(Color.White.ToVector3());
+      AutoShader.Parameters["diffuseColor"]?.SetValue(Color.White.ToVector3());
+      AutoShader.Parameters["specularColor"]?.SetValue(Color.White.ToVector3());
+
+      AutoShader.Parameters["KAmbient"]?.SetValue(0.1f);
+      AutoShader.Parameters["KDiffuse"]?.SetValue(0.5f);
+      AutoShader.Parameters["KSpecular"]?.SetValue(0.5f);
+      AutoShader.Parameters["shininess"]?.SetValue(2f);
       
 
       escenario.LoadContent(Piso, Pared, Column, Ramp, Platform, TexturaPiso, TexturaPared, TexturaColumna, TexturaRampa, TexturaPlataforma);
@@ -476,6 +488,7 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
 
     protected override void Draw(GameTime gameTime)
     {
+      var Time = (float)gameTime.TotalGameTime.TotalSeconds;
       GraphicsDevice.Clear(Color.LightYellow);
       GraphicsDevice.DepthStencilState = DepthStencilState.Default; //sin esto los autos se ven translucidos y el piso tambien
       Vector2 tamanioPantalla = new Vector2(GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height);
@@ -502,15 +515,45 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
           DrawCenterTextY("GO!", tamanioPantalla.Y * 0.3f, 10);
           break;
 
-        case ST_PRESENTACION: 
-          autos.dibujarAutosMenu(View,Projection,AutoShader,timerMenu);
-          escenario.dibujarPiso(View,Projection,AutoShader);
-          DrawCenterTextY("CRASH CODERS 404 ", tamanioPantalla.X * 0f, 4);
-          DrawCenterTextY("C -> CONTROLES", tamanioPantalla.X * 0.2f, 2);
-          DrawCenterTextY("G -> GOD MODE", tamanioPantalla.X * 0.3f, 2);
-          DrawCenterTextY("ENTER -> COMENZAR", tamanioPantalla.X * 0.4f, 2);
-          DrawRightText("ESC -> SALIR", tamanioPantalla.X * 0.6f, 1);
-          break;
+        case ST_PRESENTACION:
+
+            #region Pass 1
+
+            GraphicsDevice.SetRenderTarget(MainSceneRenderTarget);
+            GraphicsDevice.Clear(ClearOptions.Target | ClearOptions.DepthBuffer, Color.Black, 1f, 0);
+            
+            escenario.dibujarPiso(View,Projection,AutoShader);
+            autos.dibujarAutosMenu(View,Projection,AutoShader,timerMenu);
+            
+            #endregion
+
+            #region Pass 2
+
+            GraphicsDevice.SetRenderTarget(PresentacionRenderTarget);
+            GraphicsDevice.Clear(ClearOptions.Target | ClearOptions.DepthBuffer, Color.Black, 1f, 0);
+            SandShader.Parameters["Time"]?.SetValue(Time);
+            FullScreenQuad.Draw(SandShader, "BlowingSand");
+
+            #endregion
+
+            #region Pass 3
+            GraphicsDevice.SetRenderTarget(null);
+            GraphicsDevice.Clear(ClearOptions.Target | ClearOptions.DepthBuffer, Color.Black, 1f, 0);
+            AutoShader.Parameters["baseTexture"]?.SetValue(MainSceneRenderTarget);
+            AutoShader.Parameters["texturaAuxiliar"]?.SetValue(PresentacionRenderTarget);
+
+            FullScreenQuad.Draw(AutoShader, "IntegrarPresentacion");
+
+            DrawCenterTextY("CRASH CODERS 404 ", tamanioPantalla.X * 0f, 4);
+            DrawCenterTextY("C -> CONTROLES", tamanioPantalla.X * 0.2f, 2);
+            DrawCenterTextY("G -> GOD MODE", tamanioPantalla.X * 0.3f, 2);
+            DrawCenterTextY("ENTER -> COMENZAR", tamanioPantalla.X * 0.4f, 2);
+            DrawRightText("ESC -> SALIR", tamanioPantalla.X * 0.6f, 1);
+            #endregion
+
+            
+            break;
+
 
         case ST_CONTROLES:
           DrawCenterTextY("CONTROLES", tamanioPantalla.Y * 0f, 4);
