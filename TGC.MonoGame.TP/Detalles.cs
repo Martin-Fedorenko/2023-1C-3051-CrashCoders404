@@ -24,88 +24,6 @@ namespace TGC.MonoGame.TP
         private Matrix[] Rocks10World;
         private Matrix[] TiresWorld;
 
-    
-
-        // "Tire" del lado más cerca del origen de la rampa Rampa1World
-        private Matrix Tire1World { get; set; }
-
-        private Matrix Tire2World { get; set; }
-        private Matrix Tire2World1 { get; set; }
-
-        private Matrix Tire3World { get; set; }
-        private Matrix Tire3World1 { get; set; }
-        private Matrix Tire3World2 { get; set; }
-
-        private Matrix Tire4World { get; set; }
-        private Matrix Tire4World1 { get; set; }
-        private Matrix Tire4World2 { get; set; }
-        private Matrix Tire4World3 { get; set; }
-
-        // "Tire" del lado más lejos del origen de la rampa Rampa1World
-        private Matrix Tire5World { get; set; }
-
-        private Matrix Tire6World { get; set; }
-        private Matrix Tire6World1 { get; set; }
-
-        private Matrix Tire7World { get; set; }
-        private Matrix Tire7World1 { get; set; }
-        private Matrix Tire7World2 { get; set; }
-
-        private Matrix Tire8World { get; set; }
-        private Matrix Tire8World1 { get; set; }
-        private Matrix Tire8World2 { get; set; }
-        private Matrix Tire8World3 { get; set; }
-
-        // "Tire" del lado más lejos del origen de la rampa Rampa2World
-        private Matrix Tire9World { get; set; }
-
-        private Matrix Tire10World { get; set; }
-        private Matrix Tire10World1 { get; set; }
-
-        private Matrix Tire11World { get; set; }
-        private Matrix Tire11World1 { get; set; }
-        private Matrix Tire11World2 { get; set; }
-
-        private Matrix Tire12World { get; set; }
-        private Matrix Tire12World1 { get; set; }
-        private Matrix Tire12World2 { get; set; }
-        private Matrix Tire12World3 { get; set; }
-
-        // "Tire" del lado más cerca del origen de la rampa Rampa2World
-        private Matrix Tire13World { get; set; }
-
-        private Matrix Tire14World { get; set; }
-        private Matrix Tire14World1 { get; set; }
-
-        private Matrix Tire15World { get; set; }
-        private Matrix Tire15World1 { get; set; }
-        private Matrix Tire15World2 { get; set; }
-
-        private Matrix Tire16World { get; set; }
-        private Matrix Tire16World1 { get; set; }
-        private Matrix Tire16World2 { get; set; }
-        private Matrix Tire16World3 { get; set; }
-
-        // "Tire" del lado más cerca del lejos de la rampa Rampa3World
-        private Matrix Tire17World { get; set; }
-
-        private Matrix Tire18World { get; set; }
-        private Matrix Tire18World1 { get; set; }
-
-        private Matrix Tire19World { get; set; }
-        private Matrix Tire19World1 { get; set; }
-        private Matrix Tire19World2 { get; set; }
-
-        // "Tire" del lado más cerca del lejos de la rampa Rampa3World
-        private Matrix Tire20World { get; set; }
-
-        private Matrix Tire21World { get; set; }
-        private Matrix Tire21World1 { get; set; }
-
-        private Matrix Tire22World { get; set; }
-        private Matrix Tire22World1 { get; set; }
-        private Matrix Tire22World2 { get; set; }
-
         public Vector3 Tree1Position = new Vector3 (30, 0, 350); 
         public Vector3 Tree2Position = new Vector3 (-25, 0, 350);
         public Vector3 Tree3Position = new Vector3 (55, 0, 405);
@@ -153,79 +71,9 @@ namespace TGC.MonoGame.TP
         public Vector3 Rock32Position = new Vector3 (-315, 0, 700);
 
         public Vector3[] posicionRuedas;
-        // Curva de ruedas 
-        public Vector3 Tire1Position = new Vector3 (600, 5, 600);
-
-        public Vector3 Tire2Position = new Vector3 (600, 5, 660);
-        public Vector3 Tire2Position1 = new Vector3 (570, 10, 600);
-
-        public Vector3 Tire3Position = new Vector3 (540, 5, 600);
-        public Vector3 Tire3Position1 = new Vector3 (570, 5, 660);
-        public Vector3 Tire3Position2 = new Vector3 (540, 5, 660);
-
-        public Vector3 Tire4Position = new Vector3 (630, 5, 585);
-        public Vector3 Tire4Position1 = new Vector3 (660, 5, 570);
-        public Vector3 Tire4Position2 = new Vector3 (690, 5, 555);
-        public Vector3 Tire4Position3 = new Vector3 (690, 5, 525);
-        public Vector3 Tire5Position = new Vector3 (690, 5, 495);
-
-        
-
-        public Vector3 Tire6Position = new Vector3 (630, 5, 645);
-        public Vector3 Tire6Position1 = new Vector3 (660, 5, 630);
-        public Vector3 Tire7Position = new Vector3 (690, 5, 615);
-        public Vector3 Tire7Position1 = new Vector3 (720, 5, 600);
-        public Vector3 Tire7Position2 = new Vector3 (750, 5, 585);
-        public Vector3 Tire8Position = new Vector3 (750, 5, 555);
-        public Vector3 Tire8Position1 = new Vector3 (750, 5, 525);
-        public Vector3 Tire8Position2 = new Vector3 (750, 5, 495);
-
-        //Circulo de ruedas
-        public Vector3 Tire8Position3 = new Vector3 (-400, 5, -500);
-
-        public Vector3 Tire9Position = new Vector3 (-415, 5, -500);
-        public Vector3 Tire10Position = new Vector3 (-430, 5, -500);
-        public Vector3 Tire10Position1 = new Vector3 (-385, 5, -500);
-        public Vector3 Tire11Position = new Vector3 (-370, 5, -500);
-        public Vector3 Tire11Position1 = new Vector3 (-400, 5, -515);
-        public Vector3 Tire11Position2 = new Vector3 (-400, 5, -530);
-        public Vector3 Tire12Position = new Vector3 (-400, 5, -485);
-        public Vector3 Tire12Position1 = new Vector3 (-400, 5, -470);
-        
-        public Vector3 Tire12Position2 = new Vector3 (-415, 5, -515);
-        public Vector3 Tire12Position3 = new Vector3 (-415, 5, -485);
-        public Vector3 Tire13Position = new Vector3 (-385, 5, -515);
-        public Vector3 Tire14Position = new Vector3 (-385, 5, -485);
-
-        //Circulo de ruedas
-        public Vector3 Tire14Position1 = new Vector3 (30, 5, -600);
-        public Vector3 Tire15Position = new Vector3 (45, 5, -600);
-        public Vector3 Tire15Position1 = new Vector3 (60, 5, -600);
-        public Vector3 Tire15Position2 = new Vector3 (15, 5, -600);
-        public Vector3 Tire16Position = new Vector3 (0, 5, -600);
-        public Vector3 Tire16Position1 = new Vector3 (30, 5, -615);
-        public Vector3 Tire16Position2 = new Vector3 (30, 5, -630);
-        public Vector3 Tire16Position3 = new Vector3 (30, 5, -585);
-        public Vector3 Tire17Position = new Vector3 (30, 5, -570);
-        public Vector3 Tire18Position = new Vector3 (45, 5, -615);
-        public Vector3 Tire18Position1 = new Vector3 (45, 5, -585);
-        public Vector3 Tire19Position = new Vector3 (15, 5, -615);
-        public Vector3 Tire19Position1 = new Vector3 (15, 5, -585);
-
-
-
-        //Ruedas dispersadas
-        public Vector3 Tire19Position2 = new Vector3 (550, 5, -600);
-        public Vector3 Tire20Position = new Vector3 (593, 5, -584);
-        public Vector3 Tire21Position = new Vector3 (524, 5, -600);
-        public Vector3 Tire21Position1 = new Vector3 (534, 5, -643);
-        public Vector3 Tire22Position = new Vector3 (579, 5, -530);
-        public Vector3 Tire22Position1 = new Vector3 (587, 5, -605);
-        public Vector3 Tire22Position2 = new Vector3 (591, 5, -564);
 
 
         // Variables
-        private float mediaVuelta = MathF.PI;
         private float cuartoDeVuelta = MathF.PI / 2;
 
         //Bones

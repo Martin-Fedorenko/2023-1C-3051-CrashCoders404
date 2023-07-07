@@ -1,7 +1,6 @@
 using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 using TGC.MonoGame.TP.Collisions;
 using TGC.MonoGame.TP.Viewer.Gizmos;
 using TGC.MonoGame.TP.Geometries;
@@ -26,42 +25,6 @@ namespace TGC.MonoGame.TP
     private Matrix[] ColumnWorld { get; set; }
     private Matrix[] BrokenColumnWorld { get; set; }
 
-    private Matrix Platform1World { get; set; }
-    private Matrix Platform2World { get; set; }
-    private Matrix Platform3World { get; set; }
-    private Matrix Platform4World { get; set; }
-    private Matrix Platform5World { get; set; }
-
-    private Matrix Column1World { get; set; }
-    private Matrix Column2World { get; set; }
-    private Matrix Column3World { get; set; }
-    private Matrix Column4World { get; set; }
-    private Matrix Column5World { get; set; }
-    private Matrix Column6World { get; set; }
-    private Matrix Column7World { get; set; }
-    private Matrix Column8World { get; set; }
-    private Matrix Column9World { get; set; }
-    private Matrix Column10World { get; set; }
-    private Matrix Column11World { get; set; }
-    private Matrix Column12World { get; set; }
-    private Matrix BrokenColumn1World { get; set; }
-    private Matrix BrokenColumn2World { get; set; }
-
-    private Matrix Ramp1World { get; set; }
-    private Matrix Ramp2World { get; set; }
-    private Matrix Ramp3World { get; set; }
-    private Matrix Ramp4World { get; set; }
-    private Matrix Ramp5World { get; set; }
-    private Matrix Ramp6World { get; set; }
-    private Matrix Ramp7World { get; set; }
-    private Matrix Ramp8World { get; set; }
-    private Matrix Ramp9World { get; set; }
-    private Matrix Ramp10World { get; set; }
-    private Matrix Ramp11World { get; set; }
-    private Matrix Ramp12World { get; set; }
-
-    private Vector3  PisoPosition = new Vector3(30, 0, 30);
-    private Vector3  ParedPosition = new Vector3(30, 50, 30);
     private Vector3  Platform1Position = new Vector3(70, 64, -390);
     private Vector3  Platform2Position = new Vector3(-250, 30, 100);
     private Vector3  Platform3Position = new Vector3(-250, 93, 235);
@@ -81,10 +44,6 @@ namespace TGC.MonoGame.TP
     private Vector3  Column12Position = new Vector3(436, 0, -80);
     private Vector3  BrokenColumn1Position = new Vector3(450, 0, 250);
     private Vector3  BrokenColumn2Position = new Vector3(-230, 0, -270);
-    private Vector3  Ramp1Position = new Vector3(-80, 0, -380);
-    private Vector3  Ramp2Position = new Vector3(230, 0, -395);
-    private Vector3  Ramp3Position = new Vector3(-250, 0, -10);
-    private Vector3  Ramp4Position = new Vector3(-300, 35, 130);
     private Vector3  Ramp5Position = new Vector3(185, 0, 243);     
     private Vector3  Ramp6Position = new Vector3(235, 0, 359);
     private Vector3  Ramp7Position = new Vector3(155, 0, 325);
@@ -93,9 +52,6 @@ namespace TGC.MonoGame.TP
     private Vector3  Ramp10Position = new Vector3(-410, 0, -136);
     private Vector3  Ramp11Position = new Vector3(-495, 0, -169);
     private Vector3  Ramp12Position = new Vector3(-376, 0, -221);
-
-    Vector3 vectorChoque = Vector3.Zero;
-    float penetration = 0f;
 
 
     // Variables
@@ -121,7 +77,6 @@ namespace TGC.MonoGame.TP
     private BoundingBox[] ColumnBoxes;
     private BoundingBox[] BrokenColumnBoxes;
     private BoundingBox[] PlatformBoxes;
-    private BoundingBox[] RampBoxes;
     private BoundingBox PisoBox;
 
     //Texturas
@@ -131,9 +86,7 @@ namespace TGC.MonoGame.TP
     private Texture2D TexturaColumna;
     private Texture2D TexturaRampa;
     private Texture2D TexturaPlataforma;
-    private float retardoColisionBox;
-
-    private Boolean enPisoOPlataforma;
+    
     public void Initialize()
     {
       //Arena
@@ -290,7 +243,6 @@ public void LoadContent(QuadPrimitive piso, QuadPrimitive pared, Model column, M
             OrientedBoundingBox autoCollider;
             Vector3 vectorChoque = Vector3.Zero;
             float penetration = 0f;
-            enPisoOPlataforma = false;
             autoCollider = auto.getAutoPrincipalBox();
 
 

@@ -24,23 +24,11 @@ namespace TGC.MonoGame.TP
     public float Rotation;
     private bool ActiveMovement;
     private Boolean onJump;
-    private Boolean accelerating;
     private float jumpRotation;
     private float jumpSpeed;
-    private float jumpPower;
     private float gravity;
-    private float jumpAngle;
-    private float jumpHeight;
     private float maxSpeed;
     private float WheelRotationPrincipal;
-    private float WheelRotation1;
-    private float WheelRotation2;
-    private float WheelRotation3;
-    private float WheelRotation4;
-    private float WheelRotation5;
-    private float WheelRotation6;
-    private float WheelRotation7;
-    private float WheelRotation8;
     private float frontWheelRotation;
     private ModelBone leftBackWheelBone;
     private ModelBone rightBackWheelBone;
@@ -74,14 +62,6 @@ namespace TGC.MonoGame.TP
 
     //Matrices
     private Matrix AutoPrincipalWorld { get; set; }
-    private Matrix Auto1World { get; set; }
-    private Matrix Auto2World { get; set; }
-    private Matrix Auto3World { get; set; }
-    private Matrix Auto4World { get; set; }
-    private Matrix Auto5World { get; set; }
-    private Matrix AutoCombate1World { get; set; }
-    private Matrix AutoCombate2World { get; set; }
-    private Matrix AutoCombate3World { get; set; }
 
     private int cantidadEnemigos = 8;
 
@@ -128,19 +108,12 @@ namespace TGC.MonoGame.TP
     private BoundingBox AutoDeCombateBoxAABB;
     private OrientedBoundingBox AutoPrincipalBox;
     private Matrix AutoPrincipalOBBWorld;
-    private Matrix[] AutosOBBWorld;
     public OrientedBoundingBox[] CollideCars;
-    private Boolean collided;
-    private int CollisionIndex;
     private float PreviousSpeed;
-    private float pesoAuto;
-    private int collidedCars;
     private Boolean turbo;
     private float turboTime;
-    private Vector3 direccionPostChoque;
-    private Vector3 direccionChoqueBB = Vector3.Zero;
     private float penetration;
-    private float alturaPlataforma = 0f;
+
 
     Vector3 coreccionAltura = new Vector3(0, 66f, 0); //el centro de la oriented bounding box esta quedando muy arriba
     Vector3 coreccionAlturaAutoCombate = new Vector3(199, 4244f, -443); //(3,-20f,0);
@@ -170,7 +143,6 @@ namespace TGC.MonoGame.TP
       AutosWorld = new Matrix[cantidadEnemigos];
       ColorTextures = new List<Texture2D>();
       
-
 
       
       Spawns = new Vector3[]{
@@ -247,8 +219,6 @@ namespace TGC.MonoGame.TP
       CarDirection = AutoPrincipalWorld.Backward;
       Desplazamiento = Vector3.Zero;
       Rozamiento = CarSpeed.X * 0.5f;
-      collided = false;
-      collidedCars = 0;
       choco = false;
 
       for(int index = 0 ; index < DesplazamientoAutos.Length; index++)
@@ -281,8 +251,6 @@ namespace TGC.MonoGame.TP
         
         Desplazamiento += directionAutoPrincipal() * CarSpeed.X * elapsedTime + CarAcceleration * elapsedTime * elapsedTime* directionAutoPrincipal() / 2f;
         ActiveMovement = true;
-        accelerating = true;
-
       }
       else if (Keyboard.GetState().IsKeyDown(Keys.S) && !onJump)
       {
@@ -293,13 +261,10 @@ namespace TGC.MonoGame.TP
         else if (CarSpeed.X > -maxSpeed) CarSpeed.X -= CarAcceleration * elapsedTime;
         Desplazamiento += directionAutoPrincipal() * CarSpeed.X * elapsedTime + CarAcceleration * elapsedTime* elapsedTime * directionAutoPrincipal() / 2f;
         ActiveMovement = true;
-        accelerating = true;
       }
 
       if ((keyboardState.IsKeyUp(Keys.S) && keyboardState.IsKeyUp(Keys.W)) || onJump)
       {
-        accelerating = false;
-
         if(CarSpeed.X < 3 && CarSpeed.X > -3)
         {
           CarSpeed.X = 0f;
@@ -385,12 +350,8 @@ namespace TGC.MonoGame.TP
         }
       }
 
-
-      // collided = AutoPrincipalBox.Intersects(Auto1Box);
       for (var index = 0; index < CollideCars.Length; index++)
       {
-        if (index < 5) pesoAuto = 250;
-        else pesoAuto = 450;
         if (AutoPrincipalBox.Intersects(CollideCars[index]))
         {
             Desplazamiento*=-1;
@@ -867,12 +828,9 @@ namespace TGC.MonoGame.TP
       CarAcceleration = 50f;
       CarBrakes = 200f;
       ActiveMovement = false;
-      jumpAngle = MathF.PI / 9f;
       jumpSpeed = 30f;
       gravity = 2f;
       onJump = false;
-      accelerating = false;
-      jumpHeight = 100f;
       maxSpeed = 200f;
       enElPiso = true;
       enPlataforma = false;

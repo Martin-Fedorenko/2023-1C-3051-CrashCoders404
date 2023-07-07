@@ -106,7 +106,6 @@ namespace TGC.MonoGame.TP
     private Vector3[] balasPos;
     private float misilRot = 0f;
     private float[] balasRot = { 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f };
-    private float mediaVuelta = MathF.PI;
     private float cuartoDeVuelta = MathF.PI / 2;
     private float totalGameTime = 0f;
 

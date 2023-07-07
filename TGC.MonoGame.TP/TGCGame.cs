@@ -40,7 +40,6 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
     private Effect AutoShader { get; set; }
     private Effect SandShader { get; set; }
     private Effect BlurShader { get; set; }
-    private Effect IluminacionShader { get; set; }
     
 
     private Autos autos;
@@ -73,15 +72,10 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
     private Matrix View { get; set; }
     private Matrix Projection { get; set; }
 
-    // Bones
-    private Matrix[] relativeMatrices;
 
     // Cámara
-    private Vector3 posicionTarget = new Vector3(0, 0, 0);
     private Vector3 posicionCamara = new Vector3(-250, 250, -100);
 
-    //Colisiones
-    private Boolean collided = false;
 
     //Pantalla de carga
     public const int ST_PRESENTACION = 0;
@@ -92,7 +86,6 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
     public const int ST_COUNTDOWN_1 = 8;
     public const int ST_COUNTDOWN_GO = 9;
     public const int ST_ENDGAME = -1;
-    public const int ST_VICTORIA = 10;
     public const int ST_DERROTA = 11;
     public SpriteFont font;    
     public SpriteFont font2;
@@ -107,7 +100,6 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
     private Song GameOver { get; set; }
   
     //Sonidos
-    private SoundEffectInstance Instance { get; set; }
     private SoundEffect BulletSound { get; set; }
     private SoundEffect PickUpGunSound { get; set; }
     private SoundEffect RocketSound { get; set; }
@@ -147,7 +139,6 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
     //HUD
     private float totalGameTime;
     private float countdownStart;
-    private Vector2 autoPos;
     private bool dibujarGizmos = true;
     private Vector2 tamanioPantalla;
     private Texture2D Corazon;
