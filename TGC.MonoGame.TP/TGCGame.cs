@@ -274,7 +274,7 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
       TexturaArbol = Content.Load<Texture2D>(ContentFolderTextures + "tree");
       TexturaTire1 = Content.Load<Texture2D>(ContentFolderTextures + "tire1");
       TexturaTire2 = Content.Load<Texture2D>(ContentFolderTextures + "tire2");
-      TexturaMenu = Content.Load<Texture2D>(ContentFolderTextures + "backMenu");
+      //TexturaMenu = Content.Load<Texture2D>(ContentFolderTextures + "backMenu");
       TexturaPowerUp = Content.Load<Texture2D>(ContentFolderTextures + "gold");
       Corazon = Content.Load<Texture2D>(ContentFolderTextures + "Vida/1 Corazon");
       Logo = Content.Load<Texture2D>(ContentFolderTextures + "logo");
