@@ -129,6 +129,8 @@ namespace TGC.MonoGame.TP
     //Sonidos
     private SoundEffectInstance Instance { get; set; }
     private SoundEffect CarCrash {get; set;}
+    private SoundEffect VidaPerdida {get; set;}
+    private SoundEffect KillEffect {get; set;}
     private int acabaDeChocar = 0;
     private bool choco;
 
@@ -153,11 +155,14 @@ namespace TGC.MonoGame.TP
       iniciarPartida();
     }
 
-    public void LoadContent(Model Auto1, Model Auto2, Effect effect, SoundEffect carCrash)
+    public void LoadContent(Model Auto1, Model Auto2, Effect effect, SoundEffect carCrash, SoundEffect vidaPerdida,
+                            SoundEffect killEffect)
     {
       AutoDeportivo = Auto1;
       AutoDeCombate = Auto2;
       CarCrash = carCrash;
+      VidaPerdida = vidaPerdida;
+      KillEffect = killEffect;
 
       leftBackWheelBone = AutoDeportivo.Bones["WheelD"];
       rightBackWheelBone = AutoDeportivo.Bones["WheelC"];
@@ -365,13 +370,10 @@ namespace TGC.MonoGame.TP
 
             AutosPosiciones[index] = obtenerSpawn();
             
-          if(acabaDeChocar == 0)
-          {
-            acabaDeChocar = 1;
-            Instance = CarCrash.CreateInstance();
-            Instance.Play();
-          }
-          choco = true;
+          audioChoque();
+          Instance = VidaPerdida.CreateInstance();
+          Instance.Play();
+
         }
       }
 
@@ -432,7 +434,11 @@ namespace TGC.MonoGame.TP
                     {
                         powerUps.recorridoBalas[i] = 0f;
                         vidaAutos[index] -= 50;
-                        if(vidaAutos[index] <= 0) BajasBalas++;
+                        if(vidaAutos[index] <= 0){
+                          BajasBalas++;
+                          Instance = KillEffect.CreateInstance();
+                          Instance.Play();
+                        } 
                     }
                 }
             }
@@ -446,7 +452,11 @@ namespace TGC.MonoGame.TP
                     {
                         powerUps.recorridoMisil = 0f;
                         vidaAutos[index] -= 100;
-                        if(vidaAutos[index] <= 0) BajasMisil++;
+                        if(vidaAutos[index] <= 0){
+                          BajasMisil++;
+                          Instance = KillEffect.CreateInstance();
+                          Instance.Play();
+                        }
                     }
                 }
             }
@@ -970,6 +980,11 @@ namespace TGC.MonoGame.TP
           vidaAutos[i] = 200;
       }  
 
+      }
+
+      public bool victoriaPorKills()
+      {
+        return (BajasBalas + BajasMisil >= 10);
       }
 
       

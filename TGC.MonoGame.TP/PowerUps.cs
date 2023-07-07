@@ -772,8 +772,19 @@ namespace TGC.MonoGame.TP
 
       currentPowerUp = PowerUp.None;
     }
-
-
+    public bool getMisil(){
+      return currentPowerUp == PowerUp.Misil;
+    }
+    public bool getAmetralaldora(){
+      return currentPowerUp == PowerUp.Ametralladora;
+    }
+    public bool getTurbo(){
+      return currentPowerUp == PowerUp.Turbo;
+    }
+    public bool getVacio(){
+      return currentPowerUp == PowerUp.None;
+    }
+    
     
   }
 }

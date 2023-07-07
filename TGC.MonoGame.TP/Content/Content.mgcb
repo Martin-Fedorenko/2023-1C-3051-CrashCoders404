@@ -536,6 +536,12 @@
 /processorParam:Quality=Best
 /build:Music/music-menu.mp3
 
+#begin Music/omg-winner.mp3
+/importer:Mp3Importer
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:Music/omg-winner.mp3
+
 #begin Music/retro-platforming.mp3
 /importer:Mp3Importer
 /processor:SongProcessor
@@ -547,12 +553,6 @@
 /processor:SongProcessor
 /processorParam:Quality=Best
 /build:Music/trap-movement.mp3
-
-#begin Music/winner.mp3
-/importer:Mp3Importer
-/processor:SongProcessor
-/processorParam:Quality=Best
-/build:Music/winner.mp3
 
 #begin Sounds/boost-effect.wav
 /importer:WavImporter
@@ -589,6 +589,12 @@
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
 /build:Sounds/explosion-misil.wav
+
+#begin Sounds/kill-effect.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/kill-effect.wav
 
 #begin Sounds/pickup-ametralladora.wav
 /importer:WavImporter
@@ -634,6 +640,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Textures/backmenu.png
+
+#begin Textures/boost-logo.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Textures/boost-logo.png
 
 #begin Textures/color.jpg
 /importer:TextureImporter
@@ -743,6 +761,18 @@
 /processorParam:TextureFormat=Color
 /build:Textures/logo.png
 
+#begin Textures/minigun-logo.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Textures/minigun-logo.png
+
 #begin Textures/negro.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -754,6 +784,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Textures/negro.png
+
+#begin Textures/noPowerUp-logo.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Textures/noPowerUp-logo.png
 
 #begin Textures/perlin.png
 /importer:TextureImporter
@@ -790,6 +832,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Textures/rock.jpg
+
+#begin Textures/rocketLauncher-logo.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Textures/rocketLauncher-logo.png
 
 #begin Textures/sand.jpg
 /importer:TextureImporter
@@ -850,18 +904,6 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Textures/tree.jpg
-
-#begin Textures/vida completa.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:Textures/vida completa.png
 
 #begin Textures/Vida/1 Corazon.png
 /importer:TextureImporter
