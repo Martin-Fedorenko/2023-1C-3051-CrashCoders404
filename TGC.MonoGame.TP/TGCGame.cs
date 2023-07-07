@@ -428,7 +428,7 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
           autos.Update(gameTime,powerUps,escenario,detalles);
           powerUps.Update(gameTime, autos, detalles, escenario);
 
-          detalles.Update(gameTime,autos);
+          detalles.Update(gameTime,autos,escenario);
           escenario.Update(gameTime, autos);
 
           //vida.Update(autos, powerUps);

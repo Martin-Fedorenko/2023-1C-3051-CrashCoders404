@@ -306,6 +306,7 @@ public void LoadContent(QuadPrimitive piso, QuadPrimitive pared, Model column, M
             {
                 if(autoCollider.Intersects(ParedBoxes[index],out vectorChoque,out penetration))
                 {
+                  vectorChoque.Y = 0;
                   if(auto.autoSpeed() > 10f) 
                   {
                     auto.audioChoque();

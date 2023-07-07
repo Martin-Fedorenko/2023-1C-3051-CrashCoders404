@@ -359,7 +359,7 @@ namespace TGC.MonoGame.TP
 
         }
         
-        public void Update(GameTime gameTime, Autos auto)
+        public void Update(GameTime gameTime, Autos auto, Escenario escenario)
         {
             OrientedBoundingBox autoCollider = auto.getAutoPrincipalBox();
             Vector3 vectorChoque = Vector3.Zero;
@@ -421,12 +421,25 @@ namespace TGC.MonoGame.TP
             {
                 if(autoCollider.Intersects(TireBoxes[index],out vectorChoque,out penetration))
                 {
-                    if(auto.autoSpeed() > 10f) 
+                    posicionRuedas[index] += -vectorChoque * penetration;  
+                }
+
+                for(int j = 0; j < TireBoxes.Length; j++)
+                {
+                    if(TireBoxes[index].Intersects(TireBoxes[j]) && TireBoxes[index] != TireBoxes[j])
                     {
-                        auto.audioChoque();
+                        var penetracion = interseccionAABBAABB(TireBoxes[index],TireBoxes[j]);
+                        posicionRuedas[j] -= penetracion;
                     }
-                    posicionRuedas[index] += -vectorChoque * penetration;
-                    
+                }
+                
+                for(int i = 0 ; i < escenario.getParedBoxes().Length; i++)
+                {
+                    if(TireBoxes[index].Intersects(escenario.getParedBoxes()[i]))
+                    {
+                        var penetracion = interseccionAABBAABB(TireBoxes[index],escenario.getParedBoxes()[i]);
+                        posicionRuedas[index] -= penetracion;
+                    }
                 }
             }
 
@@ -620,6 +633,30 @@ namespace TGC.MonoGame.TP
                 }
 
             return false;
+        }
+
+        public Vector3 interseccionAABBAABB(BoundingBox A, BoundingBox B)
+        {
+            var CenterA = BoundingVolumesExtensions.GetCenter(A);
+            var CenterB = BoundingVolumesExtensions.GetCenter(B);
+
+            var DistanciaEntreCentrosX = CenterA.X - CenterB.X;
+            var DistanciaEntreCentrosY = CenterA.Y - CenterB.Y;
+            var DistanciaEntreCentrosZ = CenterA.Z - CenterB.Z;
+
+            var distanciaHaciaEjesA = BoundingVolumesExtensions.GetExtents(A);
+            var distanciaHaciaEjesB = BoundingVolumesExtensions.GetExtents(B);
+
+            var sumaDistanciaEjeX = distanciaHaciaEjesA.X + distanciaHaciaEjesB.X;
+            var sumaDistanciaEjeY = distanciaHaciaEjesA.Y + distanciaHaciaEjesB.Y;
+            var sumaDistanciaEjeZ = distanciaHaciaEjesA.Z + distanciaHaciaEjesB.Z;
+
+            var penetracionX = sumaDistanciaEjeX - DistanciaEntreCentrosX;
+            var penetracionY = sumaDistanciaEjeY - DistanciaEntreCentrosY;
+            var penetracionZ = sumaDistanciaEjeZ - DistanciaEntreCentrosZ;
+
+            return new Vector3(penetracionX,0f,penetracionZ);
+            
         }
 
     }

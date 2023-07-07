@@ -136,6 +136,8 @@ namespace TGC.MonoGame.TP
 
     //IA
     private Vector3[] Spawns;
+    private float[] timersRespawn;
+    private List<int> autosDestruidos;
     public void Initialize()
     {
       DesplazamientoAutos = new Vector3[cantidadEnemigos];
@@ -145,13 +147,6 @@ namespace TGC.MonoGame.TP
       AutosWorld = new Matrix[cantidadEnemigos];
       ColorTextures = new List<Texture2D>();
       
-
-      
-      Spawns = new Vector3[]{
-        new Vector3(600,0,350),
-        new Vector3(0,0,600)
-      };
-
       iniciarPartida();
     }
 
@@ -357,10 +352,12 @@ namespace TGC.MonoGame.TP
 
       for (var index = 0; index < CollideCars.Length; index++)
       {
-        if (AutoPrincipalBox.Intersects(CollideCars[index]))
+        if (AutoPrincipalBox.Intersects(CollideCars[index]) && !autosDestruidos.Contains(index))
         {
-            Desplazamiento*=-1;
-            CarSpeed*=-0.5f;
+            CarSpeed = Vector2.Zero;
+            AutoPrincipalPos = Vector3.Zero;
+            turbo = false;
+            Desplazamiento = Vector3.Zero;
 
 
             if(index < 5)
@@ -368,7 +365,8 @@ namespace TGC.MonoGame.TP
             else
               vidaProtagonista -= 50;
 
-            AutosPosiciones[index] = obtenerSpawn();
+            vidaAutos[index] = 0;
+            
             
           audioChoque();
           Instance = VidaPerdida.CreateInstance();
@@ -377,44 +375,7 @@ namespace TGC.MonoGame.TP
         }
       }
 
-      AutoPrincipalPos += Desplazamiento;
-
-      AutoPrincipalWorld =  Matrix.CreateScale(0.1f) *
-                            Matrix.CreateRotationX(-jumpRotation) *
-                            Matrix.CreateRotationY(Rotation * 2) *
-                            Matrix.CreateTranslation(AutoPrincipalPos);
-
-      for(int i = 0; i < AutosPosiciones.Length; i++)
-      {
-        objetivo[i] = AutoPrincipalPos;
-        atacarAutoPrincipal(i,elapsedTime);
-      }
-
-      //ubicacion coches IA
-      for (var index = 0; index < CollideCars.Length; index++)
-      {
-        var RotationASD = Matrix.CreateWorld(AutosPosiciones[index],AutosAdelante[index],Vector3.Up);
-        if (index < 5)
-        {
-          AutosWorld[index] = Matrix.CreateScale(0.1f) * Matrix.CreateRotationY(mediaVuelta) * RotationASD;
-                              //Matrix.CreateRotationY(AutosRotaciones[index]) *
-                              //Matrix.CreateTranslation(AutosPosiciones[index]);
-
-          CollideCars[index] = OrientedBoundingBox.FromAABB(new BoundingBox(AutoDeportivoBoxAABB.Min + AutosPosiciones[index] - coreccionAltura, AutoDeportivoBoxAABB.Max + AutosPosiciones[index] - coreccionAltura));
-          CollideCars[index].Rotate(Matrix.CreateRotationY(mediaVuelta)*RotationASD);
-        }
-        else
-        {
-          AutosWorld[index] = Matrix.CreateScale(0.007f) * Matrix.CreateRotationY(-cuartoDeVuelta) * RotationASD;
-                              //Matrix.CreateRotationY(AutosRotaciones[index])  *
-                             // Matrix.CreateTranslation(AutosPosiciones[index]);
-
-          CollideCars[index] = OrientedBoundingBox.FromAABB(new BoundingBox(AutoDeCombateBoxAABB.Min + AutosPosiciones[index] - coreccionAlturaAutoCombate, AutoDeCombateBoxAABB.Max + AutosPosiciones[index] - coreccionAlturaAutoCombate));
-          CollideCars[index].Rotate(Matrix.CreateRotationY(-cuartoDeVuelta)*RotationASD);
-        }
-        //CollideCars[index].Rotate(Matrix.CreateRotationY(AutosRotaciones[index]));
-      }
-
+      
 
       AutoPrincipalBox = OrientedBoundingBox.FromAABB(new BoundingBox(AutoDeportivoBoxAABB.Min + AutoPrincipalPos - coreccionAltura, AutoDeportivoBoxAABB.Max + AutoPrincipalPos - coreccionAltura));
       AutoPrincipalBox.Rotate(Matrix.CreateRotationX(-jumpRotation) * Matrix.CreateRotationY(Rotation * 2));
@@ -492,9 +453,69 @@ namespace TGC.MonoGame.TP
         }
         for(int i =0; i < vidaAutos.Length; i++)
         {
-          if(vidaAutos[i] <= 0)
-            AutosPosiciones[i] = obtenerSpawn();
+          if(vidaAutos[i] <= 0 && !autosDestruidos.Contains(i))
+            {
+              timersRespawn[i] = 5f;
+              autosDestruidos.Add(i);
+            }
         }
+
+      for(int i = 0; i < autosDestruidos.Count; i++)
+        {
+          if(timersRespawn[autosDestruidos[i]] <= 0)
+          {
+             AutosPosiciones[autosDestruidos[i]] = obtenerSpawn();
+             if(autosDestruidos[i] < 5)
+                vidaAutos[autosDestruidos[i]] = 100;
+              else
+                vidaAutos[autosDestruidos[i]] = 200;
+             autosDestruidos.RemoveAt(i);
+          }
+          else
+          {
+            timersRespawn[autosDestruidos[i]] -= elapsedTime;
+          }
+        }
+      
+      
+      AutoPrincipalPos += Desplazamiento;
+
+      AutoPrincipalWorld =  Matrix.CreateScale(0.1f) *
+                            Matrix.CreateRotationX(-jumpRotation) *
+                            Matrix.CreateRotationY(Rotation * 2) *
+                            Matrix.CreateTranslation(AutoPrincipalPos);
+
+      for(int i = 0; i < AutosPosiciones.Length; i++)
+      {
+        objetivo[i] = AutoPrincipalPos;
+        atacarAutoPrincipal(i,elapsedTime);
+      }
+
+      //ubicacion coches IA
+      for (var index = 0; index < CollideCars.Length; index++)
+      {
+        var RotationASD = Matrix.CreateWorld(AutosPosiciones[index],AutosAdelante[index],Vector3.Up);
+        if (index < 5)
+        {
+          AutosWorld[index] = Matrix.CreateScale(0.1f) * Matrix.CreateRotationY(mediaVuelta) * RotationASD;
+                              //Matrix.CreateRotationY(AutosRotaciones[index]) *
+                              //Matrix.CreateTranslation(AutosPosiciones[index]);
+
+          CollideCars[index] = OrientedBoundingBox.FromAABB(new BoundingBox(AutoDeportivoBoxAABB.Min + AutosPosiciones[index] - coreccionAltura, AutoDeportivoBoxAABB.Max + AutosPosiciones[index] - coreccionAltura));
+          CollideCars[index].Rotate(Matrix.CreateRotationY(mediaVuelta)*RotationASD);
+        }
+        else
+        {
+          AutosWorld[index] = Matrix.CreateScale(0.007f) * Matrix.CreateRotationY(-cuartoDeVuelta) * RotationASD;
+                              //Matrix.CreateRotationY(AutosRotaciones[index])  *
+                             // Matrix.CreateTranslation(AutosPosiciones[index]);
+
+          CollideCars[index] = OrientedBoundingBox.FromAABB(new BoundingBox(AutoDeCombateBoxAABB.Min + AutosPosiciones[index] - coreccionAlturaAutoCombate, AutoDeCombateBoxAABB.Max + AutosPosiciones[index] - coreccionAlturaAutoCombate));
+          CollideCars[index].Rotate(Matrix.CreateRotationY(-cuartoDeVuelta)*RotationASD);
+        }
+        //CollideCars[index].Rotate(Matrix.CreateRotationY(AutosRotaciones[index]));
+      }
+
     }
 
     public void dibujarAutoDeportivo(Matrix view, Matrix projection, Effect effect, Model modelo,float fronRot ,float WheelRot, Matrix matrizMundo, String tecnica)
@@ -598,9 +619,12 @@ namespace TGC.MonoGame.TP
 
       for (int index = 0; index < AutosWorld.Length; index++)
       {
-        if (index < 5)  dibujarAutoDeportivo(view, projection, effect, AutoDeportivo, frontWheelRotationIA[index], 0f,AutosWorld[index], tecnica);
-        else dibujarAutoDeCombate(view, projection, effect, AutoDeCombate, frontWheelRotationIA[index], 0f,AutosWorld[index], tecnica);
-      }
+        if(!autosDestruidos.Contains(index))
+          {
+            if (index < 5)  dibujarAutoDeportivo(view, projection, effect, AutoDeportivo, frontWheelRotationIA[index], 0f,AutosWorld[index], tecnica);
+            else dibujarAutoDeCombate(view, projection, effect, AutoDeCombate, frontWheelRotationIA[index], 0f,AutosWorld[index], tecnica);
+          }
+        }
     }
 
     public Vector3 posAutoPrincipal()
@@ -980,6 +1004,16 @@ namespace TGC.MonoGame.TP
           vidaAutos[i] = 200;
       }  
 
+        Spawns = new Vector3[]{
+        new Vector3(600,0,350),
+        new Vector3(0,0,600)
+        };
+
+      timersRespawn = new float[AutosWorld.Length];
+      for(int i = 0; i < timersRespawn.Length; i++)
+        timersRespawn[i] = 0f;
+
+        autosDestruidos = new List<int>();
       }
 
       public bool victoriaPorKills()
