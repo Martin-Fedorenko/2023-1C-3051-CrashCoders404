@@ -438,6 +438,7 @@ namespace TGC.MonoGame.TP
                               //Matrix.CreateTranslation(AutosPosiciones[index]);
 
           CollideCars[index] = OrientedBoundingBox.FromAABB(new BoundingBox(AutoDeportivoBoxAABB.Min + AutosPosiciones[index] - coreccionAltura, AutoDeportivoBoxAABB.Max + AutosPosiciones[index] - coreccionAltura));
+          CollideCars[index].Rotate(Matrix.CreateRotationY(mediaVuelta)*RotationASD);
         }
         else
         {
@@ -446,8 +447,9 @@ namespace TGC.MonoGame.TP
                              // Matrix.CreateTranslation(AutosPosiciones[index]);
 
           CollideCars[index] = OrientedBoundingBox.FromAABB(new BoundingBox(AutoDeCombateBoxAABB.Min + AutosPosiciones[index] - coreccionAlturaAutoCombate, AutoDeCombateBoxAABB.Max + AutosPosiciones[index] - coreccionAlturaAutoCombate));
+          CollideCars[index].Rotate(Matrix.CreateRotationY(-cuartoDeVuelta)*RotationASD);
         }
-        CollideCars[index].Rotate(Matrix.CreateRotationY(AutosRotaciones[index]));
+        //CollideCars[index].Rotate(Matrix.CreateRotationY(AutosRotaciones[index]));
       }
 
 

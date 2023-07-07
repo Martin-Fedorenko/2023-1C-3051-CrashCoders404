@@ -148,7 +148,7 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
     private float totalGameTime;
     private float countdownStart;
     private Vector2 autoPos;
-    private bool dibujarGizmos = false;
+    private bool dibujarGizmos = true;
     private Vector2 tamanioPantalla;
     private Texture2D Corazon;
     private Texture2D Logo;
