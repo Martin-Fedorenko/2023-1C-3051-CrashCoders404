@@ -532,10 +532,10 @@ namespace TGC.MonoGame.TP
       {
         effect.CurrentTechnique = effect.Techniques[tecnica];
 
-        rightFrontWheelBone.Transform = Matrix.CreateRotationX(fronRot) * Matrix.CreateRotationY(WheelRot) * rightFrontWheelTransform;
-        leftFrontWheelBone.Transform =  Matrix.CreateRotationX(fronRot) * Matrix.CreateRotationY(WheelRot) * leftFrontWheelTransform;
-        leftBackWheelBone.Transform = Matrix.CreateRotationX(fronRot) * leftBackWheelTransform;
-        rightBackWheelBone.Transform = Matrix.CreateRotationX(fronRot) * rightBackWheelTransform;
+        rightFrontWheelBone.Transform = Matrix.CreateRotationX(fronRot + fronRot * 0.5f * (CarSpeed.X / 10)) * Matrix.CreateRotationY(WheelRot) * rightFrontWheelTransform;
+        leftFrontWheelBone.Transform =  Matrix.CreateRotationX(fronRot + fronRot * 0.5f * (CarSpeed.X / 10)) * Matrix.CreateRotationY(WheelRot) * leftFrontWheelTransform;
+        leftBackWheelBone.Transform = Matrix.CreateRotationX(fronRot + fronRot * 0.5f *(CarSpeed.X / 10)) * leftBackWheelTransform;
+        rightBackWheelBone.Transform = Matrix.CreateRotationX(fronRot + fronRot * 0.5f * (CarSpeed.X / 10)) * rightBackWheelTransform;
         modelo.CopyAbsoluteBoneTransformsTo(relativeMatrices);
 
         effect.Parameters["World"].SetValue(relativeMatrices[mesh.ParentBone.Index] * matrizMundo);
