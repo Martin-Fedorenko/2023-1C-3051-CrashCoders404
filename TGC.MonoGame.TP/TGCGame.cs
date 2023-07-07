@@ -196,7 +196,7 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
     {
 
       // Create a render target for the scene
-      EnvironmentMapRenderTarget = new RenderTargetCube(GraphicsDevice, 2048, false,
+      EnvironmentMapRenderTarget = new RenderTargetCube(GraphicsDevice, 256, false,
       SurfaceFormat.Color, DepthFormat.Depth24, 0, RenderTargetUsage.DiscardContents);
       GraphicsDevice.BlendState = BlendState.Opaque;
 
@@ -624,14 +624,16 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
 
           for (var face = CubeMapFace.PositiveX; face <= CubeMapFace.NegativeZ; face++)
           {
-               
+               if(face == CubeMapFace.PositiveX || face == CubeMapFace.NegativeX || face == CubeMapFace.PositiveY){
+
                 GraphicsDevice.SetRenderTarget(EnvironmentMapRenderTarget, face);
                 GraphicsDevice.Clear(ClearOptions.Target | ClearOptions.DepthBuffer, Color.Black, 1f, 0);
                 
                 escenario.dibujarEscenario(View, Projection, AutoShader, true, "Luz",boundingFrustum);
                 detalles.dibujarDetalles(View, Projection, AutoShader, "Luz",boundingFrustum);
                 powerUps.dibujarPowerUps(View, Projection, AutoShader,"Luz",boundingFrustum);
-                autos.dibujarAutos(View, Projection, AutoShader, "Luz"); 
+                autos.dibujarAutos(View, Projection, AutoShader, "Luz");
+                }
           }
           #endregion
 
