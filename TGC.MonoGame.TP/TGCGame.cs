@@ -166,7 +166,7 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
       Graphics.ApplyChanges();
 
       var rasterizerState = new RasterizerState();
-      rasterizerState.CullMode = CullMode.None;
+      rasterizerState.CullMode = CullMode.CullClockwiseFace;
       GraphicsDevice.RasterizerState = rasterizerState;
 
       detalles = new Detalles();
