@@ -109,7 +109,7 @@ namespace TGC.MonoGame.TP
     private float cuartoDeVuelta = MathF.PI / 2;
     private float totalGameTime = 0f;
 
-    public void Initialize(GraphicsDevice graphicsDevice)
+    public void Initialize()
     {
       collidedindexAmetralladora = new List<int>();
       collidedindexMisil = new List<int>();
