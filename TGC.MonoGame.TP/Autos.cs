@@ -621,6 +621,7 @@ namespace TGC.MonoGame.TP
     }
     public void dibujarAutos(Matrix view, Matrix projection, Effect effect, String tecnica)
     {
+
       effect.Parameters["colorBloom"]?.SetValue(Color.White.ToVector3());
       dibujarAutoDeportivo(view, projection, effect, AutoDeportivo,frontWheelRotation, WheelRotationPrincipal, AutoPrincipalWorld, tecnica);
 

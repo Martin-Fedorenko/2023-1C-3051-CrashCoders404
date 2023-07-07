@@ -424,21 +424,18 @@ namespace TGC.MonoGame.TP
 
             TreeBoxes = new BoundingBox[]
             {
-                new BoundingBox(TreeBox.Min + Tree3Position - correctorPosicionBoxTree , TreeBox.Max + Tree3Position - correctorPosicionBoxTree),
-                new BoundingBox(TreeBox.Min + Tree8Position -correctorPosicionBoxTree, TreeBox.Max + Tree8Position - correctorPosicionBoxTree),
-
                 new BoundingBox(TreeBox.Min + Tree1Position -correctorPosicionBoxTree, TreeBox.Max + Tree1Position - correctorPosicionBoxTree),
+                new BoundingBox(TreeBox.Min + Tree2Position -correctorPosicionBoxTree, TreeBox.Max + Tree2Position - correctorPosicionBoxTree),
+                new BoundingBox(TreeBox.Min + Tree3Position - correctorPosicionBoxTree , TreeBox.Max + Tree3Position - correctorPosicionBoxTree),
+                new BoundingBox(TreeBox.Min + Tree4Position -correctorPosicionBoxTree, TreeBox.Max + Tree4Position - correctorPosicionBoxTree),
                 new BoundingBox(TreeBox.Min + Tree5Position -correctorPosicionBoxTree, TreeBox.Max + Tree5Position - correctorPosicionBoxTree),
                 new BoundingBox(TreeBox.Min + Tree6Position -correctorPosicionBoxTree, TreeBox.Max + Tree6Position - correctorPosicionBoxTree),
-                new BoundingBox(TreeBox.Min + Tree12Position -correctorPosicionBoxTree, TreeBox.Max + Tree12Position - correctorPosicionBoxTree),
-
-                new BoundingBox(TreeBox.Min + Tree2Position -correctorPosicionBoxTree, TreeBox.Max + Tree2Position - correctorPosicionBoxTree),
                 new BoundingBox(TreeBox.Min + Tree7Position -correctorPosicionBoxTree, TreeBox.Max + Tree7Position - correctorPosicionBoxTree),
+                new BoundingBox(TreeBox.Min + Tree8Position -correctorPosicionBoxTree, TreeBox.Max + Tree8Position - correctorPosicionBoxTree),
                 new BoundingBox(TreeBox.Min + Tree9Position -correctorPosicionBoxTree, TreeBox.Max + Tree9Position - correctorPosicionBoxTree),
                 new BoundingBox(TreeBox.Min + Tree10Position -correctorPosicionBoxTree, TreeBox.Max + Tree10Position - correctorPosicionBoxTree),
-
-                new BoundingBox(TreeBox.Min + Tree4Position -correctorPosicionBoxTree, TreeBox.Max + Tree4Position - correctorPosicionBoxTree),
-                new BoundingBox(TreeBox.Min + Tree11Position -correctorPosicionBoxTree, TreeBox.Max + Tree11Position - correctorPosicionBoxTree)
+                new BoundingBox(TreeBox.Min + Tree11Position -correctorPosicionBoxTree, TreeBox.Max + Tree11Position - correctorPosicionBoxTree),
+                new BoundingBox(TreeBox.Min + Tree12Position -correctorPosicionBoxTree, TreeBox.Max + Tree12Position - correctorPosicionBoxTree),      
             };
 
             Vector3 correctorPosicionBoxRock1 = new Vector3(145f, 142f,8f);
@@ -672,7 +669,7 @@ namespace TGC.MonoGame.TP
         {   
 
             effect.CurrentTechnique = effect.Techniques[tecnica];
-            for(int index = 0; index < TreesWorld.Length; index++)
+            for(int index = 0; index < TreeBoxes.Length; index++)
             {
                 if(frustum.Intersects(TreeBoxes[index]))
                     dibujarArboles(view,projection,effect,TreesWorld[index], Tree, TexturaArbol);

@@ -452,6 +452,7 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
 
 
             boundingFrustum.Matrix = View * Projection;
+
             if(autos.muereProta())
             {
               MediaPlayer.Stop();
@@ -703,12 +704,8 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
             FullScreenQuad.Draw(AutoShader, "Integrar");
           #endregion
 
-          /*escenario.dibujarEscenario(View, Projection, AutoShader);
-          detalles.dibujarDetalles(View, Projection, AutoShader);
-          powerUps.dibujarPowerUps(View, Projection, AutoShader);
-          autos.dibujarAutos(View, Projection, AutoShader);*/
 
-
+          dibujarGizmos = true;
           if(dibujarGizmos)
           {
           autos.dibujarBoundingBoxes(gizmos); //OBB de autos deportivos bien ubicadas
