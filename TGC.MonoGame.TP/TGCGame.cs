@@ -490,6 +490,34 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
           }
           break;
 
+          case ST_VICTORIA:
+          if(!(MediaPlayer.State == MediaState.Playing))
+          {
+            MediaPlayer.Play(Winner);
+          }
+
+          if (Keyboard.GetState().IsKeyDown(Keys.Enter))
+          {
+            
+            //this.UnloadContent();
+            Thread.Sleep(500);
+            autos.iniciarPartida();
+            powerUps.iniciarPartida();
+            SpriteBatch.Begin();
+            dibujarCorazones(tamanioPantalla);
+            dibujarPowerUpsLogos(tamanioPantalla);
+            SpriteBatch.End();
+            View = Matrix.CreateLookAt(posicionCamara, autos.posAutoPrincipal(), Vector3.Up);
+            Projection = Matrix.CreateOrthographic(400, 300, -80, 1000);
+            totalGameTime = 0;
+            status = ST_PRESENTACION;
+            
+            MediaPlayer.Stop();
+            MediaPlayer.Play(SongMenu);
+            break;
+          }
+          break;
+
         case ST_ENDGAME:
           Exit();
           break;
@@ -615,13 +643,14 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
 
         case ST_DERROTA:          
           GraphicsDevice.Clear(Color.Black);
+          SpriteBatch.Begin();
           //DrawCenterTextY("GAME OVER", tamanioPantalla.Y *0.5f, 10);
           SpriteBatch.DrawString(font2, "Has Sobrevivido " + ((int)totalGameTime).ToString() + " Segundos",new Vector2(tamanioPantalla.X * 0f, tamanioPantalla.Y * 0f), Color.WhiteSmoke);
           SpriteBatch.DrawString(font2, "Has Asesinado " + (autos.getAutoBajas().ToString()) + " Enemigos",new Vector2(tamanioPantalla.X * 0f, tamanioPantalla.Y * 0f), Color.WhiteSmoke);
           SpriteBatch.DrawString(font2, "Tiempo:" + ((int)totalGameTime).ToString(), new Vector2(tamanioPantalla.X * 0f, tamanioPantalla.Y * 0f), Color.WhiteSmoke);
           SpriteBatch.DrawString(font2, "Bajas:" + (autos.getAutoBajas().ToString()), new Vector2(tamanioPantalla.X * 0f, tamanioPantalla.Y * 0.1f), Color.WhiteSmoke);
           
-          SpriteBatch.Begin();
+          
           SpriteBatch.Draw(LogoGameOver, new Vector2(tamanioPantalla.X * 0.25f, tamanioPantalla.Y*0.1f), Color.WhiteSmoke);
           SpriteBatch.End();
           break;
@@ -733,11 +762,10 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
           }
           SpriteBatch.End(); //si lo ponemos antes de dibujar los modelos, los autos y el piso se dibujan translucidos 
           
-          if(autos.victoriaPorKills() || (int)totalGameTime >= 240)
+          if(autos.victoriaPorKills() || (int)totalGameTime >= 120)
           {
             status = ST_VICTORIA;
             MediaPlayer.Stop();
-            MediaPlayer.Play(Winner);
           }
           
           
