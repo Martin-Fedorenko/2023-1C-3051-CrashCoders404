@@ -375,7 +375,44 @@ namespace TGC.MonoGame.TP
         }
       }
 
-      
+        AutoPrincipalPos += Desplazamiento;
+
+      AutoPrincipalWorld =  Matrix.CreateScale(0.1f) *
+                            Matrix.CreateRotationX(-jumpRotation) *
+                            Matrix.CreateRotationY(Rotation * 2) *
+                            Matrix.CreateTranslation(AutoPrincipalPos);
+
+      for(int i = 0; i < AutosPosiciones.Length; i++)
+      {
+        objetivo[i] = AutoPrincipalPos;
+        atacarAutoPrincipal(i,elapsedTime);
+      }
+
+      //ubicacion coches IA
+      for (var index = 0; index < CollideCars.Length; index++)
+      {
+        var RotationASD = Matrix.CreateWorld(AutosPosiciones[index],AutosAdelante[index],Vector3.Up);
+        if (index < 5)
+        {
+          AutosWorld[index] = Matrix.CreateScale(0.1f) * Matrix.CreateRotationY(mediaVuelta) * RotationASD;
+                              //Matrix.CreateRotationY(AutosRotaciones[index]) *
+                              //Matrix.CreateTranslation(AutosPosiciones[index]);
+
+          CollideCars[index] = OrientedBoundingBox.FromAABB(new BoundingBox(AutoDeportivoBoxAABB.Min + AutosPosiciones[index] - coreccionAltura, AutoDeportivoBoxAABB.Max + AutosPosiciones[index] - coreccionAltura));
+          CollideCars[index].Rotate(Matrix.CreateRotationY(mediaVuelta)*RotationASD);
+        }
+        else
+        {
+          AutosWorld[index] = Matrix.CreateScale(0.007f) * Matrix.CreateRotationY(-cuartoDeVuelta) * RotationASD;
+                              //Matrix.CreateRotationY(AutosRotaciones[index])  *
+                             // Matrix.CreateTranslation(AutosPosiciones[index]);
+
+          CollideCars[index] = OrientedBoundingBox.FromAABB(new BoundingBox(AutoDeCombateBoxAABB.Min + AutosPosiciones[index] - coreccionAlturaAutoCombate, AutoDeCombateBoxAABB.Max + AutosPosiciones[index] - coreccionAlturaAutoCombate));
+          CollideCars[index].Rotate(Matrix.CreateRotationY(-cuartoDeVuelta)*RotationASD);
+        }
+        //CollideCars[index].Rotate(Matrix.CreateRotationY(AutosRotaciones[index]));
+      }
+
 
       AutoPrincipalBox = OrientedBoundingBox.FromAABB(new BoundingBox(AutoDeportivoBoxAABB.Min + AutoPrincipalPos - coreccionAltura, AutoDeportivoBoxAABB.Max + AutoPrincipalPos - coreccionAltura));
       AutoPrincipalBox.Rotate(Matrix.CreateRotationX(-jumpRotation) * Matrix.CreateRotationY(Rotation * 2));
@@ -478,44 +515,7 @@ namespace TGC.MonoGame.TP
         }
       
       
-      AutoPrincipalPos += Desplazamiento;
-
-      AutoPrincipalWorld =  Matrix.CreateScale(0.1f) *
-                            Matrix.CreateRotationX(-jumpRotation) *
-                            Matrix.CreateRotationY(Rotation * 2) *
-                            Matrix.CreateTranslation(AutoPrincipalPos);
-
-      for(int i = 0; i < AutosPosiciones.Length; i++)
-      {
-        objetivo[i] = AutoPrincipalPos;
-        atacarAutoPrincipal(i,elapsedTime);
-      }
-
-      //ubicacion coches IA
-      for (var index = 0; index < CollideCars.Length; index++)
-      {
-        var RotationASD = Matrix.CreateWorld(AutosPosiciones[index],AutosAdelante[index],Vector3.Up);
-        if (index < 5)
-        {
-          AutosWorld[index] = Matrix.CreateScale(0.1f) * Matrix.CreateRotationY(mediaVuelta) * RotationASD;
-                              //Matrix.CreateRotationY(AutosRotaciones[index]) *
-                              //Matrix.CreateTranslation(AutosPosiciones[index]);
-
-          CollideCars[index] = OrientedBoundingBox.FromAABB(new BoundingBox(AutoDeportivoBoxAABB.Min + AutosPosiciones[index] - coreccionAltura, AutoDeportivoBoxAABB.Max + AutosPosiciones[index] - coreccionAltura));
-          CollideCars[index].Rotate(Matrix.CreateRotationY(mediaVuelta)*RotationASD);
-        }
-        else
-        {
-          AutosWorld[index] = Matrix.CreateScale(0.007f) * Matrix.CreateRotationY(-cuartoDeVuelta) * RotationASD;
-                              //Matrix.CreateRotationY(AutosRotaciones[index])  *
-                             // Matrix.CreateTranslation(AutosPosiciones[index]);
-
-          CollideCars[index] = OrientedBoundingBox.FromAABB(new BoundingBox(AutoDeCombateBoxAABB.Min + AutosPosiciones[index] - coreccionAlturaAutoCombate, AutoDeCombateBoxAABB.Max + AutosPosiciones[index] - coreccionAlturaAutoCombate));
-          CollideCars[index].Rotate(Matrix.CreateRotationY(-cuartoDeVuelta)*RotationASD);
-        }
-        //CollideCars[index].Rotate(Matrix.CreateRotationY(AutosRotaciones[index]));
-      }
-
+    
     }
 
     public void dibujarAutoDeportivo(Matrix view, Matrix projection, Effect effect, Model modelo,float fronRot ,float WheelRot, Matrix matrizMundo, String tecnica)
