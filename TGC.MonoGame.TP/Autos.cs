@@ -500,6 +500,7 @@ namespace TGC.MonoGame.TP
                 vidaAutos[autosDestruidos[i]] = 100;
               else
                 vidaAutos[autosDestruidos[i]] = 200;
+              
              autosDestruidos.RemoveAt(i);
           }
           else

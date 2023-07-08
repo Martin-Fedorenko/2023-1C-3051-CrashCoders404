@@ -419,27 +419,47 @@ namespace TGC.MonoGame.TP
 
             for (int index = 0; index < TireBoxes.Length; index++)
             {
-                if(autoCollider.Intersects(TireBoxes[index],out vectorChoque,out penetration))
+                var ruedaTrabada = false;
+                for(int i = 0; i < escenario.getParedBoxes().Length; i++)
                 {
-                    posicionRuedas[index] += -vectorChoque * penetration;  
+                    if(TireBoxes[i].Intersects(escenario.getParedBoxes()[i]))
+                        ruedaTrabada = true;
+                }
+                for(int i = 0; i < escenario.getColumnBoxes().Length; i++)
+                {
+                    if(TireBoxes[i].Intersects(escenario.getColumnBoxes()[i]))
+                        ruedaTrabada = true;
+                }
+                for(int i = 0; i < escenario.getBrokenColumnBoxes().Length; i++)
+                {
+                    if(TireBoxes[i].Intersects(escenario.getBrokenColumnBoxes()[i]))
+                        ruedaTrabada = true;
+                }
+                for(int i = 0; i < TreeBoxes.Length; i++)
+                {
+                    if(TireBoxes[i].Intersects(TreeBoxes[i]))
+                        ruedaTrabada = true;
+                }
+                for(int i = 0; i < Rock1Boxes.Length; i++)
+                {
+                    if(TireBoxes[i].Intersects(Rock1Boxes[i]))
+                        ruedaTrabada = true;
+                }
+                for(int i = 0; i < Rock5Boxes.Length; i++)
+                {
+                    if(TireBoxes[i].Intersects(Rock5Boxes[i]))
+                        ruedaTrabada = true;
+                }
+                for(int i = 0; i < Rock10Boxes.Length; i++)
+                {
+                    if(TireBoxes[i].Intersects(Rock10Boxes[i]))
+                        ruedaTrabada = true;
                 }
 
-                for(int j = 0; j < TireBoxes.Length; j++)
+                if(autoCollider.Intersects(TireBoxes[index],out vectorChoque,out penetration) && !ruedaTrabada)
                 {
-                    if(TireBoxes[index].Intersects(TireBoxes[j]) && TireBoxes[index] != TireBoxes[j])
-                    {
-                        var penetracion = interseccionAABBAABB(TireBoxes[index],TireBoxes[j]);
-                        posicionRuedas[j] -= penetracion;
-                    }
-                }
-                
-                for(int i = 0 ; i < escenario.getParedBoxes().Length; i++)
-                {
-                    if(TireBoxes[index].Intersects(escenario.getParedBoxes()[i]))
-                    {
-                        var penetracion = interseccionAABBAABB(TireBoxes[index],escenario.getParedBoxes()[i]);
-                        posicionRuedas[index] -= penetracion;
-                    }
+                    
+                    posicionRuedas[index] += -vectorChoque * penetration;  
                 }
             }
 
@@ -635,7 +655,7 @@ namespace TGC.MonoGame.TP
             return false;
         }
 
-        public Vector3 interseccionAABBAABB(BoundingBox A, BoundingBox B)
+        public Vector3 interseccionAABBAABB(BoundingBox A, BoundingBox B) //quedo raro la colision entre ruedas
         {
             var CenterA = BoundingVolumesExtensions.GetCenter(A);
             var CenterB = BoundingVolumesExtensions.GetCenter(B);

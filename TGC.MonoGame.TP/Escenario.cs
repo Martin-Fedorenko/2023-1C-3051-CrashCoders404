@@ -429,6 +429,10 @@ public void dibujar(Matrix view, Matrix projection, Effect effect, Matrix matriz
   {
     return ColumnBoxes;
   }
+  public BoundingBox[] getBrokenColumnBoxes()
+  {
+    return BrokenColumnBoxes;
+  }
   public Boolean IAchoco(OrientedBoundingBox obb){
       
       for(int i = 0; i < BrokenColumnBoxes.Length; i++)
