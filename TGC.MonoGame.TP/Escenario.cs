@@ -25,9 +25,6 @@ namespace TGC.MonoGame.TP
     private Matrix[] ColumnWorld { get; set; }
     private Matrix[] BrokenColumnWorld { get; set; }
 
-    private Vector3  Platform1Position = new Vector3(70, 64, -390);
-    private Vector3  Platform2Position = new Vector3(-250, 30, 100);
-    private Vector3  Platform3Position = new Vector3(-250, 93, 235);
     private Vector3  Platform4Position = new Vector3(210, 0, 300);
     private Vector3  Platform5Position = new Vector3(-435, 0, -195);
     private Vector3  Column1Position = new Vector3(0, 0, -450);
@@ -130,9 +127,6 @@ namespace TGC.MonoGame.TP
 
       PlatformWorld = new Matrix[]
       {
-        Matrix.CreateScale(100, 5, 80) * Matrix.CreateTranslation(Platform1Position),
-        Matrix.CreateScale(100, 5, 80) * Matrix.CreateTranslation(Platform2Position),
-        Matrix.CreateScale(100, 5, 70) * Matrix.CreateTranslation(Platform3Position),
         Matrix.CreateScale(50, 10, 50) * Matrix.CreateTranslation(Platform4Position),
         Matrix.CreateScale(50, 10, 50) * Matrix.CreateTranslation(Platform5Position)
       };
@@ -222,16 +216,11 @@ public void LoadContent(QuadPrimitive piso, QuadPrimitive pared, Model column, M
      
 
       PlatformBox = BoundingVolumesExtensions.CreateAABBFrom(Platform);
-      PlatformBox1 = BoundingVolumesExtensions.Scale(PlatformBox,new Vector3(100, 5, 80));
-      PlatformBox2 = BoundingVolumesExtensions.Scale(PlatformBox,new Vector3(100, 5, 70));
       PlatformBox3 = BoundingVolumesExtensions.Scale(PlatformBox,new Vector3(50, 10, 50));
 
 
       PlatformBoxes = new BoundingBox[]
       {
-        new BoundingBox(PlatformBox1.Min + Platform1Position , PlatformBox1.Max + Platform1Position),
-        new BoundingBox(PlatformBox1.Min + Platform2Position , PlatformBox1.Max + Platform2Position),
-        new BoundingBox(PlatformBox2.Min + Platform3Position , PlatformBox2.Max + Platform3Position),
         new BoundingBox(PlatformBox3.Min + Platform4Position , PlatformBox3.Max + Platform4Position),
         new BoundingBox(PlatformBox3.Min + Platform5Position , PlatformBox3.Max + Platform5Position)
         
@@ -259,14 +248,7 @@ public void LoadContent(QuadPrimitive piso, QuadPrimitive pared, Model column, M
             {
                 if(autoCollider.Intersects(PlatformBoxes[index]))
                 {
-                  if(autoCollider.Center.Y > PlatformBoxes[index].Max.Y || index > 2)
-                  {
-                    auto.autoEnPlataforma(PlatformBoxes[index].Max.Y);
-                  }
-                  else
-                  {
-                    auto.chocarTecho();
-                  }
+                  auto.autoEnPlataforma(PlatformBoxes[index].Max.Y);
                 }
                 else
                 {

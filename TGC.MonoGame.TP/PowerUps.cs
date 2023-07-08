@@ -368,7 +368,7 @@ namespace TGC.MonoGame.TP
               if (ametralladoraCooldown <= 0f)
               {
                 ametralladoraCounter--;
-                dispararBala(autos.posAutoPrincipal()+autos.CarDirection*200f, autos.Rotation, ametralladoraCounter);
+                dispararBala(autos.posAutoPrincipal()+autos.CarDirection*20f, autos.Rotation, ametralladoraCounter);
                 ametralladoraCooldown = 0.25f;
                 Instance = BulletSound.CreateInstance();
                 Instance.Play();
@@ -386,7 +386,7 @@ namespace TGC.MonoGame.TP
         }
         else if (currentPowerUp == PowerUp.Misil)
         {
-          dispararMisil(autos.posAutoPrincipal()+autos.CarDirection*350f , autos.Rotation);
+          dispararMisil(autos.posAutoPrincipal()+autos.CarDirection*35f , autos.Rotation);
           Instance = PickUpRocketSound.CreateInstance();
           Instance.Play();
           currentPowerUp = PowerUp.None;
