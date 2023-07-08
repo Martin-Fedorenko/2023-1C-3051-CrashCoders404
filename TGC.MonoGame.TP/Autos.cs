@@ -769,8 +769,8 @@ namespace TGC.MonoGame.TP
 
         AutosRotaciones[index] = -angle*2; //sin el "*2" giraban muy lento
 
-        if(index < 5)
-          AutosPosiciones[index] += Vector3.Normalize(AutosWorld[index].Backward) * 100 * elapsedTime;
+        if(index < 5) //sus matrices de mundo originalmente apuntan hacia otro lado (right = adelante en el tanque) y (atras = adelante en el auto)
+          AutosPosiciones[index] += Vector3.Normalize(AutosWorld[index].Backward) * 100 * elapsedTime; 
         else
           AutosPosiciones[index] += Vector3.Normalize(AutosWorld[index].Left) * 75 * elapsedTime;
 
