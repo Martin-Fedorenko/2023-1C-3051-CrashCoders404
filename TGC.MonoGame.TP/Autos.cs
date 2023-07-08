@@ -221,6 +221,7 @@ namespace TGC.MonoGame.TP
       Rozamiento = CarSpeed.X * 0.5f;
       choco = false;
 
+
       for(int index = 0 ; index < DesplazamientoAutos.Length; index++)
       {
         DesplazamientoAutos[index] = Vector3.Zero;
@@ -764,30 +765,19 @@ namespace TGC.MonoGame.TP
         float diffX = apunta.X - delante.X; //diferencias en X entre vectores
         float diffY = apunta.Y - delante.Y; //diferencias en z entre vectores
 
-        float angle = (float)Math.Atan2(diffY,diffX); //arco tangente de las diferencias
+        float angle = (float)Math.Atan2(diffY,diffX); //arco tangente de las diferencias en Radianes
 
         AutosRotaciones[index] = -angle*2; //sin el "*2" giraban muy lento
 
-        //if(index < 5)
-         // AutosPosiciones[index] += -AutosDirecciones[index] * 100 * elapsedTime;
-        //else
-        //  AutosPosiciones[index] += -AutosDirecciones[index] * 75 * elapsedTime;
+        if(index < 5)
+          AutosPosiciones[index] += Vector3.Normalize(AutosWorld[index].Backward) * 100 * elapsedTime;
+        else
+          AutosPosiciones[index] += Vector3.Normalize(AutosWorld[index].Left) * 75 * elapsedTime;
 
         
         frontWheelRotationIA[index] += elapsedTime;  
     }
 
-    public Vector2 direccionAuto(Vector2 direccionInicial, Matrix matriz)
-    {
-      
-      Vector2 vector2 = Vector2.Transform(direccionInicial, matriz);
-      return (vector2);
-    }
-
-    public double ConvertToRadians(double angle)
-    {
-    return (180/Math.PI) * angle;
-    }
 
     private double RandomPosition(Random random)
     {
@@ -948,9 +938,6 @@ namespace TGC.MonoGame.TP
       AutosDirecciones = new Vector3[AutosWorld.Length];
       for(int i = 0; i < AutosDirecciones.Length; i++)
       {
-        if(i < 5)
-          AutosDirecciones[i] = Vector3.Normalize(AutosWorld[i].Forward);
-        else
           AutosDirecciones[i] = Vector3.Normalize(AutosWorld[i].Forward);
       }
 
