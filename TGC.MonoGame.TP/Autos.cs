@@ -99,6 +99,7 @@ namespace TGC.MonoGame.TP
     private Random unRandom = new Random();
     public int vidaProtagonista = 100;
     private int[] vidaAutos;
+    private Vector3 posicionEspera = new Vector3(0,0,200); //para que las boxes de autos que acaban de respawnear no nos golpeen
 
     //Texturas
     private List<Texture2D> ColorTextures { get; set; }
@@ -392,7 +393,12 @@ namespace TGC.MonoGame.TP
       //ubicacion coches IA
       for (var index = 0; index < CollideCars.Length; index++)
       {
-        if (index < 5)
+        if(autosDestruidos.Contains(index))
+        {
+          CollideCars[index] = OrientedBoundingBox.FromAABB(new BoundingBox(AutoDeportivoBoxAABB.Min + posicionEspera - coreccionAltura, AutoDeportivoBoxAABB.Max + posicionEspera - coreccionAltura));
+        }
+
+        else if (index < 5)
         {
           AutosWorld[index] = Matrix.CreateScale(0.1f) * Matrix.CreateRotationY(mediaVuelta) * Matrix.CreateRotationY(AutosRotaciones[index] ) * Matrix.CreateTranslation(AutosPosiciones[index]);
                               
