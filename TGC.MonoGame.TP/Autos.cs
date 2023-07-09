@@ -495,14 +495,18 @@ namespace TGC.MonoGame.TP
       AutoPrincipalPos += Desplazamiento;
 
             
-          /*else
-            for(int j = 0; j < CollideCars.Length; j++)
-            {
-              if(CollideCars[i].Intersects(CollideCars[j]) && CollideCars[i] != CollideCars[j])
+      for(int i = 0; i< cantidadEnemigos; i++){
+        for(int j = 0; j< cantidadEnemigos; j++){
+          if(CollideCars[i].Intersects(CollideCars[j]) && i!=j)
               {
-                AutosPosiciones[j] = obtenerSpawn();
+                vidaAutos[j] = 0;
+                dissolveActivado[j] = true;
+                          timersRespawn[j] = 0f;
+                          autosDestruidos.Add(j);
               }
-            }*/
+          }
+      }
+
 
         
           //NO ANDA AYUDAAA
