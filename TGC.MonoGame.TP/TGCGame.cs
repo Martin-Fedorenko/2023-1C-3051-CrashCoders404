@@ -373,7 +373,7 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
             MediaPlayer.Stop();
             MediaPlayer.Play(SongCountdown);
             countdownStart += (float)gameTime.ElapsedGameTime.TotalSeconds;
-            autos.vidaProtagonista = 10000;
+            autos.godMode();
           }
           if (Keyboard.GetState().IsKeyDown(Keys.C))
           {
