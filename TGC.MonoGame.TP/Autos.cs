@@ -59,6 +59,7 @@ namespace TGC.MonoGame.TP
 
     private float[] frontWheelRotationIA;
     private Matrix[] relativeMatrices;
+    private Boolean velocidadPositiva;
 
     //Matrices
     private Matrix AutoPrincipalWorld { get; set; }
@@ -234,6 +235,7 @@ namespace TGC.MonoGame.TP
         
         Desplazamiento += CarDirection * CarSpeed.X * elapsedTime + CarAcceleration * elapsedTime * elapsedTime* CarDirection  / 2f;
         ActiveMovement = true;
+        frontWheelRotation += elapsedTime * CarSpeed.X/10;
       }
       else if (Keyboard.GetState().IsKeyDown(Keys.S) && !onJump)
       {
@@ -244,6 +246,8 @@ namespace TGC.MonoGame.TP
         else if (CarSpeed.X > -maxSpeed) CarSpeed.X -= CarAcceleration * elapsedTime;
         Desplazamiento += CarDirection * CarSpeed.X * elapsedTime + CarAcceleration * elapsedTime * elapsedTime* CarDirection  / 2f;
         ActiveMovement = true;
+        frontWheelRotation -= elapsedTime * -CarSpeed.X/10;
+   
       }
 
       if ((keyboardState.IsKeyUp(Keys.S) && keyboardState.IsKeyUp(Keys.W)) || onJump)
@@ -257,6 +261,7 @@ namespace TGC.MonoGame.TP
           CarSpeed.X -= Rozamiento * elapsedTime;
         }
         Desplazamiento += CarDirection * CarSpeed.X * elapsedTime;
+        frontWheelRotation += elapsedTime * CarSpeed.X/10;
       }
 
       if(CarSpeed.X == 0f) ActiveMovement = false;
@@ -278,12 +283,7 @@ namespace TGC.MonoGame.TP
         WheelRotationPrincipal = 0f;//cuando soltas W o A el auto y las ruedas siguen recto
       }
 
-      if(CarSpeed.X > 0)
-        frontWheelRotation += elapsedTime;
-      else if(CarSpeed.X < 0)
-        frontWheelRotation -= elapsedTime;
-      else
-        frontWheelRotation = 0f;
+
 
       //saltar
       if (Keyboard.GetState().IsKeyDown(Keys.Space)  && (enElPiso || enPlataforma))
@@ -522,10 +522,10 @@ namespace TGC.MonoGame.TP
       {
         effect.CurrentTechnique = effect.Techniques[tecnica];
 
-        rightFrontWheelBone.Transform = Matrix.CreateRotationX(fronRot + fronRot * 0.5f * (CarSpeed.X / 10)) * Matrix.CreateRotationY(WheelRot) * rightFrontWheelTransform;
-        leftFrontWheelBone.Transform =  Matrix.CreateRotationX(fronRot + fronRot * 0.5f * (CarSpeed.X / 10)) * Matrix.CreateRotationY(WheelRot) * leftFrontWheelTransform;
-        leftBackWheelBone.Transform = Matrix.CreateRotationX(fronRot + fronRot * 0.5f *(CarSpeed.X / 10)) * leftBackWheelTransform;
-        rightBackWheelBone.Transform = Matrix.CreateRotationX(fronRot + fronRot * 0.5f * (CarSpeed.X / 10)) * rightBackWheelTransform;
+        rightFrontWheelBone.Transform = Matrix.CreateRotationX(fronRot) * Matrix.CreateRotationY(WheelRot) * rightFrontWheelTransform;
+        leftFrontWheelBone.Transform =  Matrix.CreateRotationX(fronRot) * Matrix.CreateRotationY(WheelRot) * leftFrontWheelTransform;
+        leftBackWheelBone.Transform = Matrix.CreateRotationX(fronRot) * leftBackWheelTransform;
+        rightBackWheelBone.Transform = Matrix.CreateRotationX(fronRot) * rightBackWheelTransform;
         modelo.CopyAbsoluteBoneTransformsTo(relativeMatrices);
 
         effect.Parameters["World"].SetValue(relativeMatrices[mesh.ParentBone.Index] * matrizMundo);
@@ -928,6 +928,7 @@ namespace TGC.MonoGame.TP
         timersRespawn[i] = 0f;
 
         autosDestruidos = new List<int>();
+        velocidadPositiva = false;
       }
 
       public bool victoriaPorKills()
