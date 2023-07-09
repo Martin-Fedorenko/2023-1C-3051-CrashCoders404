@@ -467,15 +467,7 @@ namespace TGC.MonoGame.TP
               Instance.Stop();
             }
           }
-          for (var index = 0; index < escenario.getRampBoxes().Length; index++)
-          {
-            if(colliderMisil.Intersects(escenario.getRampBoxes()[index]))
-            {
-              recorridoMisil = 0f;
-              Instance = ExplosionMisil.CreateInstance();
-              Instance.Stop();
-            }
-          }
+
           
       }
       else
@@ -543,13 +535,6 @@ namespace TGC.MonoGame.TP
           for (var index = 0; index < escenario.getParedBoxes().Length; index++)
           {
             if(collidersBalas[i].Intersects(escenario.getParedBoxes()[index]))
-            {
-              recorridoBalas[i] = 0f;
-            }
-          }
-          for (var index = 0; index < escenario.getRampBoxes().Length; index++)
-          {
-            if(collidersBalas[i].Intersects(escenario.getRampBoxes()[index]))
             {
               recorridoBalas[i] = 0f;
             }
@@ -753,10 +738,6 @@ namespace TGC.MonoGame.TP
       balasPos[indexBala] = autoPrincipalPos;
       balasRot[indexBala] = rotation * 2f - cuartoDeVuelta;
       recorridoBalas[indexBala] = 5f;
-    }
-
-    public String powerUpActual(){
-      return currentPowerUp.ToString();
     }
 
     public void iniciarPartida()

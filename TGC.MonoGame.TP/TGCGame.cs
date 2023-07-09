@@ -293,9 +293,7 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
       Noise = Content.Load<Texture2D>(ContentFolderTextures + "perlin");
       NoiseSand = Content.Load<Texture2D>(ContentFolderTextures + "perlinSand");
       TexturaAuxiliar = Content.Load<Texture2D>(ContentFolderTextures + "lava");
-      //Effect = Content.Load<Effect>(ContentFolderEffects + "BasicShader"); //aca
-      //EscenarioShader = Content.Load<Effect>(ContentFolderEffects + "EscenarioShader");
-      //DetallesShader = Content.Load<Effect>(ContentFolderEffects + "DetallesShader");
+
       AutoShader = Content.Load<Effect>(ContentFolderEffects + "AutoShader");
       SandShader = Content.Load<Effect>(ContentFolderEffects + "SandShader");
       BlurShader = Content.Load<Effect>(ContentFolderEffects + "GaussianBlur");
