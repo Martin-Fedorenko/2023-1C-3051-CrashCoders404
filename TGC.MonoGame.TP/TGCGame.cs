@@ -129,6 +129,8 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
     private Texture2D BoostLogo;
     private Texture2D MiniGunLogo;
     private Texture2D RocketLaucherLogo;
+    private Texture2D ClockLogo;
+    private Texture2D KillsLogo;
     private Texture2D NoPowerUp;
 
     //efectos
@@ -170,7 +172,7 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
       // Dimensiones de la pantalla
       Graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
       Graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
-      //Graphics.IsFullScreen = true;
+      Graphics.IsFullScreen = true;
       Graphics.HardwareModeSwitch = true;
       Graphics.ApplyChanges();
 
@@ -285,6 +287,8 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
       LogoGameOver = Content.Load<Texture2D>(ContentFolderTextures + "gameOver");
       LogoGo = Content.Load<Texture2D>(ContentFolderTextures + "go");
       MiniGunLogo = Content.Load<Texture2D>(ContentFolderTextures + "minigun-logo");
+      KillsLogo = Content.Load<Texture2D>(ContentFolderTextures + "kills");
+      ClockLogo = Content.Load<Texture2D>(ContentFolderTextures + "clock");
       RocketLaucherLogo = Content.Load<Texture2D>(ContentFolderTextures + "rocketLauncher-logo");
       BoostLogo = Content.Load<Texture2D>(ContentFolderTextures + "boost-logo");
       NoPowerUp = Content.Load<Texture2D>(ContentFolderTextures + "noPowerUp-logo");
@@ -660,12 +664,13 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
 
         case ST_JUEGO:
           SpriteBatch.Begin();
-          SpriteBatch.DrawString(font2, "Tiempo:" + ((int)totalGameTime).ToString(), new Vector2(tamanioPantalla.X * 0f, tamanioPantalla.Y * 0f), Color.WhiteSmoke);
-          SpriteBatch.DrawString(font2, "Bajas:" + (autos.getAutoBajas().ToString()), new Vector2(tamanioPantalla.X * 0f, tamanioPantalla.Y * 0.1f), Color.WhiteSmoke);
-          SpriteBatch.DrawString(font2, "Velocidad:" + (autos.autoSpeed().ToString()), new Vector2(tamanioPantalla.X * 0.5f, tamanioPantalla.Y * 0f), Color.WhiteSmoke);
-          SpriteBatch.DrawString(font2, "PowerUp", new Vector2(tamanioPantalla.X * 0f, tamanioPantalla.Y * 0.83f), Color.WhiteSmoke);
-          dibujarCorazones(tamanioPantalla);
           dibujarPowerUpsLogos(tamanioPantalla);
+          SpriteBatch.DrawString(font2, ((int)totalGameTime).ToString(), new Vector2(tamanioPantalla.X * 0.0555f, tamanioPantalla.Y * 0.052f), Color.Black);
+          SpriteBatch.DrawString(font2, (autos.getAutoBajas().ToString()), new Vector2(tamanioPantalla.X * 0.967f, tamanioPantalla.Y * 0.055f), Color.Black);
+          //SpriteBatch.DrawString(font2, "Velocidad:" + (autos.autoSpeed().ToString()), new Vector2(tamanioPantalla.X * 0.5f, tamanioPantalla.Y * 0f), Color.WhiteSmoke);
+          //SpriteBatch.DrawString(font2, "PowerUp", new Vector2(tamanioPantalla.X * 0f, tamanioPantalla.Y * 0.83f), Color.WhiteSmoke);
+          dibujarCorazones(tamanioPantalla);
+          
           
           #region Pass 1-6
 
@@ -814,25 +819,25 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
       //CORREGIR DISPOSE DEJA CUADRADO NEGRO
       if(autos.vidaProtagonista >= 100){
         
-        SpriteBatch.Draw(Corazon, new Vector2(tamanioPantalla.X * 0.90f, tamanioPantalla.Y * 0.9f), Color.WhiteSmoke);
+        SpriteBatch.Draw(Corazon, new Vector2(tamanioPantalla.X * 0.93f, tamanioPantalla.Y * 0.85f), Color.WhiteSmoke);
       }
 
       if(autos.vidaProtagonista >= 75)
       {
         //Corazon4.Dispose();
         
-        SpriteBatch.Draw(Corazon, new Vector2(tamanioPantalla.X * 0.85f, tamanioPantalla.Y * 0.9f), Color.WhiteSmoke);
+        SpriteBatch.Draw(Corazon, new Vector2(tamanioPantalla.X * 0.88f, tamanioPantalla.Y * 0.85f), Color.WhiteSmoke);
       }
       if(autos.vidaProtagonista >= 50)
       {
         //Corazon3.Dispose();
        
-        SpriteBatch.Draw(Corazon, new Vector2(tamanioPantalla.X * 0.80f, tamanioPantalla.Y * 0.9f), Color.WhiteSmoke);
+        SpriteBatch.Draw(Corazon, new Vector2(tamanioPantalla.X * 0.83f, tamanioPantalla.Y * 0.85f), Color.WhiteSmoke);
       }
       if(autos.vidaProtagonista >= 25)
       {
         //Corazon2.Dispose();
-        SpriteBatch.Draw(Corazon, new Vector2(tamanioPantalla.X * 0.75f, tamanioPantalla.Y * 0.9f), Color.WhiteSmoke);
+        SpriteBatch.Draw(Corazon, new Vector2(tamanioPantalla.X * 0.78f, tamanioPantalla.Y * 0.85f), Color.WhiteSmoke);
       }
 
       }
@@ -840,23 +845,29 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
     public void dibujarPowerUpsLogos(Vector2 tamanioPantalla)
     {
       SpriteEffects nuevo = new SpriteEffects();
+
+      SpriteBatch.Draw(KillsLogo, new Vector2(tamanioPantalla.X * 0.92f, tamanioPantalla.Y * 0.01f), null,
+         Color.WhiteSmoke, 0f, Vector2.Zero, new Vector2(1f,1f), nuevo,0f);
+
+      SpriteBatch.Draw(ClockLogo, new Vector2(tamanioPantalla.X * 0.01f, tamanioPantalla.Y * 0.01f), null,
+         Color.WhiteSmoke, 0f, Vector2.Zero, new Vector2(1f,1f), nuevo,0f);
       
       if(powerUps.getVacio()){
         
-        SpriteBatch.Draw(NoPowerUp, new Vector2(tamanioPantalla.X * 0f, tamanioPantalla.Y * 0.85f), null,
-         Color.WhiteSmoke, 0f, Vector2.Zero, new Vector2(0.12f,0.12f), nuevo,0f);
+        SpriteBatch.Draw(NoPowerUp, new Vector2(tamanioPantalla.X * 0.01f, tamanioPantalla.Y * 0.85f), null,
+         Color.WhiteSmoke, 0f, Vector2.Zero, new Vector2(1f,1f), nuevo,0f);
       }
 
       else if(powerUps.getAmetralaldora()){
         
-        SpriteBatch.Draw(MiniGunLogo, new Vector2(tamanioPantalla.X * 0f, tamanioPantalla.Y * 0.85f), null,
-         Color.WhiteSmoke, 0f, Vector2.Zero, new Vector2(1.15f,1.15f), nuevo,0f);
+        SpriteBatch.Draw(MiniGunLogo, new Vector2(tamanioPantalla.X * 0.01f, tamanioPantalla.Y * 0.85f), null,
+         Color.WhiteSmoke, 0f, Vector2.Zero, new Vector2(1f,1f), nuevo,0f);
       }
 
       else if(powerUps.getMisil()){
         
-        SpriteBatch.Draw(RocketLaucherLogo, new Vector2(tamanioPantalla.X * 0f, tamanioPantalla.Y * 0.85f), null,
-         Color.WhiteSmoke, 0f, Vector2.Zero, new Vector2(0.12f,0.12f), nuevo,0f);
+        SpriteBatch.Draw(RocketLaucherLogo, new Vector2(tamanioPantalla.X * 0.01f, tamanioPantalla.Y * 0.85f), null,
+         Color.WhiteSmoke, 0f, Vector2.Zero, new Vector2(1f,1f), nuevo,0f);
       }
     }
       
