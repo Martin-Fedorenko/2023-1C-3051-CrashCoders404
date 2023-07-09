@@ -494,7 +494,7 @@ namespace TGC.MonoGame.TP
 
       AutoPrincipalPos += Desplazamiento;
 
-            
+     /*       
       for(int i = 0; i< cantidadEnemigos; i++){
         for(int j = 0; j< cantidadEnemigos; j++){
           if(CollideCars[i].Intersects(CollideCars[j]) && i!=j)
@@ -505,7 +505,7 @@ namespace TGC.MonoGame.TP
                           autosDestruidos.Add(j);
               }
           }
-      }
+      }*/
 
 
         
