@@ -479,6 +479,7 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
             Thread.Sleep(500);
             autos.iniciarPartida();
             powerUps.iniciarPartida();
+            detalles.iniciarPartida();
             SpriteBatch.Begin();
             dibujarCorazones(tamanioPantalla);
             dibujarPowerUpsLogos(tamanioPantalla);

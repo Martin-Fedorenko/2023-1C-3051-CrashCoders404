@@ -103,6 +103,7 @@ namespace TGC.MonoGame.TP
       public void Initialize()
         {
             autos = new Autos();
+            iniciarPartida();
 
             //Árboles
             TreesWorld = new Matrix[]
@@ -169,84 +170,6 @@ namespace TGC.MonoGame.TP
                 Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(Rock22Position),
                 Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(Rock23Position)
             };
-
-
-            //Tires
-            posicionRuedas = new Vector3[]
-            {
-                  new Vector3 (600, 5, 600),
-                  new Vector3 (600, 5, 660),
-                  new Vector3 (570, 10, 600),
-
-                  new Vector3 (540, 5, 600),
-                  new Vector3 (570, 5, 660),
-                  new Vector3 (540, 5, 660),
-
-                  new Vector3 (630, 5, 585),
-                  new Vector3 (660, 5, 570),
-                  new Vector3 (690, 5, 555),
-                  new Vector3 (690, 5, 525),
-                  new Vector3 (690, 5, 495),
-
-                
-
-                  new Vector3 (630, 5, 645),
-                  new Vector3 (660, 5, 630),
-                  new Vector3 (690, 5, 615),
-                  new Vector3 (720, 5, 600),
-                  new Vector3 (750, 5, 585),
-                  new Vector3 (750, 5, 555),
-                  new Vector3 (750, 5, 525),
-                  new Vector3 (750, 5, 495),
-
-                //Circulo de ruedas
-                  new Vector3 (-400, 5, -500),
-
-                  new Vector3 (-415, 5, -500),
-                  new Vector3 (-430, 5, -500),
-                  new Vector3 (-385, 5, -500),
-                  new Vector3 (-370, 5, -500),
-                  new Vector3 (-400, 5, -515),
-                  new Vector3 (-400, 5, -530),
-                  new Vector3 (-400, 5, -485),
-                  new Vector3 (-400, 5, -470),
-                
-                  new Vector3 (-415, 5, -515),
-                  new Vector3 (-415, 5, -485),
-                  new Vector3 (-385, 5, -515),
-                  new Vector3 (-385, 5, -485),
-
-                //Circulo de ruedas
-                  new Vector3 (30, 5, -600),
-                  new Vector3 (45, 5, -600),
-                  new Vector3 (60, 5, -600),
-                  new Vector3 (15, 5, -600),
-                  new Vector3 (0, 5, -600),
-                  new Vector3 (30, 5, -615),
-                  new Vector3 (30, 5, -630),
-                  new Vector3 (30, 5, -585),
-                  new Vector3 (30, 5, -570),
-                  new Vector3 (45, 5, -615),
-                  new Vector3 (45, 5, -585),
-                  new Vector3 (15, 5, -615),
-                  new Vector3 (15, 5, -585),
-
-
-
-                //Ruedas dispersadas
-                  new Vector3 (550, 5, -600),
-                  new Vector3 (593, 5, -584),
-                  new Vector3 (524, 5, -600),
-                  new Vector3 (534, 5, -643),
-                  new Vector3 (579, 5, -530),
-                  new Vector3 (587, 5, -605),
-                  new Vector3 (591, 5, -564),
-            };
-
-            TiresWorld = new Matrix[posicionRuedas.Length];
-
-            for(int i = 0; i < posicionRuedas.Length; i++)
-                TiresWorld[i] = Matrix.CreateScale(0.02f) * Matrix.CreateRotationX(cuartoDeVuelta) * Matrix.CreateTranslation(posicionRuedas[i]);
 
         }
 
@@ -678,6 +601,86 @@ namespace TGC.MonoGame.TP
             return new Vector3(penetracionX,0f,penetracionZ);
             
         }
+        public void iniciarPartida(){
+                        //Tires
+            posicionRuedas = new Vector3[]
+            {
+                  new Vector3 (600, 5, 600),
+                  new Vector3 (600, 5, 660),
+                  new Vector3 (570, 10, 600),
+
+                  new Vector3 (540, 5, 600),
+                  new Vector3 (570, 5, 660),
+                  new Vector3 (540, 5, 660),
+
+                  new Vector3 (630, 5, 585),
+                  new Vector3 (660, 5, 570),
+                  new Vector3 (690, 5, 555),
+                  new Vector3 (690, 5, 525),
+                  new Vector3 (690, 5, 495),
+
+                
+
+                  new Vector3 (630, 5, 645),
+                  new Vector3 (660, 5, 630),
+                  new Vector3 (690, 5, 615),
+                  new Vector3 (720, 5, 600),
+                  new Vector3 (750, 5, 585),
+                  new Vector3 (750, 5, 555),
+                  new Vector3 (750, 5, 525),
+                  new Vector3 (750, 5, 495),
+
+                //Circulo de ruedas
+                  new Vector3 (-400, 5, -500),
+
+                  new Vector3 (-415, 5, -500),
+                  new Vector3 (-430, 5, -500),
+                  new Vector3 (-385, 5, -500),
+                  new Vector3 (-370, 5, -500),
+                  new Vector3 (-400, 5, -515),
+                  new Vector3 (-400, 5, -530),
+                  new Vector3 (-400, 5, -485),
+                  new Vector3 (-400, 5, -470),
+                
+                  new Vector3 (-415, 5, -515),
+                  new Vector3 (-415, 5, -485),
+                  new Vector3 (-385, 5, -515),
+                  new Vector3 (-385, 5, -485),
+
+                //Circulo de ruedas
+                  new Vector3 (30, 5, -600),
+                  new Vector3 (45, 5, -600),
+                  new Vector3 (60, 5, -600),
+                  new Vector3 (15, 5, -600),
+                  new Vector3 (0, 5, -600),
+                  new Vector3 (30, 5, -615),
+                  new Vector3 (30, 5, -630),
+                  new Vector3 (30, 5, -585),
+                  new Vector3 (30, 5, -570),
+                  new Vector3 (45, 5, -615),
+                  new Vector3 (45, 5, -585),
+                  new Vector3 (15, 5, -615),
+                  new Vector3 (15, 5, -585),
+
+
+
+                //Ruedas dispersadas
+                  new Vector3 (550, 5, -600),
+                  new Vector3 (593, 5, -584),
+                  new Vector3 (524, 5, -600),
+                  new Vector3 (534, 5, -643),
+                  new Vector3 (579, 5, -530),
+                  new Vector3 (587, 5, -605),
+                  new Vector3 (591, 5, -564),
+            };
+
+            TiresWorld = new Matrix[posicionRuedas.Length];
+
+            for(int i = 0; i < posicionRuedas.Length; i++)
+                TiresWorld[i] = Matrix.CreateScale(0.02f) * Matrix.CreateRotationX(cuartoDeVuelta) * Matrix.CreateTranslation(posicionRuedas[i]);
+
+        }
+
 
     }
 

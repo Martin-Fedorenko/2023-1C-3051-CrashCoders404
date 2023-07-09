@@ -413,6 +413,7 @@ namespace TGC.MonoGame.TP
                         powerUps.recorridoBalas[i] = 0f;
                         vidaAutos[index] -= 50;
                         if(vidaAutos[index] <= 0){
+                          dissolveActivado[index] = true;
                           BajasBalas++;
                           Instance = KillEffect.CreateInstance();
                           Instance.Play();
@@ -431,6 +432,7 @@ namespace TGC.MonoGame.TP
                         powerUps.recorridoMisil = 0f;
                         vidaAutos[index] -= 100;
                         if(vidaAutos[index] <= 0){
+                          dissolveActivado[index] = true;
                           BajasMisil++;
                           Instance = KillEffect.CreateInstance();
                           Instance.Play();
@@ -931,7 +933,5 @@ namespace TGC.MonoGame.TP
       {
         return (BajasBalas + BajasMisil >= 10);
       }
-
-      
   }
 }
