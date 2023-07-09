@@ -452,7 +452,7 @@ namespace TGC.MonoGame.TP
       for(int i = 0; i < autosDestruidos.Count; i++)
         {
           AutosPosiciones[autosDestruidos[i]] = obtenerSpawn();
-          if(timersRespawn[autosDestruidos[i]] == 0.5f)
+          if(timersRespawn[autosDestruidos[i]] == 1.0f)
           {
             
             dissolveActivado[autosDestruidos[i]] = false;
@@ -467,7 +467,7 @@ namespace TGC.MonoGame.TP
           }
           else
           {
-            timersRespawn[autosDestruidos[i]] = Math.Min(0.5f, timersRespawn[autosDestruidos[i]] +elapsedTime);
+            timersRespawn[autosDestruidos[i]] = Math.Min(1.0f, timersRespawn[autosDestruidos[i]] +elapsedTime);
           }
         }
 
