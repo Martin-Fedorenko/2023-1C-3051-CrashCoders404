@@ -144,6 +144,9 @@ namespace TGC.MonoGame.TP
     private Boolean[] dissolveActivado;
      private Boolean[] IAenPlataforma;
     private Boolean[] IAenPiso;
+    
+    //GODMODE
+    private Boolean modoDios;
 
     public void Initialize()
     {
@@ -343,16 +346,20 @@ namespace TGC.MonoGame.TP
       {
         if (AutoPrincipalBox.Intersects(CollideCars[index]) && !autosDestruidos.Contains(index))
         {
-            //CarSpeed = Vector2.Zero;
-            //AutoPrincipalPos = Vector3.Zero;
-            turbo = false;
-            //Desplazamiento = Vector3.Zero;
+            if(!modoDios)
+            {
+              turbo = false;
+              CollisionIndex = index;
+              direccionPostChoque = CarDirection;
+              Desplazamiento*=-1;
+              CarsSpeeds[CollisionIndex] = 100f;
+              CarSpeed*=-0.5f;
 
             if(index < 5)
               vidaProtagonista -= 25;
             else
               vidaProtagonista -= 50;
-
+            }
             vidaAutos[index] = 0;
 
             dissolveActivado[index] = true;
@@ -361,7 +368,8 @@ namespace TGC.MonoGame.TP
             
             
           audioChoque();
-          Instance = VidaPerdida.CreateInstance();
+          if(!modoDios)
+            Instance = VidaPerdida.CreateInstance();
           Instance.Play();
 
         }
@@ -374,9 +382,6 @@ namespace TGC.MonoGame.TP
         objetivo[i] = AutoPrincipalPos;
         atacarAutoPrincipal(i,elapsedTime);
       }
-
-      
-      
 
 
       
@@ -471,59 +476,36 @@ namespace TGC.MonoGame.TP
         }
       }  
 
-
-      for (var index = 0; index < CollideCars.Length; index++)
+      for(int i = 0; i < cantidadEnemigos; i++)
       {
-        if (AutoPrincipalBox.Intersects(CollideCars[index]))
+        for(int j = 0; j < cantidadEnemigos; j++)
         {
-            CollisionIndex = index;
-            direccionPostChoque = CarDirection;
-            Desplazamiento*=-1;
-            CarsSpeeds[CollisionIndex] = 100f;
-            CarSpeed*=-0.5f;
-
-          if(acabaDeChocar == 0)
+          if(CollideCars[i].Intersects(CollideCars[j]) && CollideCars[i] != CollideCars[j])
           {
-            acabaDeChocar = 1;
-            //Instance = CarCrash.CreateInstance();
-            //Instance.Play();
-          }
-          choco = true;
-        }
-      }
-
-      AutoPrincipalPos += Desplazamiento;
-
-     /*       
-      for(int i = 0; i< cantidadEnemigos; i++){
-        for(int j = 0; j< cantidadEnemigos; j++){
-          if(CollideCars[i].Intersects(CollideCars[j]) && i!=j)
-              {
-                vidaAutos[j] = 0;
-                dissolveActivado[j] = true;
-                          timersRespawn[j] = 0f;
-                          autosDestruidos.Add(j);
-              }
-          }
-      }*/
-
-
-        
-          //NO ANDA AYUDAAA
-          /*for (int j = 0; j < cantidadEnemigos; j++)
-          {
-            if (CollideCars[i].Intersects(CollideCars[j]))
+            if(i > j)
             {
-              AutosVelocidades[i]*=-0.5f;
-              AutosVelocidades[j]*=-0.5f;
+              vidaAutos[i] = 0;
 
-              Vector3 vectorChoqueIA = Vector3.Zero;
-
-              AutosPosiciones[i] += vectorChoqueIA *penetration;
-              AutosPosiciones[j] += vectorChoqueIA *penetration;
+              dissolveActivado[i] = true;
+              timersRespawn[i] = 0f;
+              autosDestruidos.Add(i);
+            }
+            else
+            {
+              vidaAutos[j] = 0;
+              
+              dissolveActivado[j] = true;
+              timersRespawn[j] = 0f;
+              autosDestruidos.Add(j);
             }
           }
-        }*/
+        }
+      }
+     
+
+      
+
+    
 
       for(int i = 0; i < autosDestruidos.Count; i++)
         {
@@ -549,6 +531,7 @@ namespace TGC.MonoGame.TP
 
 
       //ubicacion auto principal
+       AutoPrincipalPos += Desplazamiento;
        AutoPrincipalWorld =  Matrix.CreateScale(0.1f) *
                             Matrix.CreateRotationX(-jumpRotation) *
                             Matrix.CreateRotationY(Rotation * 2) *
@@ -1012,11 +995,17 @@ namespace TGC.MonoGame.TP
         IAenPiso = new Boolean[cantidadEnemigos];
         for(int i = 0; i < cantidadEnemigos; i++)
           IAenPiso[i] = true;  
+        
+        modoDios = false;
       }
 
       public bool victoriaPorKills()
       {
         return (BajasBalas + BajasMisil >= 10);
+      }
+
+      public void godMode(){
+        modoDios = true;
       }
   }
 }
