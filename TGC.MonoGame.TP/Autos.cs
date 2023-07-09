@@ -16,6 +16,8 @@ namespace TGC.MonoGame.TP
     private Model AutoDeCombate { get; set; }
 
     //MovimientoAuto
+    private int CollisionIndex;
+    private Vector3 direccionPostChoque;
     public Vector3 CarDirection;
     public Vector2 CarSpeed;
     public float CarAcceleration;
@@ -363,7 +365,7 @@ namespace TGC.MonoGame.TP
         }
       }
 
-        AutoPrincipalPos += Desplazamiento;
+        
 
       for(int i = 0; i < cantidadEnemigos; i++)
       {
@@ -436,6 +438,30 @@ namespace TGC.MonoGame.TP
             //AutosPosiciones[i] = obtenerSpawn();
             
         }
+
+
+      for (var index = 0; index < CollideCars.Length; index++)
+      {
+        if (AutoPrincipalBox.Intersects(CollideCars[index]))
+        {
+            CollisionIndex = index;
+            direccionPostChoque = CarDirection;
+            Desplazamiento*=-1;
+            CarsSpeeds[CollisionIndex] = 100f;
+            CarSpeed*=-0.5f;
+
+          if(acabaDeChocar == 0)
+          {
+            acabaDeChocar = 1;
+            //Instance = CarCrash.CreateInstance();
+            //Instance.Play();
+          }
+          choco = true;
+        }
+      }
+
+      AutoPrincipalPos += Desplazamiento;
+
             
           /*else
             for(int j = 0; j < CollideCars.Length; j++)
@@ -465,10 +491,10 @@ namespace TGC.MonoGame.TP
 
       for(int i = 0; i < autosDestruidos.Count; i++)
         {
-          AutosPosiciones[autosDestruidos[i]] = obtenerSpawn();
+          
           if(timersRespawn[autosDestruidos[i]] == 1.0f)
           {
-            
+            AutosPosiciones[autosDestruidos[i]] = obtenerSpawn();
             dissolveActivado[autosDestruidos[i]] = false;
             
              
@@ -754,9 +780,9 @@ namespace TGC.MonoGame.TP
         AutosRotaciones[index] = -angle*2; //sin el "*2" giraban muy lento
 
         if(index < 5) //sus matrices de mundo originalmente apuntan hacia otro lado (right = adelante en el tanque) y (atras = adelante en el auto)
-          AutosPosiciones[index] += Vector3.Normalize(AutosWorld[index].Backward) * 100 * elapsedTime; 
+          AutosPosiciones[index] += Vector3.Normalize(AutosWorld[index].Backward) * 100f * elapsedTime; 
         else
-          AutosPosiciones[index] += Vector3.Normalize(AutosWorld[index].Left) * 75 * elapsedTime;
+          AutosPosiciones[index] += Vector3.Normalize(AutosWorld[index].Left) * 75f * elapsedTime;
 
         
         frontWheelRotationIA[index] += elapsedTime;  

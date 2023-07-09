@@ -46,23 +46,23 @@ namespace TGC.MonoGame.TP
     private bool tieneTurbo;
 
     //Posiciones
-    private Vector3 AmetralladoraPos = new Vector3(70, 90, -390);
+    private Vector3 AmetralladoraPos = new Vector3(70, 20, -390);
     private Vector3 Ametralladora1Pos = new Vector3(0, 20, 650);
-    private Vector3 Ametralladora2Pos = new Vector3(-210, 115, 210);
+    private Vector3 Ametralladora2Pos = new Vector3(-210, 20, 210);
     private Vector3 Ametralladora3Pos = new Vector3(210, 35, 300);
     private Vector3 Ametralladora4Pos = new Vector3(-435, 35, -195);
     private Vector3 Ametralladora5Pos = new Vector3(600, 20, 80);
 
-    private Vector3 MisilPos = new Vector3(70, 90, -370);
-    private Vector3 Misil1Pos = new Vector3(-250, 55, 80);
+    private Vector3 MisilPos = new Vector3(70, 20, -370);
+    private Vector3 Misil1Pos = new Vector3(-250, 20, 80);
     private Vector3 Misil2Pos = new Vector3(-510, 20, 570);
     private Vector3 Misil3Pos = new Vector3(210, 35, 280);
     private Vector3 Misil4Pos = new Vector3(-435, 35, -175);
     private Vector3 Misil5Pos = new Vector3(490, 20, -350);
 
-    private Vector3 TurboPos = new Vector3(70, 90, -410);
-    private Vector3 Turbo1Pos = new Vector3(-230, 27, -40);
-    private Vector3 Turbo2Pos = new Vector3(-310, 115, 290);
+    private Vector3 TurboPos = new Vector3(70, 20, -410);
+    private Vector3 Turbo1Pos = new Vector3(-230, 20, -40);
+    private Vector3 Turbo2Pos = new Vector3(-310, 20, 290);
     private Vector3 Turbo3Pos = new Vector3(210, 35, 320);
     private Vector3 Turbo4Pos = new Vector3(-435, 35, -215);
     private Vector3 Turbo5Pos = new Vector3(90, 20, -90);
