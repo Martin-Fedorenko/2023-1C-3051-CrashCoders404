@@ -364,10 +364,7 @@ namespace TGC.MonoGame.TP
 
         AutoPrincipalPos += Desplazamiento;
 
-      AutoPrincipalWorld =  Matrix.CreateScale(0.1f) *
-                            Matrix.CreateRotationX(-jumpRotation) *
-                            Matrix.CreateRotationY(Rotation * 2) *
-                            Matrix.CreateTranslation(AutoPrincipalPos);
+     
 
       for(int i = 0; i < cantidadEnemigos; i++)
       {
@@ -375,12 +372,11 @@ namespace TGC.MonoGame.TP
         atacarAutoPrincipal(i,elapsedTime);
       }
 
-      //ubicacion coches IA
+      
       
 
 
-      AutoPrincipalBox = OrientedBoundingBox.FromAABB(new BoundingBox(AutoDeportivoBoxAABB.Min + AutoPrincipalPos - coreccionAltura, AutoDeportivoBoxAABB.Max + AutoPrincipalPos - coreccionAltura));
-      AutoPrincipalBox.Rotate(Matrix.CreateRotationX(-jumpRotation) * Matrix.CreateRotationY(Rotation * 2));
+      
 
       if (!choco) {acabaDeChocar = 0;}
         
@@ -476,7 +472,17 @@ namespace TGC.MonoGame.TP
         }
 
 
-        for (var index = 0; index < cantidadEnemigos; index++)
+      //ubicacion auto principal
+       AutoPrincipalWorld =  Matrix.CreateScale(0.1f) *
+                            Matrix.CreateRotationX(-jumpRotation) *
+                            Matrix.CreateRotationY(Rotation * 2) *
+                            Matrix.CreateTranslation(AutoPrincipalPos);
+
+      AutoPrincipalBox = OrientedBoundingBox.FromAABB(new BoundingBox(AutoDeportivoBoxAABB.Min + AutoPrincipalPos - coreccionAltura, AutoDeportivoBoxAABB.Max + AutoPrincipalPos - coreccionAltura));
+      AutoPrincipalBox.Rotate(Matrix.CreateRotationX(-jumpRotation) * Matrix.CreateRotationY(Rotation * 2));
+
+      //ubicacion coches IA
+      for (var index = 0; index < cantidadEnemigos; index++)
       {
         if(autosDestruidos.Contains(index))
         {
