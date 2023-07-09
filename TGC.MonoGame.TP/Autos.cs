@@ -481,7 +481,7 @@ namespace TGC.MonoGame.TP
         {
           if(timersRespawn[autosDestruidos[i]] <= 0)
           {
-            dissolveActivado[i] = false;
+            dissolveActivado[autosDestruidos[i]] = false;
             AutosPosiciones[autosDestruidos[i]] = obtenerSpawn();
              
              if(autosDestruidos[i] < 5)
