@@ -333,6 +333,8 @@ namespace TGC.MonoGame.TP
         }
       }
 
+
+      //choque autosIA con autoPrincipal
       for (var index = 0; index < cantidadEnemigos; index++)
       {
         if (AutoPrincipalBox.Intersects(CollideCars[index]) && !autosDestruidos.Contains(index))
@@ -342,15 +344,14 @@ namespace TGC.MonoGame.TP
             turbo = false;
             //Desplazamiento = Vector3.Zero;
 
-            dissolveActivado[index] = true;
-
-
             if(index < 5)
               vidaProtagonista -= 25;
             else
               vidaProtagonista -= 50;
 
             vidaAutos[index] = 0;
+
+            dissolveActivado[index] = true;
             timersRespawn[index] = 0f;
             autosDestruidos.Add(index);
             
@@ -363,8 +364,6 @@ namespace TGC.MonoGame.TP
       }
 
         AutoPrincipalPos += Desplazamiento;
-
-     
 
       for(int i = 0; i < cantidadEnemigos; i++)
       {
@@ -386,12 +385,16 @@ namespace TGC.MonoGame.TP
             {
                 for (var index = 0; index < cantidadEnemigos; index++)
                 {
-                    if(powerUps.collidersBalas[i].Intersects(CollideCars[index]))
+                    if(powerUps.collidersBalas[i].Intersects(CollideCars[index]) && !autosDestruidos.Contains(index))
                     {
                         powerUps.recorridoBalas[i] = 0f;
                         vidaAutos[index] -= 50;
                         if(vidaAutos[index] <= 0){
+
                           dissolveActivado[index] = true;
+                          timersRespawn[index] = 0f;
+                          autosDestruidos.Add(index);
+
                           BajasBalas++;
                           Instance = KillEffect.CreateInstance();
                           Instance.Play();
@@ -405,12 +408,16 @@ namespace TGC.MonoGame.TP
             {
                 for (var index = 0; index < cantidadEnemigos; index++)
                 {
-                    if(powerUps.colliderMisil.Intersects(CollideCars[index]))
+                    if(powerUps.colliderMisil.Intersects(CollideCars[index])&& !autosDestruidos.Contains(index))
                     {
                         powerUps.recorridoMisil = 0f;
                         vidaAutos[index] -= 100;
                         if(vidaAutos[index] <= 0){
+
                           dissolveActivado[index] = true;
+                          timersRespawn[index] = 0f;
+                          autosDestruidos.Add(index);
+
                           BajasMisil++;
                           Instance = KillEffect.CreateInstance();
                           Instance.Play();
@@ -421,8 +428,15 @@ namespace TGC.MonoGame.TP
 
          for(int i = 0; i < cantidadEnemigos; i++)
         {
-          if(escenario.IAchoco(CollideCars[i]) || detalles.IAchoco(CollideCars[i]))
-            AutosPosiciones[i] = obtenerSpawn();
+          if(escenario.IAchoco(CollideCars[i]) || detalles.IAchoco(CollideCars[i])){
+            dissolveActivado[i] = true;
+            timersRespawn[i] = 0f;
+            autosDestruidos.Add(i);
+          }
+            //AutosPosiciones[i] = obtenerSpawn();
+            
+        }
+            
           /*else
             for(int j = 0; j < CollideCars.Length; j++)
             {
@@ -432,9 +446,9 @@ namespace TGC.MonoGame.TP
               }
             }*/
 
-
+        
           //NO ANDA AYUDAAA
-          for (int j = 0; j < cantidadEnemigos; j++)
+          /*for (int j = 0; j < cantidadEnemigos; j++)
           {
             if (CollideCars[i].Intersects(CollideCars[j]))
             {
@@ -447,7 +461,7 @@ namespace TGC.MonoGame.TP
               AutosPosiciones[j] += vectorChoqueIA *penetration;
             }
           }
-        }
+        }*/
 
       for(int i = 0; i < autosDestruidos.Count; i++)
         {
