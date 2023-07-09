@@ -221,8 +221,10 @@ float4 DissolvePS(VertexShaderOutput input) : COLOR
     float4 fuegoTexture = tex2D(fuegoTextureSampler, input.TextureCoordinate+Time*0.1);
     //float4 red = float4(1.0, 0.0, 0.0, 1.0);
 
-    float factor1 = step(textureRuido.r, 1/tiempoRestante);
-    float factor2 = step(textureRuido.r, 1/tiempoRestante+0.09);
+    //float factor1 = step(textureRuido.r, 1/tiempoRestante);
+    //float factor2 = step(textureRuido.r, 1/tiempoRestante+0.09);
+    float factor1 = step(textureRuido.r, sin(tiempoRestante+0.20));
+    float factor2 = step(textureRuido.r, sin(tiempoRestante+0.25));
 
     if(factor2){
         baseColor = fuegoTexture;
