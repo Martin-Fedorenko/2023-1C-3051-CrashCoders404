@@ -164,10 +164,14 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
 
       SpriteBatch = new SpriteBatch(GraphicsDevice);
       
+      
+      
 
       // Dimensiones de la pantalla
-      Graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width - 100;
-      Graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height - 100;
+      Graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
+      Graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
+      //Graphics.IsFullScreen = true;
+      Graphics.HardwareModeSwitch = true;
       Graphics.ApplyChanges();
 
       var rasterizerState = new RasterizerState();
@@ -305,7 +309,7 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
       AutoShader.Parameters["environmentMap"]?.SetValue(EnvironmentMapRenderTarget);
 
       AutoShader.Parameters["TexturaRuido"]?.SetValue(Noise);
-      AutoShader.Parameters["texturaAuxiliar"]?.SetValue(TexturaAuxiliar);
+      AutoShader.Parameters["fuegoTexture"]?.SetValue(TexturaAuxiliar);
 
       //Iluminacion
       AutoShader.Parameters["ambientColor"]?.SetValue(Color.White.ToVector3());
@@ -709,7 +713,7 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
 
             var bloomTexture = FirstPassBloomRenderTarget;
             var finalBloomRenderTarget = SecondPassBloomRenderTarget;
-            var PassCount = 2;
+            var PassCount = 1;
             for (var index = 0; index < PassCount; index++)
             {
                 GraphicsDevice.SetRenderTarget(finalBloomRenderTarget);

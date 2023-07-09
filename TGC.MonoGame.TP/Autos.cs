@@ -99,7 +99,7 @@ namespace TGC.MonoGame.TP
     private Random unRandom = new Random();
     public int vidaProtagonista = 100;
     private int[] vidaAutos;
-    private Vector3 posicionEspera = new Vector3(0,0,200); //para que las boxes de autos que acaban de respawnear no nos golpeen
+    private Vector3 posicionEspera = new Vector3(0f,200f,0f); //para que las boxes de autos que acaban de respawnear no nos golpeen
 
     //Texturas
     private List<Texture2D> ColorTextures { get; set; }
@@ -139,6 +139,7 @@ namespace TGC.MonoGame.TP
     private Vector3[] Spawns;
     private float[] timersRespawn;
     private List<int> autosDestruidos;
+    private Boolean[] dissolveActivado;
     public void Initialize()
     {
       DesplazamientoAutos = new Vector3[cantidadEnemigos];
@@ -336,10 +337,12 @@ namespace TGC.MonoGame.TP
       {
         if (AutoPrincipalBox.Intersects(CollideCars[index]) && !autosDestruidos.Contains(index))
         {
-            CarSpeed = Vector2.Zero;
-            AutoPrincipalPos = Vector3.Zero;
+            //CarSpeed = Vector2.Zero;
+            //AutoPrincipalPos = Vector3.Zero;
             turbo = false;
-            Desplazamiento = Vector3.Zero;
+            //Desplazamiento = Vector3.Zero;
+
+            dissolveActivado[index] = true;
 
 
             if(index < 5)
@@ -399,9 +402,6 @@ namespace TGC.MonoGame.TP
 
       if (!choco) {acabaDeChocar = 0;}
         
-
-
-
         for (int i = 0; i < powerUps.BalasWorld.Length; i++)
         {
             if (powerUps.recorridoBalas[i] > 0f)
@@ -472,7 +472,7 @@ namespace TGC.MonoGame.TP
         {
           if(vidaAutos[i] <= 0 && !autosDestruidos.Contains(i))
             {
-              timersRespawn[i] = 5f;
+              timersRespawn[i] = 2f;
               autosDestruidos.Add(i);
             }
         }
@@ -481,7 +481,9 @@ namespace TGC.MonoGame.TP
         {
           if(timersRespawn[autosDestruidos[i]] <= 0)
           {
-             AutosPosiciones[autosDestruidos[i]] = obtenerSpawn();
+            dissolveActivado[i] = false;
+            AutosPosiciones[autosDestruidos[i]] = obtenerSpawn();
+             
              if(autosDestruidos[i] < 5)
                 vidaAutos[autosDestruidos[i]] = 100;
               else
@@ -594,17 +596,25 @@ namespace TGC.MonoGame.TP
     }
     public void dibujarAutos(Matrix view, Matrix projection, Effect effect, String tecnica)
     {
-
+      String Tecnica;
       effect.Parameters["colorBloom"]?.SetValue(Color.White.ToVector3());
       dibujarAutoDeportivo(view, projection, effect, AutoDeportivo,frontWheelRotation, WheelRotationPrincipal, AutoPrincipalWorld, tecnica);
 
       for (int index = 0; index < cantidadEnemigos; index++)
       {
-        if(!autosDestruidos.Contains(index))
-          {
-            if (index < 5)  dibujarAutoDeportivo(view, projection, effect, AutoDeportivo, frontWheelRotationIA[index], 0f,AutosWorld[index], tecnica);
-            else dibujarAutoDeCombate(view, projection, effect, AutoDeCombate, frontWheelRotationIA[index], 0f,AutosWorld[index], tecnica);
-          }
+        if(dissolveActivado[index]){
+          effect.Parameters["tiempoRestante"]?.SetValue(timersRespawn[index]);
+          Tecnica = "Dissolve";
+          
+        }else{
+          Tecnica = tecnica;
+        }
+
+        //if(!autosDestruidos.Contains(index))
+          //{
+            if (index < 5)  dibujarAutoDeportivo(view, projection, effect, AutoDeportivo, frontWheelRotationIA[index], 0f,AutosWorld[index], Tecnica);
+            else dibujarAutoDeCombate(view, projection, effect, AutoDeCombate, frontWheelRotationIA[index], 0f,AutosWorld[index], Tecnica);
+          //}
         }
     }
 
@@ -768,6 +778,18 @@ namespace TGC.MonoGame.TP
         Rozamiento = CarSpeed.X * 0.5f;
         BajasBalas = 0;
         BajasMisil = 0;
+
+      dissolveActivado = new Boolean[]
+      {
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+      };
 
 //MovimientoAuto
       CarSpeed = new Vector2(0f,0f);

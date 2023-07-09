@@ -22,6 +22,7 @@ float shininess;
 float3 lightPosition;
 float3 farosPosition;
 float3 eyePosition; // Camera position
+float tiempoRestante;
 
 float Time;
 
@@ -94,6 +95,17 @@ sampler2D ruidoSampler = sampler_state
     AddressU = Clamp;
     AddressV = Clamp;
 };
+
+texture fuegoTexture;
+sampler2D fuegoTextureSampler = sampler_state
+{
+    Texture = (fuegoTexture);
+    MagFilter = Linear;
+    MinFilter = Linear;
+    AddressU = Wrap;
+    AddressV = Wrap;
+};
+
 
 texture texturaAuxiliar;
 sampler2D auxiliarTextureSampler = sampler_state
@@ -206,14 +218,14 @@ float4 DissolvePS(VertexShaderOutput input) : COLOR
     float4 baseColor = EnvironmentMapPS(input);
     
     float4 textureRuido = tex2D(ruidoSampler, input.TextureCoordinate);
-    float4 textureAux = tex2D(auxiliarTextureSampler, input.TextureCoordinate+Time*0.1);
+    float4 fuegoTexture = tex2D(fuegoTextureSampler, input.TextureCoordinate+Time*0.1);
     //float4 red = float4(1.0, 0.0, 0.0, 1.0);
 
-    float factor1 = step(textureRuido.r, sin(Time));
-    float factor2 = step(textureRuido.r, sin(Time+0.09));
+    float factor1 = step(textureRuido.r, 1/tiempoRestante);
+    float factor2 = step(textureRuido.r, 1/tiempoRestante+0.09);
 
     if(factor2){
-        baseColor = textureAux;
+        baseColor = fuegoTexture;
     }
 
     if(factor1){
