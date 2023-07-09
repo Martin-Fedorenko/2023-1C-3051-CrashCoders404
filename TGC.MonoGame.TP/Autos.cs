@@ -99,7 +99,7 @@ namespace TGC.MonoGame.TP
     private Random unRandom = new Random();
     public int vidaProtagonista = 100;
     private int[] vidaAutos;
-    private Vector3 posicionEspera = new Vector3(0f,200f,0f); //para que las boxes de autos que acaban de respawnear no nos golpeen
+    private Vector3 posicionEspera = new Vector3(0f,1000f,0f); //para que las boxes de autos que acaban de respawnear no nos golpeen
 
     //Texturas
     private List<Texture2D> ColorTextures { get; set; }
