@@ -421,9 +421,9 @@ public void dibujar(Matrix view, Matrix projection, Effect effect, Matrix matriz
   {
     return ParedBoxes;
   }
-  public BoundingBox[] getRampBoxes()
+  public BoundingBox getPisoBox()
   {
-    return ParedBoxes;
+    return PisoBox;
   }
   public BoundingBox[] getColumnBoxes()
   {
@@ -432,6 +432,10 @@ public void dibujar(Matrix view, Matrix projection, Effect effect, Matrix matriz
   public BoundingBox[] getBrokenColumnBoxes()
   {
     return BrokenColumnBoxes;
+  }
+  public BoundingBox[] getPlatformBoxes()
+  {
+    return PlatformBoxes;
   }
   public Boolean IAchoco(OrientedBoundingBox obb){
       
@@ -446,13 +450,6 @@ public void dibujar(Matrix view, Matrix projection, Effect effect, Matrix matriz
         if(obb.Intersects(ColumnBoxes[i]))
           return true;
       }
-
-      for(int i = 0; i < PlatformBoxes.Length; i++)
-      {
-        if(obb.Intersects(PlatformBoxes[i]))
-          return true;
-      }
-
       return false;
   }
 

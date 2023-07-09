@@ -61,7 +61,6 @@ namespace TGC.MonoGame.TP
 
     private float[] frontWheelRotationIA;
     private Matrix[] relativeMatrices;
-    private Boolean velocidadPositiva;
 
     //Matrices
     private Matrix AutoPrincipalWorld { get; set; }
@@ -143,6 +142,9 @@ namespace TGC.MonoGame.TP
     private float[] timersRespawn;
     private List<int> autosDestruidos;
     private Boolean[] dissolveActivado;
+     private Boolean[] IAenPlataforma;
+    private Boolean[] IAenPiso;
+
     public void Initialize()
     {
       DesplazamientoAutos = new Vector3[cantidadEnemigos];
@@ -435,9 +437,39 @@ namespace TGC.MonoGame.TP
             timersRespawn[i] = 0f;
             autosDestruidos.Add(i);
           }
-            //AutosPosiciones[i] = obtenerSpawn();
+          
+          for(int k = 0; k < escenario.getPlatformBoxes().Length; k++)
+          {
+            if(CollideCars[i].Intersects(escenario.getPlatformBoxes()[k]))
+            {
+              IAenPlataforma[i] = true;
+              AutosPosiciones[i].Y = escenario.getPlatformBoxes()[k].Max.Y;
+            } 
+            else
+            {
+              IAenPlataforma[i] = false;
+            }
+          }
+
+          if(CollideCars[i].Intersects(escenario.getPisoBox()))
+          {
+            IAenPiso[i] = true;
+            //IAsobrePiso(i);
+          }
+          else
+          {
+            IAenPiso[i] = false;
+          }
             
         }
+
+      for(int i = 0; i < cantidadEnemigos; i++)
+      {
+        if(!IAenPiso[i] && !IAenPlataforma[i])
+        {
+          AutosPosiciones[i].Y -= gravity;
+        }
+      }  
 
 
       for (var index = 0; index < CollideCars.Length; index++)
@@ -967,8 +999,15 @@ namespace TGC.MonoGame.TP
       for(int i = 0; i < cantidadEnemigos; i++)
         timersRespawn[i] = 0f;
 
-        autosDestruidos = new List<int>();
-        velocidadPositiva = false;
+      autosDestruidos = new List<int>();
+
+      IAenPlataforma = new Boolean[cantidadEnemigos];
+        for(int i = 0; i < cantidadEnemigos; i++)
+          IAenPlataforma[i] = false;
+
+        IAenPiso = new Boolean[cantidadEnemigos];
+        for(int i = 0; i < cantidadEnemigos; i++)
+          IAenPiso[i] = true;  
       }
 
       public bool victoriaPorKills()
