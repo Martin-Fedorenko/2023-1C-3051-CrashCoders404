@@ -641,29 +641,32 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
             #endregion
             
             DrawCenterTextY("CONTROLES", tamanioPantalla.Y * 0.1f, 0.3f);
-            DrawCenterTextY("W -> AVANZAR", tamanioPantalla.Y * 0.3f, 0.2f);
-            DrawCenterTextY("S -> RETROCEDER", tamanioPantalla.Y * 0.36f, 0.2f);
-            DrawCenterTextY("D -> ROTAR DERECHA", tamanioPantalla.Y * 0.42f, 0.2f);
-            DrawCenterTextY("A -> ROTAR IZQUIERDA", tamanioPantalla.Y * 0.48f, 0.2f);
-            DrawCenterTextY("SPACE -> SALTAR", tamanioPantalla.Y * 0.54f, 0.2f);
-            DrawCenterTextY("B -> VOLVER AL MENU", tamanioPantalla.Y *0.64f, 0.2f);
+            DrawCenterTextY("F -> DISPARAR", tamanioPantalla.Y * 0.3f, 0.2f);
+            DrawCenterTextY("W -> AVANZAR", tamanioPantalla.Y * 0.36f, 0.2f);
+            DrawCenterTextY("S -> RETROCEDER", tamanioPantalla.Y * 0.42f, 0.2f);
+            DrawCenterTextY("D -> ROTAR DERECHA", tamanioPantalla.Y * 0.48f, 0.2f);
+            DrawCenterTextY("A -> ROTAR IZQUIERDA", tamanioPantalla.Y * 0.54f, 0.2f);
+            
+            DrawCenterTextY("SPACE -> SALTAR", tamanioPantalla.Y * 0.60f, 0.2f);
+            
+            DrawCenterTextY("B -> VOLVER AL MENU", tamanioPantalla.Y *0.70f, 0.2f);
+          
           
             break;
 
         case ST_DERROTA:          
           GraphicsDevice.Clear(Color.Black);
           SpriteBatch.Begin();
-          SpriteBatch.DrawString(font2, "Has Sobrevivido " + ((int)totalGameTime).ToString() + " Segundos",new Vector2(tamanioPantalla.X * 0.3f, tamanioPantalla.Y * 0.3f), Color.WhiteSmoke);
-          SpriteBatch.DrawString(font2, "Has Asesinado " + (autos.getAutoBajas().ToString()) + " Enemigos",new Vector2(tamanioPantalla.X * 0.3f, tamanioPantalla.Y * 0.4f), Color.WhiteSmoke);
-          SpriteBatch.Draw(LogoGameOver, new Vector2(tamanioPantalla.X * 0.25f, tamanioPantalla.Y*0.1f), Color.WhiteSmoke);
+          SpriteBatch.DrawString(font2, "Has Sobrevivido " + ((int)totalGameTime).ToString() + " Segundos",new Vector2(tamanioPantalla.X * 0.35f, tamanioPantalla.Y * 0.5f), Color.WhiteSmoke);
+          SpriteBatch.DrawString(font2, "Has Asesinado " + (autos.getAutoBajas().ToString()) + " Enemigos",new Vector2(tamanioPantalla.X * 0.35f, tamanioPantalla.Y * 0.6f), Color.WhiteSmoke);
+          SpriteBatch.Draw(LogoGameOver, new Vector2(tamanioPantalla.X * 0.3f, tamanioPantalla.Y*0.3f), Color.WhiteSmoke);
           SpriteBatch.End();
         break;
 
         case ST_VICTORIA:
           GraphicsDevice.Clear(Color.Black);
           SpriteBatch.Begin();
-          //DrawCenterTextY("EASY PEASY LEMON SQUEEZY", tamanioPantalla.Y * 0.1f, 0.3f);
-          SpriteBatch.Draw(LogoVictory, new Vector2(tamanioPantalla.X * 0.25f, tamanioPantalla.Y*0.1f), Color.WhiteSmoke);
+          SpriteBatch.Draw(LogoVictory, new Vector2(tamanioPantalla.X * 0.3f, tamanioPantalla.Y*0.3f), Color.WhiteSmoke);
           SpriteBatch.End();
         break;
 
@@ -672,8 +675,6 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
           dibujarPowerUpsLogos(tamanioPantalla);
           SpriteBatch.DrawString(font2, ((int)totalGameTime).ToString(), new Vector2(tamanioPantalla.X * 0.0545f, tamanioPantalla.Y * 0.061f), Color.Black);
           SpriteBatch.DrawString(font2, (autos.getAutoBajas().ToString()), new Vector2(tamanioPantalla.X * 0.969f, tamanioPantalla.Y * 0.061f), Color.Black);
-          //SpriteBatch.DrawString(font2, "Velocidad:" + (autos.autoSpeed().ToString()), new Vector2(tamanioPantalla.X * 0.5f, tamanioPantalla.Y * 0f), Color.WhiteSmoke);
-          //SpriteBatch.DrawString(font2, "PowerUp", new Vector2(tamanioPantalla.X * 0f, tamanioPantalla.Y * 0.83f), Color.WhiteSmoke);
           dibujarCorazones(tamanioPantalla);
           
           

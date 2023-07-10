@@ -214,14 +214,14 @@ public void LoadContent(QuadPrimitive piso, QuadPrimitive pared, Model column, M
         new BoundingBox(ColumnBox3.Min + Column10Position -correctorPosicionBoxColumnas, ColumnBox3.Max + Column10Position - correctorPosicionBoxColumnas),
         new BoundingBox(ColumnBox4.Min + Column11Position -correctorPosicionBoxColumnas, ColumnBox4.Max + Column11Position - correctorPosicionBoxColumnas),
         new BoundingBox(ColumnBox4.Min + Column12Position -correctorPosicionBoxColumnas, ColumnBox4.Max + Column12Position - correctorPosicionBoxColumnas),
-        new BoundingBox(ColumnBox3.Min + Column13Position -correctorPosicionBoxColumnas, ColumnBox3.Max + Column13Position - correctorPosicionBoxColumnas),
-        new BoundingBox(ColumnBox3.Min + Column14Position -correctorPosicionBoxColumnas, ColumnBox3.Max + Column14Position - correctorPosicionBoxColumnas),
-        new BoundingBox(ColumnBox3.Min + Column15Position -correctorPosicionBoxColumnas, ColumnBox3.Max + Column15Position - correctorPosicionBoxColumnas),
-        new BoundingBox(ColumnBox3.Min + Column16Position -correctorPosicionBoxColumnas, ColumnBox3.Max + Column16Position - correctorPosicionBoxColumnas),
-        new BoundingBox(ColumnBox3.Min + Column17Position -correctorPosicionBoxColumnas, ColumnBox3.Max + Column17Position - correctorPosicionBoxColumnas),
-        new BoundingBox(ColumnBox3.Min + Column18Position -correctorPosicionBoxColumnas, ColumnBox3.Max + Column18Position - correctorPosicionBoxColumnas),
-        new BoundingBox(ColumnBox3.Min + Column19Position -correctorPosicionBoxColumnas, ColumnBox3.Max + Column19Position - correctorPosicionBoxColumnas),
-        new BoundingBox(ColumnBox3.Min + Column20Position -correctorPosicionBoxColumnas, ColumnBox3.Max + Column20Position - correctorPosicionBoxColumnas),
+        new BoundingBox(ColumnBox2.Min + Column13Position -correctorPosicionBoxColumnas2, ColumnBox2.Max + Column13Position - correctorPosicionBoxColumnas2),
+        new BoundingBox(ColumnBox2.Min + Column14Position -correctorPosicionBoxColumnas2, ColumnBox2.Max + Column14Position - correctorPosicionBoxColumnas2),
+        new BoundingBox(ColumnBox2.Min + Column15Position -correctorPosicionBoxColumnas2, ColumnBox2.Max + Column15Position - correctorPosicionBoxColumnas2),
+        new BoundingBox(ColumnBox2.Min + Column16Position -correctorPosicionBoxColumnas2, ColumnBox2.Max + Column16Position - correctorPosicionBoxColumnas2),
+        new BoundingBox(ColumnBox2.Min + Column17Position -correctorPosicionBoxColumnas2, ColumnBox2.Max + Column17Position - correctorPosicionBoxColumnas2),
+        new BoundingBox(ColumnBox2.Min + Column18Position -correctorPosicionBoxColumnas2, ColumnBox2.Max + Column18Position - correctorPosicionBoxColumnas2),
+        new BoundingBox(ColumnBox2.Min + Column19Position -correctorPosicionBoxColumnas2, ColumnBox2.Max + Column19Position - correctorPosicionBoxColumnas2),
+        new BoundingBox(ColumnBox2.Min + Column20Position -correctorPosicionBoxColumnas2, ColumnBox2.Max + Column20Position - correctorPosicionBoxColumnas2),
         };
 
       Vector3 correctorPosicionBoxBrokenColumnas1 = new Vector3(0,-5,40);
