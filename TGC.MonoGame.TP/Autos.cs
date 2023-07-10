@@ -790,9 +790,9 @@ namespace TGC.MonoGame.TP
         AutosRotaciones[index] = -angle*2; //sin el "*2" giraban muy lento
 
         if(index < 5) //sus matrices de mundo originalmente apuntan hacia otro lado (right = adelante en el tanque) y (atras = adelante en el auto)
-          AutosPosiciones[index] += Vector3.Normalize(AutosWorld[index].Backward) * 100f * elapsedTime; 
+          AutosPosiciones[index] += Vector3.Normalize(AutosWorld[index].Backward) * 50f * elapsedTime; 
         else
-          AutosPosiciones[index] += Vector3.Normalize(AutosWorld[index].Left) * 75f * elapsedTime;
+          AutosPosiciones[index] += Vector3.Normalize(AutosWorld[index].Left) * 50f * elapsedTime;
 
         
         frontWheelRotationIA[index] += elapsedTime;  
@@ -992,7 +992,7 @@ namespace TGC.MonoGame.TP
 
       public bool victoriaPorKills()
       {
-        return (BajasBalas + BajasMisil >= 5);
+        return (BajasBalas + BajasMisil >= 10);
       }
 
       public void godMode(){

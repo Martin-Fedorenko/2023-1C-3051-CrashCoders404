@@ -174,7 +174,7 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
       Graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width-100;
       Graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height-100;
       Graphics.IsFullScreen = false;
-      //Graphics.HardwareModeSwitch = true;
+      Graphics.HardwareModeSwitch = true;
       Graphics.ApplyChanges();
 
       var rasterizerState = new RasterizerState();
@@ -641,12 +641,15 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
             #endregion
             
             DrawCenterTextY("CONTROLES", tamanioPantalla.Y * 0.1f, 0.3f);
-            DrawCenterTextY("W -> AVANZAR", tamanioPantalla.Y * 0.3f, 0.2f);
-            DrawCenterTextY("S -> RETROCEDER", tamanioPantalla.Y * 0.36f, 0.2f);
-            DrawCenterTextY("D -> ROTAR DERECHA", tamanioPantalla.Y * 0.42f, 0.2f);
-            DrawCenterTextY("A -> ROTAR IZQUIERDA", tamanioPantalla.Y * 0.48f, 0.2f);
-            DrawCenterTextY("SPACE -> SALTAR", tamanioPantalla.Y * 0.54f, 0.2f);
-            DrawCenterTextY("B -> VOLVER AL MENU", tamanioPantalla.Y *0.64f, 0.2f);
+            DrawCenterTextY("F -> DISPARAR", tamanioPantalla.Y * 0.3f, 0.2f);
+            DrawCenterTextY("W -> AVANZAR", tamanioPantalla.Y * 0.36f, 0.2f);
+            DrawCenterTextY("S -> RETROCEDER", tamanioPantalla.Y * 0.42f, 0.2f);
+            DrawCenterTextY("D -> ROTAR DERECHA", tamanioPantalla.Y * 0.48f, 0.2f);
+            DrawCenterTextY("A -> ROTAR IZQUIERDA", tamanioPantalla.Y * 0.54f, 0.2f);
+            
+            DrawCenterTextY("SPACE -> SALTAR", tamanioPantalla.Y * 0.60f, 0.2f);
+            
+            DrawCenterTextY("B -> VOLVER AL MENU", tamanioPantalla.Y *0.70f, 0.2f);
           
             break;
 
@@ -663,7 +666,7 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
           GraphicsDevice.Clear(Color.Black);
           SpriteBatch.Begin();
           //DrawCenterTextY("EASY PEASY LEMON SQUEEZY", tamanioPantalla.Y * 0.1f, 0.3f);
-          SpriteBatch.Draw(LogoVictory, new Vector2(tamanioPantalla.X * 0.25f, tamanioPantalla.Y*0.1f), Color.WhiteSmoke);
+          SpriteBatch.Draw(LogoVictory, new Vector2(tamanioPantalla.X * 0.22f, tamanioPantalla.Y*0.1f), Color.WhiteSmoke);
           SpriteBatch.End();
         break;
 
@@ -768,7 +771,7 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
           }
           SpriteBatch.End(); //si lo ponemos antes de dibujar los modelos, los autos y el piso se dibujan translucidos 
           
-          if(autos.victoriaPorKills() || (int)totalGameTime >= 120)
+          if(autos.victoriaPorKills() || (int)totalGameTime >= 5)
           {
             status = ST_VICTORIA;
             MediaPlayer.Stop();
