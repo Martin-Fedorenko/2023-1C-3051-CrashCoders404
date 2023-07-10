@@ -598,7 +598,7 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
             FullScreenQuad.Draw(AutoShader, "IntegrarPresentacion");
             
             
-            DrawCenterTextY("C -> A CERCA DEL JUEGO", tamanioPantalla.X * 0.2f, 0.2f);
+            DrawCenterTextY("C -> INSTRUCCIONES", tamanioPantalla.X * 0.2f, 0.2f);
             DrawCenterTextY("G -> GOD MODE", tamanioPantalla.X * 0.25f, 0.2f);
             DrawCenterTextY("ENTER -> COMENZAR", tamanioPantalla.X * 0.3f, 0.2f);
             DrawCenterTextY("ESC -> SALIR", tamanioPantalla.X*0.35f, 0.2f);
@@ -667,7 +667,7 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
             DrawLeftText("OBJETIVOS ", tamanioPantalla.Y * 0.3f, 0.25f);
             DrawLeftText("SOBREVIVIR ", tamanioPantalla.Y * 0.42f, 0.2f);
             DrawLeftText("ELIMINAR ", tamanioPantalla.Y * 0.52f, 0.2f);
-            DrawLeftText("NO PERDER TODOS LOS ", tamanioPantalla.Y * 0.62f, 0.2f);
+            DrawLeftText("NO PERDER ", tamanioPantalla.Y * 0.62f, 0.2f);
 
             
             DrawCenterTextY("B -> VOLVER AL MENU", tamanioPantalla.Y *0.85f, 0.2f);
