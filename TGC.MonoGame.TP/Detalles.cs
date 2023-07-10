@@ -37,10 +37,10 @@ namespace TGC.MonoGame.TP
         public Vector3 Tree11Position = new Vector3 (-300, 0, -200);
         public Vector3 Tree12Position = new Vector3 (-300, 0, -275);
 
-        public Vector3 Rock1Position = new Vector3 (0, 0, -250);
-        public Vector3 Rock2Position = new Vector3 (25, 0, -250);
-        public Vector3 Rock3Position = new Vector3 (50, 0, -250);
-        public Vector3 Rock4Position = new Vector3 (75, 0, -250);
+        public Vector3 Rock1Position = new Vector3 (0, 0, -200);
+        public Vector3 Rock2Position = new Vector3 (35, 0, -150);
+        public Vector3 Rock3Position = new Vector3 (70, 0, -100);
+        public Vector3 Rock4Position = new Vector3 (95, 0, -50);
         public Vector3 Rock5Position = new Vector3 (350, 0, 100);
         public Vector3 Rock6Position = new Vector3 (350, 0, 125);     
         public Vector3 Rock7Position = new Vector3 (350, 0, 150); 
@@ -69,6 +69,10 @@ namespace TGC.MonoGame.TP
         public Vector3 Rock30Position = new Vector3 (-315, 0, 650);
         public Vector3 Rock31Position = new Vector3 (-285, 0, 675);
         public Vector3 Rock32Position = new Vector3 (-315, 0, 700);
+        public Vector3 Rock33Position = new Vector3 (650, 0, 250);
+        public Vector3 Rock34Position = new Vector3 (550, 0, 350);
+        public Vector3 Rock35Position = new Vector3 (550, 0, 450);
+
 
         public Vector3[] posicionRuedas;
 
@@ -158,7 +162,10 @@ namespace TGC.MonoGame.TP
                 Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(Rock29Position),
                 Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(Rock30Position),
                 Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(Rock31Position),
-                Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(Rock32Position)
+                Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(Rock32Position),
+                Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(Rock33Position),
+                Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(Rock34Position),
+                Matrix.CreateScale(0.05f) * Matrix.CreateTranslation(Rock35Position)
             };
 
             Rocks10World = new Matrix[]
@@ -256,6 +263,9 @@ namespace TGC.MonoGame.TP
                 new BoundingBox(Rock5Box2.Min + Rock30Position -correctorPosicionBoxRock5, Rock5Box2.Max + Rock30Position - correctorPosicionBoxRock5),
                 new BoundingBox(Rock5Box2.Min + Rock31Position -correctorPosicionBoxRock5, Rock5Box2.Max + Rock31Position - correctorPosicionBoxRock5),
                 new BoundingBox(Rock5Box2.Min + Rock32Position -correctorPosicionBoxRock5, Rock5Box2.Max + Rock32Position - correctorPosicionBoxRock5),
+                new BoundingBox(Rock5Box2.Min + Rock33Position - correctorPosicionBoxRock5, Rock5Box2.Max + Rock33Position - correctorPosicionBoxRock5),
+                new BoundingBox(Rock5Box2.Min + Rock34Position - correctorPosicionBoxRock5, Rock5Box2.Max + Rock34Position - correctorPosicionBoxRock5),
+                new BoundingBox(Rock5Box2.Min + Rock35Position - correctorPosicionBoxRock5, Rock5Box2.Max + Rock35Position - correctorPosicionBoxRock5)
             };
 
             Rock10Boxes = new BoundingBox[]
@@ -664,14 +674,21 @@ namespace TGC.MonoGame.TP
 
 
 
-                //Ruedas dispersadas
+                //Círculo de ruedas 2
                   new Vector3 (550, 5, -600),
-                  new Vector3 (593, 5, -584),
-                  new Vector3 (524, 5, -600),
-                  new Vector3 (534, 5, -643),
-                  new Vector3 (579, 5, -530),
-                  new Vector3 (587, 5, -605),
-                  new Vector3 (591, 5, -564),
+                  new Vector3 (565, 5, -600),
+                  new Vector3 (580, 5, -600),
+                  new Vector3 (535, 5, -600),
+                  new Vector3 (520, 5, -600),
+                  new Vector3 (550, 5, -615),
+                  new Vector3 (550, 5, -630),
+                  new Vector3 (550, 5, -585),
+                  new Vector3 (550, 5, -570),
+                  new Vector3 (565, 5, -615),
+                  new Vector3 (565, 5, -585),
+                  new Vector3 (550, 5, -615),
+                  new Vector3 (535, 5, -585),
+                  
             };
 
             TiresWorld = new Matrix[posicionRuedas.Length];

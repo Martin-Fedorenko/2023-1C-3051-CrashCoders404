@@ -338,7 +338,7 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
       SongGame = Content.Load<Song>(ContentFolderMusic + "trap-movement");
       SongMenu = Content.Load<Song>(ContentFolderMusic + "music-menu");
       SongCountdown = Content.Load<Song>(ContentFolderMusic + "countdown-start");
-      Winner = Content.Load<Song>(ContentFolderMusic + "omg-winner");
+      Winner = Content.Load<Song>(ContentFolderMusic + "winner");
       GameOver = Content.Load<Song>(ContentFolderMusic + "gameOver");
 
       base.LoadContent();
@@ -654,7 +654,7 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
           GraphicsDevice.Clear(Color.Black);
           SpriteBatch.Begin();
           SpriteBatch.DrawString(font2, "Has Sobrevivido " + ((int)totalGameTime).ToString() + " Segundos",new Vector2(tamanioPantalla.X * 0.3f, tamanioPantalla.Y * 0.3f), Color.WhiteSmoke);
-          SpriteBatch.DrawString(font2, "Has Asesinado " + (autos.getAutoBajas().ToString()) + " Enemigos",new Vector2(tamanioPantalla.X * 03f, tamanioPantalla.Y * 0.4f), Color.WhiteSmoke);
+          SpriteBatch.DrawString(font2, "Has Asesinado " + (autos.getAutoBajas().ToString()) + " Enemigos",new Vector2(tamanioPantalla.X * 0.3f, tamanioPantalla.Y * 0.4f), Color.WhiteSmoke);
           SpriteBatch.Draw(LogoGameOver, new Vector2(tamanioPantalla.X * 0.25f, tamanioPantalla.Y*0.1f), Color.WhiteSmoke);
           SpriteBatch.End();
         break;
@@ -754,7 +754,7 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
             FullScreenQuad.Draw(AutoShader, "Integrar");
           #endregion
 
-          dibujarGizmos = false;
+          dibujarGizmos = true;
           if(dibujarGizmos)
           {
           autos.dibujarBoundingBoxes(gizmos); //OBB de autos deportivos bien ubicadas

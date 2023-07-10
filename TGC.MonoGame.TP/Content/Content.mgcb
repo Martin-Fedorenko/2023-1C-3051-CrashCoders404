@@ -378,17 +378,17 @@
 /processorParam:Quality=Best
 /build:Music/music-menu.mp3
 
-#begin Music/omg-winner.mp3
-/importer:Mp3Importer
-/processor:SongProcessor
-/processorParam:Quality=Best
-/build:Music/omg-winner.mp3
-
 #begin Music/trap-movement.mp3
 /importer:Mp3Importer
 /processor:SongProcessor
 /processorParam:Quality=Best
 /build:Music/trap-movement.mp3
+
+#begin Music/winner.mp3
+/importer:Mp3Importer
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:Music/winner.mp3
 
 #begin Sounds/boost-effect.wav
 /importer:WavImporter
