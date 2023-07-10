@@ -172,7 +172,7 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
       // Dimensiones de la pantalla
       Graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
       Graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
-      Graphics.IsFullScreen = true;
+      Graphics.IsFullScreen = false;
       Graphics.HardwareModeSwitch = true;
       Graphics.ApplyChanges();
 
