@@ -483,9 +483,9 @@ namespace TGC.MonoGame.TP
           if(CollideCars[i].Intersects(CollideCars[j]) && CollideCars[i] != CollideCars[j])
           {
             if(i > j)
-              AutosPosiciones[j] += AutosDirecciones[j] * 0.5f;
+              AutosPosiciones[j] += AutosDirecciones[j] * 0.7f;
             else
-              AutosPosiciones[i] += AutosDirecciones[i] * 0.5f;
+              AutosPosiciones[i] += AutosDirecciones[i] * 0.7f;
           }
         }
       }
@@ -992,7 +992,7 @@ namespace TGC.MonoGame.TP
 
       public bool victoriaPorKills()
       {
-        return (BajasBalas + BajasMisil >= 10);
+        return (BajasBalas + BajasMisil >= 5);
       }
 
       public void godMode(){

@@ -151,6 +151,7 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
     private Texture2D Corazon;
     private Texture2D Logo;
     private Texture2D LogoGameOver;
+    private Texture2D LogoVictory;
     private Texture2D LogoGo;
 
     //Variables
@@ -284,6 +285,7 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
       TexturaPowerUp = Content.Load<Texture2D>(ContentFolderTextures + "gold");
       Corazon = Content.Load<Texture2D>(ContentFolderTextures + "Vida/1 Corazon");
       Logo = Content.Load<Texture2D>(ContentFolderTextures + "logo");
+      LogoVictory = Content.Load<Texture2D>(ContentFolderTextures + "victoria");
       LogoGameOver = Content.Load<Texture2D>(ContentFolderTextures + "gameOver");
       LogoGo = Content.Load<Texture2D>(ContentFolderTextures + "go");
       MiniGunLogo = Content.Load<Texture2D>(ContentFolderTextures + "minigun-logo");
@@ -659,7 +661,10 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
 
         case ST_VICTORIA:
           GraphicsDevice.Clear(Color.Black);
-          DrawCenterTextY("EASY PEASY LEMON SQUEEZY", tamanioPantalla.Y * 0.1f, 0.3f);
+          SpriteBatch.Begin();
+          //DrawCenterTextY("EASY PEASY LEMON SQUEEZY", tamanioPantalla.Y * 0.1f, 0.3f);
+          SpriteBatch.Draw(LogoVictory, new Vector2(tamanioPantalla.X * 0.25f, tamanioPantalla.Y*0.1f), Color.WhiteSmoke);
+          SpriteBatch.End();
         break;
 
         case ST_JUEGO:

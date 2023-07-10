@@ -717,6 +717,18 @@
 /processorParam:TextureFormat=Color
 /build:Textures/tree.jpg
 
+#begin Textures/victoria.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Textures/victoria.png
+
 #begin Textures/Vida/1 Corazon.png
 /importer:TextureImporter
 /processor:TextureProcessor
