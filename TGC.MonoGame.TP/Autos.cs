@@ -483,9 +483,9 @@ namespace TGC.MonoGame.TP
           if(CollideCars[i].Intersects(CollideCars[j]) && CollideCars[i] != CollideCars[j])
           {
             if(i > j)
-              AutosPosiciones[j] += AutosDirecciones[j];
+              AutosPosiciones[j] += AutosDirecciones[j] * 0.5f;
             else
-              AutosPosiciones[i] += AutosDirecciones[i] ;
+              AutosPosiciones[i] += AutosDirecciones[i] * 0.5f;
           }
         }
       }
