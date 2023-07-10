@@ -37,8 +37,16 @@ namespace TGC.MonoGame.TP
     private Vector3  Column8Position = new Vector3(-330, 0, 175);
     private Vector3  Column9Position = new Vector3(-170, 0, 290);
     private Vector3  Column10Position = new Vector3(-330, 0, 290);
-    private Vector3  Column11Position = new Vector3(-500, 0, 0);
-    private Vector3  Column12Position = new Vector3(436, 0, -80);
+    private Vector3  Column11Position = new Vector3(-410, 0, 515);
+    private Vector3  Column12Position = new Vector3(435, 0, -80);
+    private Vector3  Column13Position = new Vector3(270, 0, 240);
+    private Vector3  Column14Position = new Vector3(270, 0, 360);
+    private Vector3  Column15Position = new Vector3(160, 0, 360);
+    private Vector3  Column16Position = new Vector3(160, 0, 240);
+    private Vector3  Column17Position = new Vector3(430, 0, -110);
+    private Vector3  Column18Position = new Vector3(465, 0, -80);
+    private Vector3  Column19Position = new Vector3(435, 0, -50);
+    private Vector3  Column20Position = new Vector3(400, 0, -80);
     private Vector3  BrokenColumn1Position = new Vector3(450, 0, 250);
     private Vector3  BrokenColumn2Position = new Vector3(-230, 0, -270);
     private Vector3  Ramp5Position = new Vector3(185, 0, 243);     
@@ -101,7 +109,6 @@ namespace TGC.MonoGame.TP
       };
       
 
-      //Plataformas
       ColumnWorld = new Matrix[]
       {
         Matrix.CreateScale(0.35f) * Matrix.CreateRotationX(-cuartoDeVuelta) * Matrix.CreateTranslation(Column1Position),
@@ -116,6 +123,14 @@ namespace TGC.MonoGame.TP
         Matrix.CreateScale(0.35f, 0.35f, 0.5f) * Matrix.CreateRotationX(-cuartoDeVuelta) * Matrix.CreateTranslation(Column10Position),
         Matrix.CreateScale(0.6f) * Matrix.CreateRotationX(-cuartoDeVuelta) * Matrix.CreateTranslation(Column11Position),
         Matrix.CreateScale(0.6f) * Matrix.CreateRotationX(-cuartoDeVuelta) * Matrix.CreateTranslation(Column12Position),
+        Matrix.CreateScale(0.35f, 0.35f, 0.15f) * Matrix.CreateRotationX(-cuartoDeVuelta) * Matrix.CreateTranslation(Column13Position),
+        Matrix.CreateScale(0.35f, 0.35f, 0.15f) * Matrix.CreateRotationX(-cuartoDeVuelta) * Matrix.CreateTranslation(Column14Position),
+        Matrix.CreateScale(0.35f, 0.35f, 0.15f) * Matrix.CreateRotationX(-cuartoDeVuelta) * Matrix.CreateTranslation(Column15Position),
+        Matrix.CreateScale(0.35f, 0.35f, 0.15f) * Matrix.CreateRotationX(-cuartoDeVuelta) * Matrix.CreateTranslation(Column16Position),
+        Matrix.CreateScale(0.35f, 0.35f, 0.15f) * Matrix.CreateRotationX(-cuartoDeVuelta) * Matrix.CreateTranslation(Column17Position),
+        Matrix.CreateScale(0.35f, 0.35f, 0.15f) * Matrix.CreateRotationX(-cuartoDeVuelta) * Matrix.CreateTranslation(Column18Position),
+        Matrix.CreateScale(0.35f, 0.35f, 0.15f) * Matrix.CreateRotationX(-cuartoDeVuelta) * Matrix.CreateTranslation(Column19Position),
+        Matrix.CreateScale(0.35f, 0.35f, 0.15f) * Matrix.CreateRotationX(-cuartoDeVuelta) * Matrix.CreateTranslation(Column20Position),
       };
 
       BrokenColumnWorld = new Matrix[]
@@ -162,9 +177,7 @@ public void LoadContent(QuadPrimitive piso, QuadPrimitive pared, Model column, M
       TexturaPlataforma = texturaPlataforma;
 
       PisoBox = new BoundingBox(new Vector3(-20000f, -0.001f, -20000f), new Vector3(20000f, 0f, 20000f));
-      //PisoBox = BoundingVolumesExtensions.CreateAABBFrom(Piso);
-      //PisoBox = BoundingVolumesExtensions.Scale(PisoBox, new Vector3(20,1,20));
-      //PisoBox = new BoundingBox(PisoBox.Min,PisoBox.Max);
+
 
       var minVector = Vector3.One * 0.25f;
       ParedBoxes = new BoundingBox[]
@@ -200,7 +213,15 @@ public void LoadContent(QuadPrimitive piso, QuadPrimitive pared, Model column, M
         new BoundingBox(ColumnBox3.Min + Column9Position -correctorPosicionBoxColumnas, ColumnBox3.Max + Column9Position - correctorPosicionBoxColumnas),
         new BoundingBox(ColumnBox3.Min + Column10Position -correctorPosicionBoxColumnas, ColumnBox3.Max + Column10Position - correctorPosicionBoxColumnas),
         new BoundingBox(ColumnBox4.Min + Column11Position -correctorPosicionBoxColumnas, ColumnBox4.Max + Column11Position - correctorPosicionBoxColumnas),
-        new BoundingBox(ColumnBox4.Min + Column12Position -correctorPosicionBoxColumnas, ColumnBox4.Max + Column12Position - correctorPosicionBoxColumnas)
+        new BoundingBox(ColumnBox4.Min + Column12Position -correctorPosicionBoxColumnas, ColumnBox4.Max + Column12Position - correctorPosicionBoxColumnas),
+        new BoundingBox(ColumnBox2.Min + Column13Position -correctorPosicionBoxColumnas2, ColumnBox2.Max + Column13Position - correctorPosicionBoxColumnas2),
+        new BoundingBox(ColumnBox2.Min + Column14Position -correctorPosicionBoxColumnas2, ColumnBox2.Max + Column14Position - correctorPosicionBoxColumnas2),
+        new BoundingBox(ColumnBox2.Min + Column15Position -correctorPosicionBoxColumnas2, ColumnBox2.Max + Column15Position - correctorPosicionBoxColumnas2),
+        new BoundingBox(ColumnBox2.Min + Column16Position -correctorPosicionBoxColumnas2, ColumnBox2.Max + Column16Position - correctorPosicionBoxColumnas2),
+        new BoundingBox(ColumnBox2.Min + Column17Position -correctorPosicionBoxColumnas2, ColumnBox2.Max + Column17Position - correctorPosicionBoxColumnas2),
+        new BoundingBox(ColumnBox2.Min + Column18Position -correctorPosicionBoxColumnas2, ColumnBox2.Max + Column18Position - correctorPosicionBoxColumnas2),
+        new BoundingBox(ColumnBox2.Min + Column19Position -correctorPosicionBoxColumnas2, ColumnBox2.Max + Column19Position - correctorPosicionBoxColumnas2),
+        new BoundingBox(ColumnBox2.Min + Column20Position -correctorPosicionBoxColumnas2, ColumnBox2.Max + Column20Position - correctorPosicionBoxColumnas2),
         };
 
       Vector3 correctorPosicionBoxBrokenColumnas1 = new Vector3(0,-5,40);

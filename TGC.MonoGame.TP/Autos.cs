@@ -72,12 +72,9 @@ namespace TGC.MonoGame.TP
     public Vector3[] AutosPosiciones;
     public Boolean[] permitirMovimiento;
     public Vector3[] AutosDirecciones;
-    public Vector3[] AutosAdelante;
-    public Vector3[] AutosNormal;
     public float[] AutosRotaciones;
     private float[] CarsSpeeds;
     private Vector3[] DesplazamientoAutos;
-    public Vector2[] AutosVelocidades;
 
     private int BajasBalas = 0;
     private int BajasMisil = 0;
@@ -420,7 +417,7 @@ namespace TGC.MonoGame.TP
                     if(powerUps.colliderMisil.Intersects(CollideCars[index])&& !autosDestruidos.Contains(index))
                     {
                         powerUps.recorridoMisil = 0f;
-                        vidaAutos[index] -= 100;
+                        vidaAutos[index] -= 200;
                         if(vidaAutos[index] <= 0){
 
                           dissolveActivado[index] = true;
@@ -790,7 +787,7 @@ namespace TGC.MonoGame.TP
         AutosRotaciones[index] = -angle*2; //sin el "*2" giraban muy lento
 
         if(index < 5) //sus matrices de mundo originalmente apuntan hacia otro lado (right = adelante en el tanque) y (atras = adelante en el auto)
-          AutosPosiciones[index] += Vector3.Normalize(AutosWorld[index].Backward) * 50f * elapsedTime; 
+          AutosPosiciones[index] += Vector3.Normalize(AutosWorld[index].Backward) * 75f * elapsedTime; 
         else
           AutosPosiciones[index] += Vector3.Normalize(AutosWorld[index].Left) * 50f * elapsedTime;
 
@@ -846,19 +843,7 @@ namespace TGC.MonoGame.TP
 
 //MovimientoAuto
       CarSpeed = new Vector2(0f,0f);
-      AutosVelocidades = new Vector2[]
-      {
-            new Vector2(0f,0f),
-            new Vector2(0f,0f),
-            new Vector2(0f,0f),
-            new Vector2(0f,0f),
-            new Vector2(0f,0f),
-            new Vector2(0f,0f),
-            new Vector2(0f,0f),
-            new Vector2(0f,0f)
-      };
       
-
       CarAcceleration = 50f;
       CarBrakes = 200f;
       ActiveMovement = false;
