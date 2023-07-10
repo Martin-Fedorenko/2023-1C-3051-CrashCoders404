@@ -87,6 +87,7 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
     public const int ST_ENDGAME = -1;
     public const int ST_DERROTA = 11;
     public const int ST_VICTORIA = 12;
+    public const int ST_OBJETIVO = 13;
     public SpriteFont font;    
     public SpriteFont font2;
     public int status = ST_PRESENTACION;
@@ -381,9 +382,20 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
           {
             status = ST_CONTROLES;
           }
+          if (Keyboard.GetState().IsKeyDown(Keys.O))
+          {
+            status = ST_OBJETIVO;
+          }
           break;
 
         case ST_CONTROLES:
+          if (Keyboard.GetState().IsKeyDown(Keys.B))
+          {
+            status = ST_PRESENTACION;
+          }
+          break;
+        
+        case ST_OBJETIVO:
           if (Keyboard.GetState().IsKeyDown(Keys.B))
           {
             status = ST_PRESENTACION;
@@ -600,9 +612,10 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
             
             //DrawCenterTextY("CRASH CODERS 404 ", tamanioPantalla.X * 0f, 4);
             DrawCenterTextY("C -> CONTROLES", tamanioPantalla.X * 0.2f, 0.2f);
-            DrawCenterTextY("G -> GOD MODE", tamanioPantalla.X * 0.25f, 0.2f);
-            DrawCenterTextY("ENTER -> COMENZAR", tamanioPantalla.X * 0.3f, 0.2f);
-            DrawCenterTextY("ESC -> SALIR", tamanioPantalla.X*0.35f, 0.2f);
+            DrawCenterTextY("O -> OBJETIVO DEL JUEGO", tamanioPantalla.X * 0.25f, 0.2f);
+            DrawCenterTextY("G -> GOD MODE", tamanioPantalla.X * 0.3f, 0.2f);
+            DrawCenterTextY("ENTER -> COMENZAR", tamanioPantalla.X * 0.35f, 0.2f);
+            DrawCenterTextY("ESC -> SALIR", tamanioPantalla.X*0.4f, 0.2f);
             SpriteBatch.Begin();
             SpriteBatch.Draw(Logo, new Vector2(tamanioPantalla.X * 0.2f, tamanioPantalla.Y*0.1f), Color.WhiteSmoke);
             SpriteBatch.End();
@@ -653,6 +666,41 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
           
           
             break;
+
+        case ST_OBJETIVO:
+             #region Pass 1
+
+            GraphicsDevice.SetRenderTarget(MainSceneRenderTarget);
+            GraphicsDevice.Clear(ClearOptions.Target | ClearOptions.DepthBuffer, Color.Black, 1f, 0);
+            escenario.dibujarPiso(View,Projection,AutoShader);
+            
+            #endregion
+
+            #region Pass 2
+
+            GraphicsDevice.SetRenderTarget(PresentacionRenderTarget);
+            GraphicsDevice.Clear(ClearOptions.Target | ClearOptions.DepthBuffer, Color.Black, 1f, 0);
+            SandShader.Parameters["Time"]?.SetValue(Time);
+            FullScreenQuad.Draw(SandShader, "BlowingSand");
+
+            #endregion
+
+            #region Pass 3
+            GraphicsDevice.SetRenderTarget(null);
+            GraphicsDevice.Clear(ClearOptions.Target | ClearOptions.DepthBuffer, Color.Black, 1f, 0);
+            AutoShader.Parameters["baseTexture"]?.SetValue(MainSceneRenderTarget);
+            AutoShader.Parameters["texturaAuxiliar"]?.SetValue(PresentacionRenderTarget);
+
+            FullScreenQuad.Draw(AutoShader, "IntegrarPresentacion");
+            #endregion
+            
+            DrawCenterTextY("OBJETIVO DEL JUEGO", tamanioPantalla.Y * 0.1f, 0.3f);
+            DrawCenterTextY("--> SOBREVIVIR POR 120 SEGUNDOS", tamanioPantalla.Y * 0.3f, 0.2f);
+            DrawCenterTextY("--> ELIMINAR A 5 ENEMIGOS", tamanioPantalla.Y * 0.35f, 0.2f);
+            DrawCenterTextY("--> EVITAR SER GOLPEADO POR LOS COCHES ENEMIGOS", tamanioPantalla.Y * 0.4f, 0.2f);
+            DrawCenterTextY("B -> VOLVER AL MENU", tamanioPantalla.Y *0.70f, 0.2f);
+            break;
+
 
         case ST_DERROTA:          
           GraphicsDevice.Clear(Color.Black);
