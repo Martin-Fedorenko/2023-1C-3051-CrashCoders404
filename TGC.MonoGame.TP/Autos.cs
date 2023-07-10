@@ -437,11 +437,11 @@ namespace TGC.MonoGame.TP
 
          for(int i = 0; i < cantidadEnemigos; i++)
         {
-          if(escenario.IAchoco(CollideCars[i]) || detalles.IAchoco(CollideCars[i])){
-            dissolveActivado[i] = true;
-            timersRespawn[i] = 0f;
-            autosDestruidos.Add(i);
-          }
+            if(escenario.IAchoco(CollideCars[i]) || detalles.IAchoco(CollideCars[i])){
+              dissolveActivado[i] = true;
+              timersRespawn[i] = 0f;
+              autosDestruidos.Add(i);
+             }
           
           for(int k = 0; k < escenario.getPlatformBoxes().Length; k++)
           {
@@ -483,21 +483,9 @@ namespace TGC.MonoGame.TP
           if(CollideCars[i].Intersects(CollideCars[j]) && CollideCars[i] != CollideCars[j])
           {
             if(i > j)
-            {
-              vidaAutos[i] = 0;
-
-              dissolveActivado[i] = true;
-              timersRespawn[i] = 0f;
-              autosDestruidos.Add(i);
-            }
+              AutosPosiciones[j] = obtenerSpawn();
             else
-            {
-              vidaAutos[j] = 0;
-              
-              dissolveActivado[j] = true;
-              timersRespawn[j] = 0f;
-              autosDestruidos.Add(j);
-            }
+              AutosPosiciones[i] = obtenerSpawn();
           }
         }
       }
@@ -518,10 +506,11 @@ namespace TGC.MonoGame.TP
              
              if(autosDestruidos[i] < 5)
                 vidaAutos[autosDestruidos[i]] = 100;
-              else
+             else
                 vidaAutos[autosDestruidos[i]] = 200;
               
              autosDestruidos.RemoveAt(i);
+          
           }
           else
           {
@@ -795,6 +784,8 @@ namespace TGC.MonoGame.TP
         float diffY = apunta.Y - delante.Y; //diferencias en z entre vectores
 
         float angle = (float)Math.Atan2(diffY,diffX); //arco tangente de las diferencias en Radianes
+        //nos devuelve un angulo teniendo en cuenta todos los cuadrates -> desde -180 a 180 
+        //atan devuelve entre -90 y 90 no sirve
 
         AutosRotaciones[index] = -angle*2; //sin el "*2" giraban muy lento
 
