@@ -171,10 +171,10 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
       
 
       // Dimensiones de la pantalla
-      Graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
-      Graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
+      Graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width-100;
+      Graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height-100;
       Graphics.IsFullScreen = false;
-      Graphics.HardwareModeSwitch = true;
+      //Graphics.HardwareModeSwitch = true;
       Graphics.ApplyChanges();
 
       var rasterizerState = new RasterizerState();
@@ -670,8 +670,8 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
         case ST_JUEGO:
           SpriteBatch.Begin();
           dibujarPowerUpsLogos(tamanioPantalla);
-          SpriteBatch.DrawString(font2, ((int)totalGameTime).ToString(), new Vector2(tamanioPantalla.X * 0.0555f, tamanioPantalla.Y * 0.052f), Color.Black);
-          SpriteBatch.DrawString(font2, (autos.getAutoBajas().ToString()), new Vector2(tamanioPantalla.X * 0.967f, tamanioPantalla.Y * 0.055f), Color.Black);
+          SpriteBatch.DrawString(font2, ((int)totalGameTime).ToString(), new Vector2(tamanioPantalla.X * 0.0545f, tamanioPantalla.Y * 0.061f), Color.Black);
+          SpriteBatch.DrawString(font2, (autos.getAutoBajas().ToString()), new Vector2(tamanioPantalla.X * 0.969f, tamanioPantalla.Y * 0.061f), Color.Black);
           //SpriteBatch.DrawString(font2, "Velocidad:" + (autos.autoSpeed().ToString()), new Vector2(tamanioPantalla.X * 0.5f, tamanioPantalla.Y * 0f), Color.WhiteSmoke);
           //SpriteBatch.DrawString(font2, "PowerUp", new Vector2(tamanioPantalla.X * 0f, tamanioPantalla.Y * 0.83f), Color.WhiteSmoke);
           dibujarCorazones(tamanioPantalla);
@@ -754,7 +754,7 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
             FullScreenQuad.Draw(AutoShader, "Integrar");
           #endregion
 
-          dibujarGizmos = true;
+          dibujarGizmos = false;
           if(dibujarGizmos)
           {
           autos.dibujarBoundingBoxes(gizmos); //OBB de autos deportivos bien ubicadas
