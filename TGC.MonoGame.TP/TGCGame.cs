@@ -750,7 +750,7 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
                 escenario.dibujarEscenario(View, Projection, AutoShader, true, "Luz",boundingFrustum);
                 detalles.dibujarDetalles(View, Projection, AutoShader, "Luz",boundingFrustum);
                 powerUps.dibujarPowerUps(View, Projection, AutoShader,"Luz",boundingFrustum);
-                autos.dibujarAutos(View, Projection, AutoShader, "Luz");
+                autos.dibujarAutos(View, Projection, AutoShader, "Luz",boundingFrustum);
                 }
           }
           #endregion
@@ -765,14 +765,14 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
             detalles.dibujarDetalles(View, Projection, AutoShader, "Luz",boundingFrustum);
             powerUps.dibujarPowerUps(View, Projection, AutoShader, "Luz",boundingFrustum);
             
-            autos.dibujarAutos(View, Projection, AutoShader, "Reflejo");
+            autos.dibujarAutos(View, Projection, AutoShader, "Reflejo",boundingFrustum);
 
           #endregion
 
           #region Pass 5
             GraphicsDevice.SetRenderTarget(FirstPassBloomRenderTarget);
             GraphicsDevice.Clear(ClearOptions.Target | ClearOptions.DepthBuffer, Color.Black, 1f, 0);
-            autos.dibujarAutos(View, Projection, AutoShader, "Bloom");
+            autos.dibujarAutos(View, Projection, AutoShader, "Bloom",boundingFrustum);
             escenario.dibujarEscenario(View, Projection, AutoShader, true, "BloomNegro",boundingFrustum);
             detalles.dibujarDetalles(View, Projection, AutoShader, "BloomNegro",boundingFrustum);
             powerUps.dibujarPowerUps(View, Projection, AutoShader, "BloomPowerUp",boundingFrustum);
@@ -815,7 +815,7 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
             FullScreenQuad.Draw(AutoShader, "Integrar");
           #endregion
 
-          dibujarGizmos = false;
+          dibujarGizmos = true;
           if(dibujarGizmos)
           {
           autos.dibujarBoundingBoxes(gizmos); //OBB de autos deportivos bien ubicadas
