@@ -790,7 +790,7 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
           }
           SpriteBatch.End(); //si lo ponemos antes de dibujar los modelos, los autos y el piso se dibujan translucidos 
           
-          if(autos.victoriaPorKills() || (int)totalGameTime >= 5)
+          if(autos.victoriaPorKills() || (int)totalGameTime >= 120)
           {
             status = ST_VICTORIA;
             MediaPlayer.Stop();

@@ -30,6 +30,8 @@ float3 colorBloom;
 
 float3 carDirection;
 
+bool invencible;
+
 struct VertexShaderInput
 {
 	float4 Position : POSITION0;
@@ -143,6 +145,7 @@ VertexShaderOutput MainVS(in VertexShaderInput input)
 
 float4 LuzPS(VertexShaderOutput input) : COLOR
 {
+
     //LUZ SOL
     // Base vectors
     float3 lightDirection = normalize(lightPosition - input.WorldPosition.xyz);
@@ -187,12 +190,16 @@ float4 LuzPS(VertexShaderOutput input) : COLOR
             
             float4 color = lerp(finalColor*texelColor,finalColor*texelColor + finalColor2*texelColor,rango*alcance);
         
+
     return color;
 
 }
 
 float4 EnvironmentMapPS(VertexShaderOutput input) : COLOR
 {
+    float4 OrangeRed = float4(1.0, 0.1569, 0.0196, 1.0);
+    float factor;
+
 	//Normalizar vectores
 	float3 normal = normalize(input.Normal.xyz);
     
@@ -210,7 +217,14 @@ float4 EnvironmentMapPS(VertexShaderOutput input) : COLOR
 
     float fresnel = saturate((1.0 - dot(normal, view)));
 
-    return float4(lerp(baseColor.xyz, reflectionColor, fresnel), 1);
+    float4 colorFinal = float4(lerp(baseColor.xyz, reflectionColor, fresnel), 1);
+
+    if(invencible){
+        factor = smoothstep(0.0 , 1.0, sin(Time*7.0));
+        colorFinal = lerp(OrangeRed*colorFinal,colorFinal, factor);
+    }
+
+    return colorFinal;
 }
 
 float4 DissolvePS(VertexShaderOutput input) : COLOR
