@@ -750,7 +750,7 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
                 escenario.dibujarEscenario(View, Projection, AutoShader, true, "Luz",boundingFrustum);
                 detalles.dibujarDetalles(View, Projection, AutoShader, "Luz",boundingFrustum);
                 powerUps.dibujarPowerUps(View, Projection, AutoShader,"Luz",boundingFrustum);
-                autos.dibujarAutos(View, Projection, AutoShader, "Luz",boundingFrustum);
+                autos.dibujarAutos(View, Projection, AutoShader, "Luz");
                 }
           }
           #endregion
@@ -765,14 +765,14 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
             detalles.dibujarDetalles(View, Projection, AutoShader, "Luz",boundingFrustum);
             powerUps.dibujarPowerUps(View, Projection, AutoShader, "Luz",boundingFrustum);
             
-            autos.dibujarAutos(View, Projection, AutoShader, "Reflejo",boundingFrustum);
+            autos.dibujarAutos(View, Projection, AutoShader, "Reflejo");
 
           #endregion
 
           #region Pass 5
             GraphicsDevice.SetRenderTarget(FirstPassBloomRenderTarget);
             GraphicsDevice.Clear(ClearOptions.Target | ClearOptions.DepthBuffer, Color.Black, 1f, 0);
-            autos.dibujarAutos(View, Projection, AutoShader, "Bloom",boundingFrustum);
+            autos.dibujarAutos(View, Projection, AutoShader, "Bloom");
             escenario.dibujarEscenario(View, Projection, AutoShader, true, "BloomNegro",boundingFrustum);
             detalles.dibujarDetalles(View, Projection, AutoShader, "BloomNegro",boundingFrustum);
             powerUps.dibujarPowerUps(View, Projection, AutoShader, "BloomPowerUp",boundingFrustum);

@@ -141,7 +141,6 @@ namespace TGC.MonoGame.TP
     private Boolean[] dissolveActivado;
      private Boolean[] IAenPlataforma;
     private Boolean[] IAenPiso;
-    private BoundingBox[] aabbIA;
     
     //GODMODE
     private Boolean modoDios;
@@ -560,26 +559,21 @@ namespace TGC.MonoGame.TP
       {
         if(autosDestruidos.Contains(index))
         {
-          aabbIA[index] = new BoundingBox(AutoDeportivoBoxAABB.Min + posicionEspera - coreccionAltura, AutoDeportivoBoxAABB.Max + posicionEspera - coreccionAltura);
-          CollideCars[index] = OrientedBoundingBox.FromAABB(aabbIA[index]);
+          CollideCars[index] = OrientedBoundingBox.FromAABB(new BoundingBox(AutoDeportivoBoxAABB.Min + posicionEspera - coreccionAltura, AutoDeportivoBoxAABB.Max + posicionEspera - coreccionAltura));
         }
 
         else if (index < 5)
         {
-          aabbIA[index] = new BoundingBox(AutoDeportivoBoxAABB.Min + AutosPosiciones[index] - coreccionAltura, AutoDeportivoBoxAABB.Max + AutosPosiciones[index] - coreccionAltura);
           AutosWorld[index] = Matrix.CreateScale(0.1f) * Matrix.CreateRotationY(mediaVuelta) * Matrix.CreateRotationY(AutosRotaciones[index] ) * Matrix.CreateTranslation(AutosPosiciones[index]);
                               
-          CollideCars[index] = OrientedBoundingBox.FromAABB(aabbIA[index]); 
+          CollideCars[index] = OrientedBoundingBox.FromAABB(new BoundingBox(AutoDeportivoBoxAABB.Min + AutosPosiciones[index] - coreccionAltura, AutoDeportivoBoxAABB.Max + AutosPosiciones[index] - coreccionAltura));
         }
         else
         {
-          aabbIA[index] = new BoundingBox(AutoDeCombateBoxAABB.Min + AutosPosiciones[index] - coreccionAlturaAutoCombate, AutoDeCombateBoxAABB.Max + AutosPosiciones[index] - coreccionAlturaAutoCombate);
-          
           AutosWorld[index] = Matrix.CreateScale(0.007f) * Matrix.CreateRotationY(-cuartoDeVuelta) * Matrix.CreateRotationY(AutosRotaciones[index] ) * Matrix.CreateTranslation(AutosPosiciones[index]);
 
-          CollideCars[index] = OrientedBoundingBox.FromAABB(aabbIA[index]);
+          CollideCars[index] = OrientedBoundingBox.FromAABB(new BoundingBox(AutoDeCombateBoxAABB.Min + AutosPosiciones[index] - coreccionAlturaAutoCombate, AutoDeCombateBoxAABB.Max + AutosPosiciones[index] - coreccionAlturaAutoCombate));
         }
-
         CollideCars[index].Rotate(Matrix.CreateRotationY(AutosRotaciones[index]));
       }
       
@@ -676,7 +670,7 @@ namespace TGC.MonoGame.TP
        dibujarAutoDeCombate(view, projection, effect, AutoDeCombate, timerMenu,0, autoMenu2, "Luz");
        dibujarAutoDeportivo(view, projection, effect, AutoDeportivo, timerMenu ,0, autoMenu3, "Luz");
     }
-    public void dibujarAutos(Matrix view, Matrix projection, Effect effect, String tecnica, BoundingFrustum boundingFrustum)
+    public void dibujarAutos(Matrix view, Matrix projection, Effect effect, String tecnica)
     {
       String Tecnica;
       effect.Parameters["colorBloom"]?.SetValue(Color.White.ToVector3());
@@ -691,24 +685,21 @@ namespace TGC.MonoGame.TP
 
       for (int index = 0; index < cantidadEnemigos; index++)
       {
-        if(boundingFrustum.Intersects(aabbIA[index]))
-        {
-          effect.Parameters["invencible"].SetValue(false);
-          if(dissolveActivado[index]){
-            effect.Parameters["tiempoRestante"]?.SetValue(timersRespawn[index]);
-            Tecnica = "Dissolve";
-            
-          }else{
-            Tecnica = tecnica;
-          }
-
-          //if(!autosDestruidos.Contains(index))
-            //{
-              if (index < 5)  dibujarAutoDeportivo(view, projection, effect, AutoDeportivo, frontWheelRotationIA[index], 0f,AutosWorld[index], Tecnica);
-              else dibujarAutoDeCombate(view, projection, effect, AutoDeCombate, frontWheelRotationIA[index], 0f,AutosWorld[index], Tecnica);
-            //}
+        effect.Parameters["invencible"].SetValue(false);
+        if(dissolveActivado[index]){
+          effect.Parameters["tiempoRestante"]?.SetValue(timersRespawn[index]);
+          Tecnica = "Dissolve";
+          
+        }else{
+          Tecnica = tecnica;
         }
-      }
+
+        //if(!autosDestruidos.Contains(index))
+          //{
+            if (index < 5)  dibujarAutoDeportivo(view, projection, effect, AutoDeportivo, frontWheelRotationIA[index], 0f,AutosWorld[index], Tecnica);
+            else dibujarAutoDeCombate(view, projection, effect, AutoDeCombate, frontWheelRotationIA[index], 0f,AutosWorld[index], Tecnica);
+          //}
+        }
     }
 
     public Vector3 posAutoPrincipal()
@@ -1020,15 +1011,6 @@ namespace TGC.MonoGame.TP
         modoDios = false;
         timerInvencibilidad = 0f;
         serInvencible = false;
-
-        aabbIA = new BoundingBox[cantidadEnemigos];
-        for(int i = 0; i < cantidadEnemigos; i++)
-        {
-          if(i<5)
-            aabbIA[i] = new BoundingBox(AutoDeportivoBoxAABB.Min + AutosPosiciones[i] - coreccionAltura, AutoDeportivoBoxAABB.Max + AutosPosiciones[i] - coreccionAltura);
-          else
-            aabbIA[i] =   new BoundingBox(AutoDeCombateBoxAABB.Min + AutosPosiciones[i] - coreccionAlturaAutoCombate, AutoDeCombateBoxAABB.Max + AutosPosiciones[i] - coreccionAlturaAutoCombate);
-        }
       }
 
       public bool victoriaPorKills()
