@@ -39,10 +39,6 @@ namespace TGC.MonoGame.TP
     private Vector3  Column10Position = new Vector3(-330, 0, 290);
     private Vector3  Column11Position = new Vector3(-410, 0, 515);
     private Vector3  Column12Position = new Vector3(435, 0, -80);
-    private Vector3  Column13Position = new Vector3(270, 0, 240);
-    private Vector3  Column14Position = new Vector3(270, 0, 360);
-    private Vector3  Column15Position = new Vector3(160, 0, 360);
-    private Vector3  Column16Position = new Vector3(160, 0, 240);
     private Vector3  Column17Position = new Vector3(430, 0, -110);
     private Vector3  Column18Position = new Vector3(465, 0, -80);
     private Vector3  Column19Position = new Vector3(435, 0, -50);
@@ -123,10 +119,6 @@ namespace TGC.MonoGame.TP
         Matrix.CreateScale(0.35f, 0.35f, 0.5f) * Matrix.CreateRotationX(-cuartoDeVuelta) * Matrix.CreateTranslation(Column10Position),
         Matrix.CreateScale(0.6f) * Matrix.CreateRotationX(-cuartoDeVuelta) * Matrix.CreateTranslation(Column11Position),
         Matrix.CreateScale(0.6f) * Matrix.CreateRotationX(-cuartoDeVuelta) * Matrix.CreateTranslation(Column12Position),
-        Matrix.CreateScale(0.35f, 0.35f, 0.15f) * Matrix.CreateRotationX(-cuartoDeVuelta) * Matrix.CreateTranslation(Column13Position),
-        Matrix.CreateScale(0.35f, 0.35f, 0.15f) * Matrix.CreateRotationX(-cuartoDeVuelta) * Matrix.CreateTranslation(Column14Position),
-        Matrix.CreateScale(0.35f, 0.35f, 0.15f) * Matrix.CreateRotationX(-cuartoDeVuelta) * Matrix.CreateTranslation(Column15Position),
-        Matrix.CreateScale(0.35f, 0.35f, 0.15f) * Matrix.CreateRotationX(-cuartoDeVuelta) * Matrix.CreateTranslation(Column16Position),
         Matrix.CreateScale(0.35f, 0.35f, 0.15f) * Matrix.CreateRotationX(-cuartoDeVuelta) * Matrix.CreateTranslation(Column17Position),
         Matrix.CreateScale(0.35f, 0.35f, 0.15f) * Matrix.CreateRotationX(-cuartoDeVuelta) * Matrix.CreateTranslation(Column18Position),
         Matrix.CreateScale(0.35f, 0.35f, 0.15f) * Matrix.CreateRotationX(-cuartoDeVuelta) * Matrix.CreateTranslation(Column19Position),
@@ -214,10 +206,6 @@ public void LoadContent(QuadPrimitive piso, QuadPrimitive pared, Model column, M
         new BoundingBox(ColumnBox3.Min + Column10Position -correctorPosicionBoxColumnas, ColumnBox3.Max + Column10Position - correctorPosicionBoxColumnas),
         new BoundingBox(ColumnBox4.Min + Column11Position -correctorPosicionBoxColumnas, ColumnBox4.Max + Column11Position - correctorPosicionBoxColumnas),
         new BoundingBox(ColumnBox4.Min + Column12Position -correctorPosicionBoxColumnas, ColumnBox4.Max + Column12Position - correctorPosicionBoxColumnas),
-        new BoundingBox(ColumnBox2.Min + Column13Position -correctorPosicionBoxColumnas2, ColumnBox2.Max + Column13Position - correctorPosicionBoxColumnas2),
-        new BoundingBox(ColumnBox2.Min + Column14Position -correctorPosicionBoxColumnas2, ColumnBox2.Max + Column14Position - correctorPosicionBoxColumnas2),
-        new BoundingBox(ColumnBox2.Min + Column15Position -correctorPosicionBoxColumnas2, ColumnBox2.Max + Column15Position - correctorPosicionBoxColumnas2),
-        new BoundingBox(ColumnBox2.Min + Column16Position -correctorPosicionBoxColumnas2, ColumnBox2.Max + Column16Position - correctorPosicionBoxColumnas2),
         new BoundingBox(ColumnBox2.Min + Column17Position -correctorPosicionBoxColumnas2, ColumnBox2.Max + Column17Position - correctorPosicionBoxColumnas2),
         new BoundingBox(ColumnBox2.Min + Column18Position -correctorPosicionBoxColumnas2, ColumnBox2.Max + Column18Position - correctorPosicionBoxColumnas2),
         new BoundingBox(ColumnBox2.Min + Column19Position -correctorPosicionBoxColumnas2, ColumnBox2.Max + Column19Position - correctorPosicionBoxColumnas2),
