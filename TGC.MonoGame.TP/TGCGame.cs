@@ -132,6 +132,8 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
     private Texture2D RocketLaucherLogo;
     private Texture2D ClockLogo;
     private Texture2D KillsLogo;
+    private Texture2D ObjClockLogo;
+    private Texture2D ObjKillsLogo;
     private Texture2D NoPowerUp;
 
     //efectos
@@ -172,8 +174,8 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
       
 
       // Dimensiones de la pantalla
-      Graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width-100;
-      Graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height-100;
+      Graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
+      Graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
       Graphics.IsFullScreen = false;
       Graphics.HardwareModeSwitch = true;
       Graphics.ApplyChanges();
@@ -292,6 +294,8 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
       MiniGunLogo = Content.Load<Texture2D>(ContentFolderTextures + "minigun-logo");
       KillsLogo = Content.Load<Texture2D>(ContentFolderTextures + "kills");
       ClockLogo = Content.Load<Texture2D>(ContentFolderTextures + "clock");
+      ObjKillsLogo = Content.Load<Texture2D>(ContentFolderTextures + "Objkills");
+      ObjClockLogo = Content.Load<Texture2D>(ContentFolderTextures + "Objclock");
       RocketLaucherLogo = Content.Load<Texture2D>(ContentFolderTextures + "rocketLauncher-logo");
       BoostLogo = Content.Load<Texture2D>(ContentFolderTextures + "boost-logo");
       NoPowerUp = Content.Load<Texture2D>(ContentFolderTextures + "noPowerUp-logo");
@@ -653,11 +657,11 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
             
             DrawCenterTextY("CONTROLES", tamanioPantalla.Y * 0.1f, 0.3f);
             DrawCenterTextY("F -> DISPARAR", tamanioPantalla.Y * 0.3f, 0.2f);
-            DrawCenterTextY("W -> AVANZAR", tamanioPantalla.Y * 0.35f, 0.2f);
-            DrawCenterTextY("S -> RETROCEDER", tamanioPantalla.Y * 0.4f, 0.2f);
-            DrawCenterTextY("D -> ROTAR DERECHA", tamanioPantalla.Y * 0.45f, 0.2f);
-            DrawCenterTextY("A -> ROTAR IZQUIERDA", tamanioPantalla.Y * 0.5f, 0.2f);
-            DrawCenterTextY("SPACE -> SALTAR", tamanioPantalla.Y * 0.55f, 0.2f);
+            DrawCenterTextY("W -> AVANZAR", tamanioPantalla.Y * 0.36f, 0.2f);
+            DrawCenterTextY("S -> RETROCEDER", tamanioPantalla.Y * 0.42f, 0.2f);
+            DrawCenterTextY("D -> ROTAR DERECHA", tamanioPantalla.Y * 0.48f, 0.2f);
+            DrawCenterTextY("A -> ROTAR IZQUIERDA", tamanioPantalla.Y * 0.54f, 0.2f);
+            DrawCenterTextY("SPACE -> SALTAR", tamanioPantalla.Y * 0.6f, 0.2f);
 
             DrawCenterTextY("B -> VOLVER AL MENU", tamanioPantalla.Y *0.75f, 0.2f);
           
@@ -695,17 +699,18 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
 
             SpriteBatch.Begin();
             SpriteEffects nuevo = new SpriteEffects();
-            SpriteBatch.Draw(ClockLogo, new Vector2(tamanioPantalla.X * 0.47f, tamanioPantalla.Y * 0.33f), null,Color.WhiteSmoke, 0f, Vector2.Zero, new Vector2(1f,1f), nuevo,0f);
-            SpriteBatch.DrawString(font2, "120", new Vector2(tamanioPantalla.X * 0.505F, tamanioPantalla.Y * 0.37f), Color.Black);
-            SpriteBatch.Draw(KillsLogo, new Vector2(tamanioPantalla.X * 0.47f, tamanioPantalla.Y * 0.53f), null, Color.WhiteSmoke, 0f, Vector2.Zero, new Vector2(1f,1f), nuevo,0f);
-            SpriteBatch.DrawString(font2, "5", new Vector2(tamanioPantalla.X * 0.51f, tamanioPantalla.Y * 0.57f), Color.Black);
-            SpriteBatch.Draw(Corazon, new Vector2(tamanioPantalla.X * 0.47f, tamanioPantalla.Y * 0.73f), Color.WhiteSmoke);
+            SpriteBatch.Draw(ObjClockLogo, new Vector2(tamanioPantalla.X * 0.46f, tamanioPantalla.Y * 0.33f), null,Color.WhiteSmoke, 0f, Vector2.Zero, new Vector2(1f,1f), nuevo,0f);
+            //SpriteBatch.DrawString(font2, "120", new Vector2(tamanioPantalla.X * 0.505F, tamanioPantalla.Y * 0.37f), Color.Black);
+            SpriteBatch.Draw(ObjKillsLogo, new Vector2(tamanioPantalla.X * 0.46f, tamanioPantalla.Y * 0.53f), null, Color.WhiteSmoke, 0f, Vector2.Zero, new Vector2(1f,1f), nuevo,0f);
+            //SpriteBatch.DrawString(font2, "5", new Vector2(tamanioPantalla.X * 0.51f, tamanioPantalla.Y * 0.57f), Color.Black);
+            //SpriteBatch.Draw(Corazon, new Vector2(tamanioPantalla.X * 0.46f, tamanioPantalla.Y * 0.73f), Color.WhiteSmoke);
             SpriteBatch.End();
 
             DrawCenterTextY("OBJETIVOS", tamanioPantalla.Y * 0.1f, 0.3f);
             DrawCenterTextY("SOBREVIVIR ", tamanioPantalla.Y * 0.25f, 0.2f);
             DrawCenterTextY("ELIMINAR ", tamanioPantalla.Y * 0.45f, 0.2f);
-            DrawCenterTextY("NO PERDER ", tamanioPantalla.Y * 0.65f, 0.2f);
+            //DrawCenterTextY("NO PERDER ", tamanioPantalla.Y * 0.65f, 0.2f);
+            DrawCenterTextY("B -> VOLVER AL MENU", tamanioPantalla.Y *0.75f, 0.2f);
           
             break;
 
@@ -713,23 +718,23 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
           GraphicsDevice.Clear(Color.Black);
           SpriteBatch.Begin();
           SpriteBatch.DrawString(font2, "Has Sobrevivido " + ((int)totalGameTime).ToString() + " Segundos",new Vector2(tamanioPantalla.X * 0.35f, tamanioPantalla.Y * 0.5f), Color.WhiteSmoke);
-          SpriteBatch.DrawString(font2, "Has Asesinado " + (autos.getAutoBajas().ToString()) + " Enemigos",new Vector2(tamanioPantalla.X * 0.35f, tamanioPantalla.Y * 0.6f), Color.WhiteSmoke);
-          SpriteBatch.Draw(LogoGameOver, new Vector2(tamanioPantalla.X * 0.3f, tamanioPantalla.Y*0.3f), Color.WhiteSmoke);
+          SpriteBatch.DrawString(font2, "Has Asesinado " + (autos.getAutoBajas().ToString()) + " Enemigos",new Vector2(tamanioPantalla.X * 0.36f, tamanioPantalla.Y * 0.6f), Color.WhiteSmoke);
+          SpriteBatch.Draw(LogoGameOver, new Vector2(tamanioPantalla.X * 0.28f, tamanioPantalla.Y*0.3f), Color.WhiteSmoke);
           SpriteBatch.End();
         break;
 
         case ST_VICTORIA:
           GraphicsDevice.Clear(Color.Black);
           SpriteBatch.Begin();
-          SpriteBatch.Draw(LogoVictory, new Vector2(tamanioPantalla.X * 0.3f, tamanioPantalla.Y*0.3f), Color.WhiteSmoke);
+          SpriteBatch.Draw(LogoVictory, new Vector2(tamanioPantalla.X * 0.26f, tamanioPantalla.Y*0.3f), Color.WhiteSmoke);
           SpriteBatch.End();
         break;
 
         case ST_JUEGO:
           SpriteBatch.Begin();
           dibujarPowerUpsLogos(tamanioPantalla);
-          SpriteBatch.DrawString(font2, ((int)totalGameTime).ToString(), new Vector2(tamanioPantalla.X * 0.0545f, tamanioPantalla.Y * 0.061f), Color.Black);
-          SpriteBatch.DrawString(font2, (autos.getAutoBajas().ToString()), new Vector2(tamanioPantalla.X * 0.969f, tamanioPantalla.Y * 0.061f), Color.Black);
+          SpriteBatch.DrawString(font2, ((int)totalGameTime).ToString(), new Vector2(tamanioPantalla.X * 0.0545f, tamanioPantalla.Y * 0.058f), Color.Black);
+          SpriteBatch.DrawString(font2, (autos.getAutoBajas().ToString()), new Vector2(tamanioPantalla.X * 0.969f, tamanioPantalla.Y * 0.058f), Color.Black);
           dibujarCorazones(tamanioPantalla);
           
           
@@ -810,7 +815,7 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
             FullScreenQuad.Draw(AutoShader, "Integrar");
           #endregion
 
-          dibujarGizmos = true;
+          dibujarGizmos = false;
           if(dibujarGizmos)
           {
           autos.dibujarBoundingBoxes(gizmos); //OBB de autos deportivos bien ubicadas
