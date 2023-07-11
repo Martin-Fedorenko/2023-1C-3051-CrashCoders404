@@ -57,7 +57,7 @@ namespace TGC.MonoGame.TP
     private Vector3 Misil1Pos = new Vector3(-250, 20, 80);
     private Vector3 Misil2Pos = new Vector3(-510, 20, 570);
     private Vector3 Misil3Pos = new Vector3(250, 35, 260);
-    private Vector3 Misil4Pos = new Vector3(-475, 35, -155);
+    private Vector3 Misil4Pos = new Vector3(-475, 20, -155);
     private Vector3 Misil5Pos = new Vector3(490, 20, -350);
         
     private Vector3 TurboPos = new Vector3(140, 20, -480);
