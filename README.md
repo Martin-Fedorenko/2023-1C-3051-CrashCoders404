@@ -20,21 +20,24 @@ Hay 2 tipos de autos enemigos. Por un lado los autos deportivos, los cuales son 
 
 ## Integrantes
 
-Fedorenko, Martín Fernando  |  Dellafiore, Matías | Navarro, Ramiro | 
---------------------------- | ------------------- | --------------- | 
-
-
-
-Dellafiore, Matías
-
-![perfil tgc](https://github.com/Martin-Fedorenko/2023-1C-3051-CrashCoders404/assets/83479468/cccd105a-aebc-47b8-9527-42f162655f19)
-
+Fedorenko, Martín |  Dellafiore, Matías | Navarro, Ramiro | 
+----------------- | ------------------- | --------------- |
+![foto (1)](https://github.com/Martin-Fedorenko/2023-1C-3051-CrashCoders404/assets/67556470/99573b78-51ea-4a64-acda-d43031f5a200)| ![mati](https://github.com/Martin-Fedorenko/2023-1C-3051-CrashCoders404/assets/67556470/8509a6ca-8505-44de-b8f5-eaeb349deff4) | ![WhatsApp Image 2023-07-11 at 11 51 50 (1)](https://github.com/Martin-Fedorenko/2023-1C-3051-CrashCoders404/assets/67556470/470d64e1-d1f6-4aaf-9c29-9a1a6ed8a832) | 
 
 
 ## Capturas
 
+![501](https://github.com/Martin-Fedorenko/2023-1C-3051-CrashCoders404/assets/67556470/8ca7deac-9e32-4861-8cb4-025ac5fba15f)
+
+![502](https://github.com/Martin-Fedorenko/2023-1C-3051-CrashCoders404/assets/67556470/eb381798-1fda-4391-9e75-369605849987)
+
+![503](https://github.com/Martin-Fedorenko/2023-1C-3051-CrashCoders404/assets/67556470/2ce12767-ca3e-4faf-8331-cf5671394b68)
+
+## GamePlay
+
+[![Crash Coders](https://img.youtube.com/vi/tF24jFwUZXY/0.jpg)](https://www.youtube.com/watch?v=tF24jFwUZXY)
 
 
-## Game Play
+
 
 
