@@ -666,14 +666,18 @@ namespace TGC.MonoGame.TP
     {
       String Tecnica;
       effect.Parameters["colorBloom"]?.SetValue(Color.White.ToVector3());
+      
+      if(serInvencible)
+        effect.Parameters["invencible"].SetValue(true);
+      else
+        effect.Parameters["invencible"].SetValue(false);
+     
       dibujarAutoDeportivo(view, projection, effect, AutoDeportivo,frontWheelRotation, WheelRotationPrincipal, AutoPrincipalWorld, tecnica);
+
 
       for (int index = 0; index < cantidadEnemigos; index++)
       {
-        if(serInvencible)
-          effect.Parameters["invencible"].SetValue(true);
-        else
-          effect.Parameters["invencible"].SetValue(false);
+        effect.Parameters["invencible"].SetValue(false);
         if(dissolveActivado[index]){
           effect.Parameters["tiempoRestante"]?.SetValue(timersRespawn[index]);
           Tecnica = "Dissolve";
