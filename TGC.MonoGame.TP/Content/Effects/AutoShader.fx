@@ -220,7 +220,7 @@ float4 EnvironmentMapPS(VertexShaderOutput input) : COLOR
     float4 colorFinal = float4(lerp(baseColor.xyz, reflectionColor, fresnel), 1);
 
     if(invencible){
-        factor = smoothstep(0.0 , 1.0, sin(Time*7.0));
+        factor = smoothstep(0.0 , 1.0, abs(sin(Time*7.0)));
         colorFinal = lerp(OrangeRed*colorFinal,colorFinal, factor);
     }
 

@@ -113,12 +113,12 @@ namespace TGC.MonoGame.TP
     private Boolean turbo;
     private float turboTime;
     private float penetration;
-
-
     Vector3 coreccionAltura = new Vector3(0, 66f, 0); //el centro de la oriented bounding box esta quedando muy arriba
     Vector3 coreccionAlturaAutoCombate = new Vector3(199, 4244f, -443); //(3,-20f,0);
 
     private Vector3[] objetivo;
+    private float timerInvencibilidad;
+    private Boolean serInvencible;
 
     //Menu
     private Vector3 autoMenuPos = new Vector3(0,0,-130);
@@ -346,28 +346,38 @@ namespace TGC.MonoGame.TP
             if(!modoDios)
             {
               turbo = false;
+              Desplazamiento += AutosDirecciones[index] * CarsSpeeds[index] * elapsedTime ;
+              
+              /*
               CollisionIndex = index;
               direccionPostChoque = CarDirection;
               Desplazamiento*=-1;
               CarsSpeeds[CollisionIndex] = 100f;
               CarSpeed*=-0.5f;
+              */
 
-            if(index < 5)
-              vidaProtagonista -= 25;
-            else
-              vidaProtagonista -= 50;
+              if(!serInvencible)
+              {
+                if(index < 5)
+                  vidaProtagonista -= 25;
+                else
+                  vidaProtagonista -= 50;
+
+                serInvencible = true;
+              }
             }
-            vidaAutos[index] = 0;
+              vidaAutos[index] = 0;
 
-            dissolveActivado[index] = true;
-            timersRespawn[index] = 0f;
-            autosDestruidos.Add(index);
+              dissolveActivado[index] = true;
+              timersRespawn[index] = 0f;
+              autosDestruidos.Add(index);
             
             
-          audioChoque();
-          if(!modoDios)
-            Instance = VidaPerdida.CreateInstance();
-          Instance.Play();
+            
+            audioChoque();
+            if(!modoDios)
+              Instance = VidaPerdida.CreateInstance();
+            Instance.Play();
 
         }
       }
@@ -515,6 +525,16 @@ namespace TGC.MonoGame.TP
           }
         }
 
+        if(serInvencible && timerInvencibilidad < 2)
+        {
+          timerInvencibilidad = MathF.Min(2.0f,timerInvencibilidad + elapsedTime);
+        }
+        else
+        {
+          serInvencible = false;
+          timerInvencibilidad = 0f;
+        }
+
 
       //ubicacion auto principal
        AutoPrincipalPos += Desplazamiento;
@@ -650,6 +670,10 @@ namespace TGC.MonoGame.TP
 
       for (int index = 0; index < cantidadEnemigos; index++)
       {
+        if(serInvencible)
+          effect.Parameters["invencible"].SetValue(true);
+        else
+          effect.Parameters["invencible"].SetValue(false);
         if(dissolveActivado[index]){
           effect.Parameters["tiempoRestante"]?.SetValue(timersRespawn[index]);
           Tecnica = "Dissolve";
@@ -787,9 +811,9 @@ namespace TGC.MonoGame.TP
         AutosRotaciones[index] = -angle*2; //sin el "*2" giraban muy lento
 
         if(index < 5) //sus matrices de mundo originalmente apuntan hacia otro lado (right = adelante en el tanque) y (atras = adelante en el auto)
-          AutosPosiciones[index] += Vector3.Normalize(AutosWorld[index].Backward) * 75f * elapsedTime; 
+          AutosPosiciones[index] += Vector3.Normalize(AutosWorld[index].Backward) * CarsSpeeds[index] * elapsedTime; 
         else
-          AutosPosiciones[index] += Vector3.Normalize(AutosWorld[index].Left) * 50f * elapsedTime;
+          AutosPosiciones[index] += Vector3.Normalize(AutosWorld[index].Left) * CarsSpeeds[index] * elapsedTime;
 
         
         frontWheelRotationIA[index] += elapsedTime;  
@@ -876,14 +900,14 @@ namespace TGC.MonoGame.TP
 
       CarsSpeeds = new float[]
       {
-                0f,
-                0f,
-                0f,
-                0f,
-                0f,
-                0f,
-                0f,
-                0f,
+                75f,
+                75f,
+                75f,
+                75f,
+                75f,
+                50f,
+                50f,
+                50f,
       };
 
       DesplazamientoAutos = new Vector3[]{
@@ -973,6 +997,8 @@ namespace TGC.MonoGame.TP
           IAenPiso[i] = true;  
         
         modoDios = false;
+        timerInvencibilidad = 0f;
+        serInvencible = false;
       }
 
       public bool victoriaPorKills()
