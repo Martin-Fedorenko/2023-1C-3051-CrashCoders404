@@ -119,6 +119,7 @@ namespace TGC.MonoGame.TP
     private Vector3[] objetivo;
     private float timerInvencibilidad;
     private Boolean serInvencible;
+    private Vector3 vectorChoque = Vector3.Zero;
 
     //Menu
     private Vector3 autoMenuPos = new Vector3(0,0,-130);
@@ -346,9 +347,7 @@ namespace TGC.MonoGame.TP
             if(!modoDios)
             {
               turbo = false;
-              Desplazamiento += AutosDirecciones[index] * CarsSpeeds[index] * elapsedTime ;
-              
-              /*
+      /*
               CollisionIndex = index;
               direccionPostChoque = CarDirection;
               Desplazamiento*=-1;
@@ -366,6 +365,12 @@ namespace TGC.MonoGame.TP
                 serInvencible = true;
               }
             }
+              
+              if(index < 5)
+                 vectorChoque += Vector3.Normalize(AutosWorld[index].Backward) * 10;
+              else
+                vectorChoque += Vector3.Normalize(AutosWorld[index].Left) * 30;
+
               vidaAutos[index] = 0;
 
               dissolveActivado[index] = true;
@@ -382,7 +387,25 @@ namespace TGC.MonoGame.TP
         }
       }
 
+      if(vectorChoque != Vector3.Zero)
+      {
+        Desplazamiento += vectorChoque * elapsedTime;
         
+        if(vectorChoque.X > 0)
+          vectorChoque.X = MathF.Min(0,vectorChoque.X - elapsedTime * 2);
+        else
+          vectorChoque.X = MathF.Min(0,vectorChoque.X + elapsedTime * 2);
+        
+        if(vectorChoque.Y > 0)
+          vectorChoque.Y = MathF.Min(0,vectorChoque.Y - elapsedTime * 2);
+        else
+          vectorChoque.Y = MathF.Min(0,vectorChoque.Y + elapsedTime * 2);
+
+        if(vectorChoque.Z > 0)
+          vectorChoque.Z = MathF.Min(0,vectorChoque.Z - elapsedTime * 2);
+        else
+          vectorChoque.Z = MathF.Min(0,vectorChoque.Z + elapsedTime * 2);
+      }
 
       for(int i = 0; i < cantidadEnemigos; i++)
       {
