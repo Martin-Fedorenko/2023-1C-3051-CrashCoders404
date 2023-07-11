@@ -12,11 +12,11 @@ Proyecto "CrashCoders404" para la asignatura electiva [Técnicas de Gráficos po
 
 ## Juego
 
-El proyecto consiste en un derby de demolicion, donde el jugador maneja un auto y su objetivo es lograr sobrevivir por un tiempo determinado o obtener las bajas necesarias sobre los coches enemigos para ganar. Para ello, el jugador puede moverse en cualquier direccion, avanzar/retroceder/rotar e inclusive saltar. Ademas, en el mapa hay powerups disponibles para facilitarle las tareas al jugador. Hay 3 tipos de powerups, turbo que le aumenta la velocidad por un tiempo corto, ametralladora que le permite disparar varias balas que hacen poco daño a los enemigos, y misil, el cual es capaz de eliminar a los enemigos de un golpe.
+El proyecto consiste en un derby de demolición, donde el jugador maneja un auto y su objetivo es lograr sobrevivir por un tiempo determinado (120 segundos) o eliminar una cantidad determinada de coches enemigos (5 enemigos). Para ello, el jugador puede moverse en cualquier direccion, avanzar/retroceder/rotar e inclusive saltar. Ademas, el mapa dispone de distintos powerups que le permitirán alcanzar sus objetivos. Hay 3 tipos de powerups, "Turbo" que aumenta la velocidad del protagonista por un corto lapso de tiempo, "Ametralladora" que permite disparar varias balas que hacen poco daño a los enemigos, y "Misil", el cual es capaz de eliminar a los enemigos de un solo golpe.
 
-Los coches enemigos tienen como objetivo chocar al jugador y quitarle vida, estos se mueven por su cuenta siempre en la direccion del jugador, si chocan con elementos del mapa o si son eleminados por el jugador, pueden respawnear para continuar con su persecucion.
+Los coches enemigos tienen como objetivo chocar al jugador y quitarle vida, estos se mueven por su cuenta siempre en la direccion del jugador, si chocan con elementos del mapa o si son eleminados por el jugador, pueden respawnear para continuar con su persecución.
 
-Hay 2 tipos de autos enemigos, por un lado los autos deportivos, los cuales son más pequeños y se mueven con mayor velocidad que los otros, los autos de combate. Estos son grandes y lentos, pero en caso de impactar con el jugador le quitan mas vida que los autos deportivos.
+Hay 2 tipos de autos enemigos. Por un lado los autos deportivos, los cuales son más pequeños y se mueven a gran velocidad. Y por otro lado  los autos de combate, los cuales son más grandes y lentos, pero en caso de impactar con el jugador le quitan más vida que los autos deportivos.
 
 ## Integrantes
 

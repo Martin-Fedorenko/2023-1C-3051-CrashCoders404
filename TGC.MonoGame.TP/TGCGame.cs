@@ -149,7 +149,7 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
     //HUD
     private float totalGameTime;
     private float countdownStart;
-    private bool dibujarGizmos = true;
+    private bool dibujarGizmos = false;
     private Vector2 tamanioPantalla;
     private Texture2D Corazon;
     private Texture2D Logo;
@@ -733,12 +733,12 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
         case ST_JUEGO:
           SpriteBatch.Begin();
           dibujarPowerUpsLogos(tamanioPantalla);
-          SpriteBatch.DrawString(font2, ((int)totalGameTime).ToString(), new Vector2(tamanioPantalla.X * 0.0545f, tamanioPantalla.Y * 0.056f), Color.Black);
-          SpriteBatch.DrawString(font2, (autos.getAutoBajas().ToString()), new Vector2(tamanioPantalla.X * 0.969f, tamanioPantalla.Y * 0.056f), Color.Black);
+          SpriteBatch.DrawString(font2, ((int)totalGameTime).ToString(), new Vector2(tamanioPantalla.X * 0.0545f, tamanioPantalla.Y * 0.056f), Color.Black*0.7f);
+          SpriteBatch.DrawString(font2, (autos.getAutoBajas().ToString()), new Vector2(tamanioPantalla.X * 0.969f, tamanioPantalla.Y * 0.056f), Color.Black*0.7f);
           dibujarCorazones(tamanioPantalla);
           
           
-          #region Pass 1-6
+          #region Pass 1-3
 
           for (var face = CubeMapFace.PositiveX; face <= CubeMapFace.NegativeZ; face++)
           {
@@ -755,7 +755,7 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
           }
           #endregion
 
-          #region Pass 7
+          #region Pass 4
 
 
             GraphicsDevice.SetRenderTarget(MainSceneRenderTarget);
@@ -769,7 +769,7 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
 
           #endregion
 
-          #region Pass 8
+          #region Pass 5
             GraphicsDevice.SetRenderTarget(FirstPassBloomRenderTarget);
             GraphicsDevice.Clear(ClearOptions.Target | ClearOptions.DepthBuffer, Color.Black, 1f, 0);
             autos.dibujarAutos(View, Projection, AutoShader, "Bloom");
@@ -779,7 +779,7 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
             
           #endregion
 
-          #region Pass 9
+          #region Pass 6
 
             var bloomTexture = FirstPassBloomRenderTarget;
             var finalBloomRenderTarget = SecondPassBloomRenderTarget;
@@ -803,7 +803,7 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
             #endregion
 
 
-          #region Pass 10
+          #region Pass 7
             //GraphicsDevice.DepthStencilState = DepthStencilState.None;
             GraphicsDevice.SetRenderTarget(null);
             GraphicsDevice.Clear(ClearOptions.Target | ClearOptions.DepthBuffer, Color.Black, 1f, 0);

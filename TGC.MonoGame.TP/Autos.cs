@@ -1015,7 +1015,7 @@ namespace TGC.MonoGame.TP
 
       public bool victoriaPorKills()
       {
-        return (BajasBalas + BajasMisil >= 10);
+        return (BajasBalas + BajasMisil >= 5);
       }
 
       public void godMode(){
