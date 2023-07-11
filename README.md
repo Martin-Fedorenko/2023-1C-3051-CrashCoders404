@@ -23,6 +23,14 @@ Hay 2 tipos de autos enemigos, por un lado los autos deportivos, los cuales son 
 Fedorenko, Martín Fernando  |  Dellafiore, Matías | Navarro, Ramiro | 
 --------------------------- | ------------------- | --------------- | 
 
+
+
+Dellafiore, Matías
+
+![perfil tgc](https://github.com/Martin-Fedorenko/2023-1C-3051-CrashCoders404/assets/83479468/cccd105a-aebc-47b8-9527-42f162655f19)
+
+
+
 ## Capturas
 
 

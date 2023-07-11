@@ -488,9 +488,19 @@ namespace TGC.MonoGame.TP
           if(CollideCars[i].Intersects(CollideCars[j]) && CollideCars[i] != CollideCars[j])
           {
             if(i > j)
-              AutosPosiciones[j] += AutosDirecciones[j] * 0.7f;
+            {              
+              if(i < 5)
+                AutosPosiciones[j] += Vector3.Normalize(AutosWorld[i].Backward) * 0.3f;
+              else
+                AutosPosiciones[j] += Vector3.Normalize(AutosWorld[i].Left) * 0.4f; //es un auto de combate
+            }
             else
-              AutosPosiciones[i] += AutosDirecciones[i] * 0.7f;
+            {
+              if(j < 5)
+                AutosPosiciones[i] += Vector3.Normalize(AutosWorld[j].Backward) * 0.3f;
+              else
+                AutosPosiciones[i] += Vector3.Normalize(AutosWorld[j].Left) * 0.4f; //es un auto de combate
+            }
           }
         }
       }
