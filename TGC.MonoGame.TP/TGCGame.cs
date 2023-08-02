@@ -156,6 +156,7 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
     private Texture2D LogoGameOver;
     private Texture2D LogoVictory;
     private Texture2D LogoGo;
+    private Texture2D particula;
 
     //Variables
     private  Vector3 lightPosition = new Vector3(0.0f,100.0f,0.0f);
@@ -164,13 +165,16 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
     //Optimizaciones
     BoundingFrustum boundingFrustum;
 
+    //
+    private List<ParticulasExplosion> particulas;
+
     protected override void Initialize()
     {
       gizmos = new Gizmos();
 
       SpriteBatch = new SpriteBatch(GraphicsDevice);
       
-      
+      particulas = new List<ParticulasExplosion>();
       
 
       // Dimensiones de la pantalla
@@ -330,7 +334,10 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
       AutoShader.Parameters["KSpecular"]?.SetValue(0.5f);
       AutoShader.Parameters["shininess"]?.SetValue(2f);
       //AutoShader.Parameters["lightPosition"]?.SetValue(lightPosition);
-      
+
+      //Explosion
+      particula = Content.Load<Texture2D>(ContentFolderTextures + "particle");
+   
 
       escenario.LoadContent(Piso, Pared, Column, Ramp, Platform, TexturaPiso, TexturaPared, TexturaColumna, TexturaRampa, TexturaPlataforma);
       detalles.LoadContent(Tree, Rock1, Rock5, Rock10, Tire, TexturaRoca, TexturaRoca, TexturaTire1, TexturaTire2);
@@ -473,6 +480,7 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
             AutoShader.Parameters["Time"]?.SetValue(Time);
             //Console.WriteLine(autos.directionAutoPrincipal());
 
+             particulas = powerUps.particulas();
 
             boundingFrustum.Matrix = View * Projection;
 
@@ -737,7 +745,19 @@ namespace TGC.MonoGame.TP //porq no puedo usar follow camera?
           SpriteBatch.DrawString(font2, (autos.getAutoBajas().ToString()), new Vector2(tamanioPantalla.X * 0.969f, tamanioPantalla.Y * 0.056f), Color.Black*0.7f);
           dibujarCorazones(tamanioPantalla);
           
-          
+          for(int i = 0; i < particulas.Count; i++)
+          {
+            
+            if(particulas[i].viva()) //solo se dibujan aquellas particulas que sigan vivas
+            {
+              Vector3 posicion3D = GraphicsDevice.Viewport.Project(particulas[i].posicion(),Projection,View,Matrix.Identity); 
+              //se pasan las posiciones de cada particula de espacio de mundo (3D) a espacio de pantalla (2D)
+              Vector2 posPantalla = new Vector2(posicion3D.X,posicion3D.Y);
+
+              SpriteBatch.Draw(particula,posPantalla, null,particulas[i].color(), 0f, Vector2.Zero,particulas[i].size(),SpriteEffects.None,0f);
+            }
+          }
+         
           #region Pass 1-3
 
           for (var face = CubeMapFace.PositiveX; face <= CubeMapFace.NegativeZ; face++)

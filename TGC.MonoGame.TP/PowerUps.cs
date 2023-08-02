@@ -108,6 +108,10 @@ namespace TGC.MonoGame.TP
     private float[] balasRot = { 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f };
     private float cuartoDeVuelta = MathF.PI / 2;
     private float totalGameTime = 0f;
+    
+    //explosion
+    private List<ParticulasExplosion> particulasExplosion;
+    private int CantidadParticulas = 5000;
 
     public void Initialize()
     {
@@ -208,6 +212,13 @@ namespace TGC.MonoGame.TP
             
       for(int i =0; i < MisilesWorld.Length; i++)
         TimersMisiles[i] = 0;
+
+      particulasExplosion = new List<ParticulasExplosion>();
+        
+      for(int i = 0; i < CantidadParticulas; i++)
+      {
+        particulasExplosion.Add(new ParticulasExplosion(Vector3.Zero,Vector3.Zero,1f,0f)); //de esta manera se crea una unica vez la lista
+      }
 
     }
 
@@ -406,45 +417,45 @@ namespace TGC.MonoGame.TP
           {
             if(colliderMisil.Intersects(detalles.getTreeBoxes()[index]))
             {
+              crearExplosion();
+
               recorridoMisil = 0f;
-              Instance = ExplosionMisil.CreateInstance();
-              Instance.Play();
             }
           }
           for (var index = 0; index < detalles.getTireBoxes().Length; index++)
           {
             if(colliderMisil.Intersects(detalles.getTireBoxes()[index]))
             {
+              crearExplosion();
+
               recorridoMisil = 0f;
-              Instance = ExplosionMisil.CreateInstance();
-              Instance.Play();
             }
           }
           for (var index = 0; index < detalles.getRock1Boxes().Length; index++)
           {
             if(colliderMisil.Intersects(detalles.getRock1Boxes()[index]))
             {
+              crearExplosion();
+
               recorridoMisil = 0f;
-              Instance = ExplosionMisil.CreateInstance();
-              Instance.Play();
             }
           }
           for (var index = 0; index < detalles.getRock5Boxes().Length; index++)
           {
             if(colliderMisil.Intersects(detalles.getRock5Boxes()[index]))
             {
+              crearExplosion();
+
               recorridoMisil = 0f;
-              Instance = ExplosionMisil.CreateInstance();
-              Instance.Play();
             }
           }
           for (var index = 0; index < detalles.getRock10Boxes().Length; index++)
           {
             if(colliderMisil.Intersects(detalles.getRock10Boxes()[index]))
             {
+              crearExplosion();
+
               recorridoMisil = 0f;
-              Instance = ExplosionMisil.CreateInstance();
-              Instance.Play();
             }
           }
           
@@ -453,18 +464,18 @@ namespace TGC.MonoGame.TP
           {
             if(colliderMisil.Intersects(escenario.getColumnBoxes()[index]))
             {
+              crearExplosion();
+
               recorridoMisil = 0f;
-              Instance = ExplosionMisil.CreateInstance();
-              Instance.Stop();
             }
           }
           for (var index = 0; index < escenario.getParedBoxes().Length; index++)
           {
             if(colliderMisil.Intersects(escenario.getParedBoxes()[index]))
             {
+              crearExplosion();
+
               recorridoMisil = 0f;
-              Instance = ExplosionMisil.CreateInstance();
-              Instance.Stop();
             }
           }
 
@@ -621,7 +632,12 @@ namespace TGC.MonoGame.TP
         }
       }
 
-
+      for(int i = 0; i < particulasExplosion.Count; i++)
+      {
+        if(particulasExplosion[i].viva()) //solo se actualizan aquellas particulas que sigan vivas
+          particulasExplosion[i].Update(gameTime);
+      }
+        
     }
 
     public void dibujar(Matrix view, Matrix projection, Effect effect, Matrix matrizMundo, Model modelo, Color color)
@@ -765,7 +781,31 @@ namespace TGC.MonoGame.TP
     public bool getVacio(){
       return currentPowerUp == PowerUp.None;
     }
+    public List<ParticulasExplosion> particulas(){
+      return particulasExplosion;
+    }
     
-    
+
+    public void crearExplosion(){
+      Instance = ExplosionMisil.CreateInstance();
+      Instance.Play();
+      
+      Random random = new Random();
+
+      for(int i = 0; i < CantidadParticulas; i++)
+      {
+
+        Vector3 velocidad = new Vector3((float) MathF.Cos(MathHelper.ToRadians(random.Next(360))) * random.Next(5,15),(float) MathF.Sin(MathHelper.ToRadians(random.Next(360))) * random.Next(10,20),(float) MathF.Cos(MathHelper.ToRadians(random.Next(360))) * random.Next(5,15));
+      
+        
+
+        float sizeRandom = (float)random.NextDouble() * 2f; //entre 0 y 2
+        float tiempoVidaRandom = (float)random.NextDouble() * 1.5f; //entre 0 y 1.5 
+        Vector3 posicionExplosion = misilPos + MisilWorld.Up * 400; //para que la explosion ocurra lo mas cercano al punto de colision
+        particulasExplosion[i] =  new ParticulasExplosion(posicionExplosion,velocidad,sizeRandom,tiempoVidaRandom);  
+        //se reemplazan las "viejas" particulas por las "nuevas"
+      }
+
+    }
   }
 }

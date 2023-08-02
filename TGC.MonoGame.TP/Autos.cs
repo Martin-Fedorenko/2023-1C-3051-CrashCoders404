@@ -146,6 +146,7 @@ namespace TGC.MonoGame.TP
     //GODMODE
     private Boolean modoDios;
 
+
     public void Initialize()
     {
       DesplazamientoAutos = new Vector3[cantidadEnemigos];
@@ -425,6 +426,8 @@ namespace TGC.MonoGame.TP
                 {
                     if(powerUps.colliderMisil.Intersects(CollideCars[index])&& !autosDestruidos.Contains(index))
                     {
+                        powerUps.crearExplosion();
+                        
                         powerUps.recorridoMisil = 0f;
                         vidaAutos[index] -= 200;
                         if(vidaAutos[index] <= 0){
@@ -586,8 +589,6 @@ namespace TGC.MonoGame.TP
 
         CollideCars[index].Rotate(Matrix.CreateRotationY(AutosRotaciones[index]));
       }
-      
-      
     
     }
 
@@ -1043,5 +1044,7 @@ namespace TGC.MonoGame.TP
       public void godMode(){
         modoDios = true;
       }
+
+
   }
 }
