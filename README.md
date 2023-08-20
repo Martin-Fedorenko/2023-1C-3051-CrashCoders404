@@ -12,18 +12,19 @@ Proyecto "CrashCoders404" para la asignatura electiva [Técnicas de Gráficos po
 
 ## Juego
 
-El proyecto consiste en un derby de demolición, donde el jugador maneja un auto y su objetivo es lograr sobrevivir por un tiempo determinado (120 segundos) o eliminar una cantidad determinada de coches enemigos (5 enemigos). Para ello, el jugador puede moverse en cualquier direccion, avanzar/retroceder/rotar e inclusive saltar. Ademas, el mapa dispone de distintos powerups que le permitirán alcanzar sus objetivos. Hay 3 tipos de powerups, "Turbo" que aumenta la velocidad del protagonista por un corto lapso de tiempo, "Ametralladora" que permite disparar varias balas que hacen poco daño a los enemigos, y "Misil", el cual es capaz de eliminar a los enemigos de un solo golpe.
+Crash Coders es un Derby de demolición, donde el jugador maneja un auto cuyo objetivo es lograr sobrevivir por un tiempo determinado (120 segundos) o eliminar una cantidad determinada de coches enemigos (5 enemigos). Para ello, el jugador puede moverse en cualquier dirección, avanzar/retroceder/rotar e inclusive saltar. Además, el mapa dispone de distintos powerups que le permitirán alcanzar sus objetivos. Hay 3 tipos de powerups, "Turbo" que aumenta la velocidad del protagonista por un corto lapso de tiempo, "Ametralladora" que permite disparar varias balas que hacen poco daño a los enemigos, y "Misil", el cual es capaz de eliminar a los enemigos de un solo golpe.
 
-Los coches enemigos tienen como objetivo chocar al jugador y quitarle vida, estos se mueven por su cuenta siempre en la direccion del jugador, si chocan con elementos del mapa o si son eleminados por el jugador, pueden respawnear para continuar con su persecución.
+Los coches enemigos tienen como objetivo chocar al jugador y quitarle vida, estos se mueven por su cuenta siempre en la dirección del jugador, si chocan con elementos del mapa o si son eliminados por el jugador, pueden reaparecer para continuar con su persecución.
 
-Hay 2 tipos de autos enemigos. Por un lado los autos deportivos, los cuales son más pequeños y se mueven a gran velocidad. Y por otro lado  los autos de combate, los cuales son más grandes y lentos, pero en caso de impactar con el jugador le quitan más vida que los autos deportivos.
+Hay 2 tipos de autos enemigos. Por un lado los autos deportivos, los cuales son más pequeños y se mueven a gran velocidad. Y por otro lado los autos de combate, los cuales son más grandes y lentos, pero en caso de impactar con el jugador le quitan más vida que los autos deportivos.
+
+El proyecto se puede descargar y jugar desde [Itch.io](https://martylk.itch.io/crash-coders).
 
 ## Integrantes
 
 Fedorenko, Martín |  Dellafiore, Matías | Navarro, Ramiro | 
 ----------------- | ------------------- | --------------- |
 ![foto (1)](https://github.com/Martin-Fedorenko/2023-1C-3051-CrashCoders404/assets/67556470/99573b78-51ea-4a64-acda-d43031f5a200)| ![mati](https://github.com/Martin-Fedorenko/2023-1C-3051-CrashCoders404/assets/67556470/8509a6ca-8505-44de-b8f5-eaeb349deff4) | ![WhatsApp Image 2023-07-11 at 11 51 50 (1)](https://github.com/Martin-Fedorenko/2023-1C-3051-CrashCoders404/assets/67556470/470d64e1-d1f6-4aaf-9c29-9a1a6ed8a832) | 
-
 
 ## Capturas
 

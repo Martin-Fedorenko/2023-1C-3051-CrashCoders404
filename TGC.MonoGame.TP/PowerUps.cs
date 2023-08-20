@@ -64,7 +64,7 @@ namespace TGC.MonoGame.TP
     private Vector3 Turbo1Pos = new Vector3(-400, 35, -235);
     private Vector3 Turbo2Pos = new Vector3(-310, 20, 290);
     private Vector3 Turbo3Pos = new Vector3(170, 35, 330);
-    private Vector3 Turbo4Pos = new Vector3(-125, 35, -240);
+    private Vector3 Turbo4Pos = new Vector3(-125, 20, -240);
     private Vector3 Turbo5Pos = new Vector3(525, 20, 630);
 
     // Colliders
